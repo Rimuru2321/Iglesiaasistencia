@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin · Iglesia Luz y Vida IV</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
-  --ink:#080C14;--ink-mid:#0F1624;--ink-soft:#182030;--ink-card:rgba(15,22,36,.88);
   --gold:#C8A96E;--gold-b:#E4CF96;--gold-d:#7A6235;
+  --ink:#080C14;--ink-mid:#0F1624;--ink-soft:#182030;
   --crimson:#8B1A2A;--cream:#EEE6D4;--cream-s:#B8A888;--emerald:#1A6647;
   --border:rgba(200,169,110,.15);--border-hi:rgba(200,169,110,.42);
   --shadow:0 28px 90px rgba(0,0,0,.75);
 }
 [data-theme="light"]{
-  --ink:#F5F0E8;--ink-mid:#EDE5D4;--ink-soft:#E0D5C0;--ink-card:rgba(255,250,240,.95);
-  --cream:#2A1F0A;--cream-s:#5A4A2A;
-  --border:rgba(120,90,40,.2);--border-hi:rgba(120,90,40,.5);
+  --ink:#F0EAD8;--ink-mid:#E8DFC8;--ink-soft:#DDD0B5;
+  --cream:#1A1208;--cream-s:#4A3A20;
+  --border:rgba(100,75,30,.2);--border-hi:rgba(100,75,30,.45);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
@@ -27,7 +28,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 
 /* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:68px;background:rgba(8,12,20,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);position:sticky;top:0;z-index:200;flex-shrink:0;}
-[data-theme="light"] .topbar{background:rgba(245,240,232,.96);}
+[data-theme="light"] .topbar{background:rgba(240,234,216,.96);}
 .brand{display:flex;align-items:center;gap:14px;}
 .brand-logo{width:46px;height:46px;border-radius:50%;background:#fff;border:2.5px solid var(--gold);overflow:hidden;flex-shrink:0;box-shadow:0 0 18px rgba(200,169,110,.25);}
 .brand-logo img{width:100%;height:100%;object-fit:contain;}
@@ -35,9 +36,9 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .brand-sub{font-size:10px;color:var(--cream-s);letter-spacing:2px;margin-top:2px;}
 .clk-t{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--gold-b);letter-spacing:5px;}
 .clk-d{font-size:10px;color:var(--cream-s);letter-spacing:2px;margin-top:2px;}
-.topbar-right{display:flex;gap:10px;align-items:center;}
-.theme-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:1px solid var(--border-hi);color:var(--gold);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;}
-.theme-btn:hover{background:rgba(200,169,110,.1);}
+.tr{display:flex;gap:10px;align-items:center;}
+.icon-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:1px solid var(--border-hi);color:var(--gold);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;}
+.icon-btn:hover{background:rgba(200,169,110,.1);}
 .tbtn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s;border:1px solid var(--border);}
 .tbtn.ghost{background:transparent;color:var(--gold);}
 .tbtn.ghost:hover{border-color:var(--gold);background:rgba(200,169,110,.08);}
@@ -50,17 +51,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .pdot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pdot 2s ease-in-out infinite;display:inline-block;margin-right:8px;}
 @keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
 
+/* BIRTHDAY ALERT */
+.bday-alert{display:none;align-items:center;gap:14px;padding:13px 28px;background:linear-gradient(135deg,rgba(200,169,110,.12),rgba(200,169,110,.06));border-bottom:1px solid var(--border-hi);font-size:13px;animation:slideDown .5s both;}
+.bday-alert.show{display:flex;}
+@keyframes slideDown{from{transform:translateY(-10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.bday-names{color:var(--gold-b);font-family:'Cormorant Garamond',serif;font-size:15px;}
+
 /* LOGIN */
 #login{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
 .lcard{background:var(--ink-mid);border:1px solid var(--border-hi);border-radius:26px;padding:54px 46px;max-width:400px;width:100%;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden;}
-[data-theme="light"] .lcard{background:rgba(245,240,232,.98);}
+[data-theme="light"] .lcard{background:rgba(240,234,216,.98);}
 .lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:200px;background:radial-gradient(ellipse at 50% -15%,rgba(200,169,110,.1) 0%,transparent 68%);pointer-events:none;}
 .l-logo{width:82px;height:82px;border-radius:50%;background:#fff;border:3px solid var(--gold);overflow:hidden;margin:0 auto 22px;box-shadow:0 0 36px rgba(200,169,110,.3);position:relative;z-index:1;}
 .l-logo img{width:100%;height:100%;object-fit:contain;}
 .l-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold-b);margin-bottom:4px;position:relative;z-index:1;}
 .l-sub{font-size:11px;color:var(--cream-s);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:34px;position:relative;z-index:1;}
 .l-input{width:100%;background:var(--ink);border:1.5px solid var(--border-hi);border-radius:11px;padding:15px 18px;color:var(--cream);font-size:15px;font-family:'Outfit',sans-serif;outline:none;margin-bottom:14px;transition:border-color .25s;text-align:center;letter-spacing:3px;position:relative;z-index:1;}
-[data-theme="light"] .l-input{background:rgba(230,220,200,.6);}
+[data-theme="light"] .l-input{background:rgba(220,210,185,.6);}
 .l-input:focus{border-color:var(--gold);}
 .btn-login{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold-d),var(--gold),#D4B870);border:none;border-radius:11px;color:var(--ink);font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .25s;position:relative;z-index:1;}
 .btn-login:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(200,169,110,.4);}
@@ -88,7 +95,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 /* LAYOUT */
 .dash-body{display:flex;flex:1;overflow:hidden;}
 .sidebar{width:210px;border-right:1px solid var(--border);padding:22px 0;flex-shrink:0;background:rgba(8,12,20,.5);}
-[data-theme="light"] .sidebar{background:rgba(240,232,215,.5);}
+[data-theme="light"] .sidebar{background:rgba(220,210,185,.3);}
 .slbl{font-size:9px;color:var(--cream-s);letter-spacing:3px;text-transform:uppercase;padding:0 18px;margin-bottom:6px;}
 .sbtn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 18px;border:none;background:transparent;color:var(--cream-s);font-family:'Outfit',sans-serif;font-size:13px;font-weight:400;cursor:pointer;transition:all .2s;text-align:left;border-left:2.5px solid transparent;}
 .sbtn:hover{color:var(--cream);background:rgba(200,169,110,.05);}
@@ -101,7 +108,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-b);}
 .sec-sub{font-size:11px;color:var(--cream-s);letter-spacing:1px;margin-top:3px;}
-.sec-acts{display:flex;gap:10px;flex-wrap:wrap;}
 
 /* CHIPS */
 .chips{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
@@ -113,7 +119,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .tbl-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;}
 .tbl{width:100%;border-collapse:collapse;font-size:14px;}
 .tbl thead{background:rgba(20,30,50,.7);}
-[data-theme="light"] .tbl thead{background:rgba(200,185,155,.3);}
+[data-theme="light"] .tbl thead{background:rgba(180,165,130,.3);}
 .tbl th{padding:12px 16px;text-align:left;font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 .tbl td{padding:12px 16px;border-top:1px solid rgba(255,255,255,.04);vertical-align:middle;}
 [data-theme="light"] .tbl td{border-top-color:rgba(0,0,0,.06);}
@@ -124,11 +130,19 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .tid{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--gold-d);letter-spacing:2.5px;}
 .ttime{font-size:13px;color:var(--cream-s);}
 
-/* ROLE BADGES en tabla */
+/* ROLE BADGES */
 .rbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
-.rbadge.pastor    {background:rgba(139,26,42,.2);   color:#F07080;border:1px solid rgba(139,26,42,.4);}
-.rbadge.diacono   {background:rgba(21,101,192,.2);  color:#7EB8FF;border:1px solid rgba(21,101,192,.4);}
-.rbadge.estudiante{background:rgba(26,102,71,.2);   color:#5DC99A;border:1px solid rgba(26,102,71,.4);}
+.rbadge.pastor      {background:rgba(139,26,42,.2);  color:#F07080;border:1px solid rgba(139,26,42,.4);}
+.rbadge.diacono     {background:rgba(21,101,192,.2); color:#7EB8FF;border:1px solid rgba(21,101,192,.4);}
+.rbadge.miembro     {background:rgba(26,102,71,.2);  color:#5DC99A;border:1px solid rgba(26,102,71,.4);}
+.rbadge.visitante   {background:rgba(106,27,154,.2); color:#CE93D8;border:1px solid rgba(106,27,154,.4);}
+.rbadge.ljovenes    {background:rgba(230,81,0,.2);   color:#FFAB40;border:1px solid rgba(230,81,0,.4);}
+.rbadge.lmartes     {background:rgba(0,105,92,.2);   color:#4DB6AC;border:1px solid rgba(0,105,92,.4);}
+.rbadge.presidenta  {background:rgba(183,28,28,.2);  color:#EF9A9A;border:1px solid rgba(183,28,28,.4);}
+.rbadge.vp          {background:rgba(136,14,79,.2);  color:#F48FB1;border:1px solid rgba(136,14,79,.4);}
+.rbadge.secretaria  {background:rgba(13,71,161,.2);  color:#90CAF9;border:1px solid rgba(13,71,161,.4);}
+.rbadge.tesorera    {background:rgba(27,94,32,.2);   color:#A5D6A7;border:1px solid rgba(27,94,32,.4);}
+.rbadge.vocal1,.rbadge.vocal2{background:rgba(49,27,146,.2);color:#B39DDB;border:1px solid rgba(49,27,146,.4);}
 
 .pill{display:inline-block;padding:3px 12px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
 .pill.p{background:rgba(26,102,71,.2);color:#5DC99A;border:1px solid rgba(26,102,71,.4);}
@@ -139,6 +153,22 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .rbtn:hover{border-color:var(--gold-d);color:var(--gold-d);}
 .rbtn.del:hover{border-color:#F07080;color:#F07080;}
 .etbl{text-align:center;padding:50px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:18px;}
+
+/* GRÁFICA */
+.chart-wrap{background:rgba(15,22,36,.6);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;}
+[data-theme="light"] .chart-wrap{background:rgba(220,210,185,.4);}
+.chart-title{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);margin-bottom:16px;letter-spacing:1px;}
+.chart-canvas{max-height:260px;}
+
+/* CUMPLEAÑOS */
+.bday-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:8px;}
+.bday-card{background:rgba(200,169,110,.06);border:1px solid var(--border-hi);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.bday-card.today{background:rgba(200,169,110,.12);border-color:var(--gold);}
+.bday-av{width:40px;height:40px;border-radius:50%;background:var(--ink-soft);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--gold);}
+.bday-av img{width:100%;height:100%;object-fit:cover;}
+.bday-name{font-size:14px;color:var(--cream);font-family:'Cormorant Garamond',serif;}
+.bday-date{font-size:11px;color:var(--cream-s);letter-spacing:1px;margin-top:2px;}
+.bday-tag{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:1px;}
 
 /* HISTORIAL */
 .hday{margin-bottom:26px;}
@@ -151,8 +181,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 /* MODAL */
 .overlay{position:fixed;inset:0;z-index:400;background:rgba(4,7,14,.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
 .overlay.open{opacity:1;pointer-events:all;}
-.modal{background:var(--ink-mid);border:1px solid var(--border-hi);border-radius:22px;padding:44px 40px 36px;max-width:520px;width:100%;box-shadow:var(--shadow);position:relative;transform:scale(.9) translateY(20px);transition:transform .38s cubic-bezier(.34,1.2,.64,1);}
-[data-theme="light"] .modal{background:rgba(245,240,232,.98);}
+.modal{background:var(--ink-mid);border:1px solid var(--border-hi);border-radius:22px;padding:44px 40px 36px;max-width:540px;width:100%;box-shadow:var(--shadow);position:relative;transform:scale(.9) translateY(20px);transition:transform .38s cubic-bezier(.34,1.2,.64,1);}
+[data-theme="light"] .modal{background:rgba(240,234,216,.98);}
 .overlay.open .modal{transform:scale(1) translateY(0);}
 .mx{position:absolute;top:15px;right:15px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--cream-s);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
 .mx:hover{background:rgba(139,26,42,.2);color:#F07080;}
@@ -163,7 +193,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .fg.full{grid-column:1/-1;}
 .flbl{font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;}
 .finput{background:var(--ink);border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;color:var(--cream);font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .25s;}
-[data-theme="light"] .finput{background:rgba(230,220,200,.6);}
+[data-theme="light"] .finput{background:rgba(210,200,175,.6);}
 .finput:focus{border-color:var(--gold);}
 .finput::placeholder{color:var(--cream-s);opacity:.45;}
 .mbtns{display:flex;gap:12px;margin-top:24px;}
@@ -178,7 +208,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .toast.err{background:var(--crimson);box-shadow:0 10px 44px rgba(139,26,42,.55);}
 
 .tab{display:none;}.tab.on{display:block;}
-
 @media(max-width:900px){
   .stats{grid-template-columns:1fr 1fr;}
   .sidebar{width:58px;padding:14px 0;}
@@ -186,7 +215,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
   .sidebar .slbl,.sidebar .ssep{display:none;}
   .main{padding:20px 16px 50px;}
   .topbar{padding:0 16px;}
-  .topbar .clk-t,.topbar .clk-d{display:none;}
+  .clk-t,.clk-d{display:none;}
 }
 @media(max-width:580px){
   .stats{grid-template-columns:1fr 1fr;}
@@ -209,8 +238,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
     <div class="clk-t" id="clk-t">--:--:--</div>
     <div class="clk-d" id="clk-d"></div>
   </div>
-  <div class="topbar-right">
-    <button class="theme-btn" id="tbtn" onclick="toggleTheme()" title="Modo claro/oscuro">🌙</button>
+  <div class="tr">
+    <button class="icon-btn" id="tbtn" onclick="toggleTheme()">🌙</button>
     <a href="kiosco.html" class="tbtn ghost">📱 Kiosco</a>
     <button class="tbtn red" id="btn-out" style="display:none" onclick="salir()">🔓 Salir</button>
   </div>
@@ -219,6 +248,15 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 <div class="cbar z" id="cbar">
   <div><span class="pdot"></span><span id="cbar-txt">Cargando...</span></div>
   <span id="cbar-date" style="font-size:10px;opacity:.65;"></span>
+</div>
+
+<!-- BIRTHDAY ALERT -->
+<div class="bday-alert z" id="bday-alert">
+  <span style="font-size:26px;">🎂</span>
+  <div>
+    <div style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;">Cumpleaños de hoy</div>
+    <div class="bday-names" id="bday-names">—</div>
+  </div>
 </div>
 
 <!-- LOGIN -->
@@ -247,6 +285,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
       <div class="slbl">Menú</div>
       <button class="sbtn on" onclick="tab('hoy',this)"><span class="sico">📋</span><span>Hoy</span></button>
       <button class="sbtn"    onclick="tab('herm',this)"><span class="sico">👥</span><span>Hermanos</span></button>
+      <button class="sbtn"    onclick="tab('graficas',this)"><span class="sico">📊</span><span>Gráficas</span></button>
+      <button class="sbtn"    onclick="tab('cumples',this)"><span class="sico">🎂</span><span>Cumpleaños</span></button>
       <button class="sbtn"    onclick="tab('hist',this)"><span class="sico">📅</span><span>Historial</span></button>
       <div class="ssep"></div>
       <div class="slbl">Acciones</div>
@@ -276,17 +316,36 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
       <div class="tab" id="tab-herm">
         <div class="sec-head">
           <div><div class="sec-title">Lista de Hermanos</div><div class="sec-sub" id="hcnt">—</div></div>
-          <div class="sec-acts"><button class="tbtn ghost" onclick="abrirAdd()">➕ Agregar</button></div>
+          <div><button class="tbtn ghost" onclick="abrirAdd()">➕ Agregar</button></div>
         </div>
         <div class="tbl-wrap"><table class="tbl">
-          <thead><tr><th>Hermano/a</th><th>ID</th><th>Rol</th><th>Días Asistidos</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Hermano/a</th><th>ID</th><th>Rol</th><th>Cumpleaños</th><th>Días Asist.</th><th>Acciones</th></tr></thead>
           <tbody id="tbody-herm"></tbody>
         </table></div>
       </div>
 
+      <!-- GRÁFICAS -->
+      <div class="tab" id="tab-graficas">
+        <div class="sec-head"><div><div class="sec-title">Gráficas de Asistencia</div><div class="sec-sub">Últimos cultos registrados</div></div></div>
+        <div class="chart-wrap">
+          <div class="chart-title">📈 Asistencia por Culto</div>
+          <canvas class="chart-canvas" id="chart-line"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title">🍩 Distribución por Roles</div>
+          <canvas class="chart-canvas" id="chart-roles" style="max-height:220px;"></canvas>
+        </div>
+      </div>
+
+      <!-- CUMPLEAÑOS -->
+      <div class="tab" id="tab-cumples">
+        <div class="sec-head"><div><div class="sec-title">Cumpleaños</div><div class="sec-sub">Este mes y próximos</div></div></div>
+        <div id="cumples-cont"></div>
+      </div>
+
       <!-- HISTORIAL -->
       <div class="tab" id="tab-hist">
-        <div class="sec-head"><div><div class="sec-title">Historial</div><div class="sec-sub">Todos los cultos registrados</div></div></div>
+        <div class="sec-head"><div><div class="sec-title">Historial</div><div class="sec-sub">Todos los cultos</div></div></div>
         <div id="hist-cont"></div>
       </div>
     </main>
@@ -298,11 +357,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
   <div class="modal">
     <button class="mx" onclick="cerrarAdd()">✕</button>
     <div class="m-title">Agregar Hermano/a</div>
-    <div class="m-sub">Registrar nuevo miembro de la escuela</div>
+    <div class="m-sub">Registrar nuevo miembro</div>
     <div class="fgrid">
       <div class="fg full">
         <label class="flbl">Nombre Completo *</label>
-        <input class="finput" id="fn" placeholder="Ej: Juan Pérez">
+        <input class="finput" id="fn" placeholder="Ej: María García">
       </div>
       <div class="fg">
         <label class="flbl">Código ID (vacío = auto)</label>
@@ -311,10 +370,29 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
       <div class="fg">
         <label class="flbl">Rol</label>
         <select class="finput" id="frol">
-          <option value="Estudiante">📖 Estudiante</option>
-          <option value="Diácono">🙏 Diácono</option>
-          <option value="Pastor">⛪ Pastor</option>
+          <optgroup label="General">
+            <option value="Miembro">👤 Miembro</option>
+            <option value="Visitante">🌟 Visitante</option>
+            <option value="Pastor">⛪ Pastor</option>
+            <option value="Diácono">🙏 Diácono</option>
+          </optgroup>
+          <optgroup label="Líderes Jóvenes (Sábados)">
+            <option value="Líder Jóvenes">🎯 Líder Jóvenes</option>
+          </optgroup>
+          <optgroup label="Directiva Programa Martes">
+            <option value="Líder Martes">📖 Líder Martes</option>
+            <option value="Presidenta">👑 Presidenta</option>
+            <option value="Vicepresidenta">🌸 Vicepresidenta</option>
+            <option value="Secretaria">📋 Secretaria</option>
+            <option value="Tesorera">💰 Tesorera</option>
+            <option value="1er Vocal">🎤 1er Vocal</option>
+            <option value="2do Vocal">🎤 2do Vocal</option>
+          </optgroup>
         </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">🎂 Fecha de Cumpleaños</label>
+        <input class="finput" id="fcumple" type="date">
       </div>
       <div class="fg full">
         <label class="flbl">URL de Foto (opcional)</label>
@@ -340,11 +418,13 @@ const db=getFirestore(initializeApp(firebaseConfig));
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-const PASS='admin1234'; // ← CAMBIA AQUÍ TU CONTRASEÑA
-const RCLS={Pastor:'pastor',Diácono:'diacono',Estudiante:'estudiante'};
-const RICO={Pastor:'⛪',Diácono:'🙏',Estudiante:'📖'};
+const MESES_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const PASS='admin1234'; // ← CAMBIA AQUÍ
+const RCLS={Pastor:'pastor',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Líder Jóvenes':'ljovenes','Líder Martes':'lmartes',Presidenta:'presidenta',Vicepresidenta:'vp',Secretaria:'secretaria',Tesorera:'tesorera','1er Vocal':'vocal1','2do Vocal':'vocal2'};
+const RICO={Pastor:'⛪',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Líder Jóvenes':'🎯','Líder Martes':'📖',Presidenta:'👑',Vicepresidenta:'🌸',Secretaria:'📋',Tesorera:'💰','1er Vocal':'🎤','2do Vocal':'🎤'};
 
 let miembros=[],asistidos=new Set(),asistMap={},historial=[],filtroActual='all';
+let chartLine=null,chartRoles=null;
 
 // ── TEMA ──────────────────────────────────────────────────────
 const savedTheme=localStorage.getItem('lviv-theme')||'dark';
@@ -361,8 +441,23 @@ window.toggleTheme=function(){
 function hoy(){return new Date().toISOString().split('T')[0];}
 function ini(n){return n.trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
 function toast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className='toast show'+(t==='err'?' err':'');clearTimeout(el._t);el._t=setTimeout(()=>el.className='toast',3500);}
-function rbadge(rol){if(!rol)return'';const c=RCLS[rol]||'estudiante',i=RICO[rol]||'👤';return`<span class="rbadge ${c}">${i} ${rol}</span>`;}
+function rbadge(rol){if(!rol)return'';const c=RCLS[rol]||'miembro',i=RICO[rol]||'👤';return`<span class="rbadge ${c}">${i} ${rol}</span>`;}
 function fotoEl(m,cls='mf'){const i=ini(m.nombre);const img=m.foto_url?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.parentElement.innerHTML='${i}'">`:`${i}`;return`<div class="${cls}">${img}</div>`;}
+function esCumpleHoy(m){if(!m.cumpleanos)return false;const n=new Date();const[,mes,dia]=m.cumpleanos.split('-');return parseInt(mes)===n.getMonth()+1&&parseInt(dia)===n.getDate();}
+function esCumpleMes(m){if(!m.cumpleanos)return false;const[,mes]=m.cumpleanos.split('-');return parseInt(mes)===new Date().getMonth()+1;}
+
+// ── RELOJ ─────────────────────────────────────────────────────
+function horario(){const d=new Date().getDay();if(d===0)return{n:'Culto Dominical',i:'8:00 AM',f:'~3:00 PM',mi:480,mf:900};if(d===2)return{n:'Culto de Martes',i:'7:00 PM',f:'9:00 PM',mi:1140,mf:1260};if(d===6)return{n:'Culto de Sábado',i:'7:00 PM',f:'9:00 PM',mi:1140,mf:1260};return null;}
+function tick(){
+  const now=new Date();
+  document.getElementById('clk-t').textContent=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  document.getElementById('clk-d').textContent=`${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('cbar-date').textContent=`${DIAS[now.getDay()]} ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+  const h=horario(),mins=now.getHours()*60+now.getMinutes(),cb=document.getElementById('cbar'),ct=document.getElementById('cbar-txt');
+  if(h){if(mins>=h.mi&&mins<=h.mf){cb.className='cbar z on';ct.textContent=`${h.n} en curso · ${h.i} – ${h.f}`;}else if(mins<h.mi){cb.className='cbar z';ct.textContent=`Hoy · ${h.n} · ${h.i} – ${h.f}`;}else{cb.className='cbar z';ct.textContent='✅ Culto finalizado';}}
+  else{cb.className='cbar z';ct.textContent='Sin culto hoy · Próximo: Mar o Sáb 7:00 PM';}
+}
+setInterval(tick,1000);tick();
 
 // ── AUTH ──────────────────────────────────────────────────────
 window.login=function(){
@@ -377,23 +472,17 @@ window.login=function(){
 };
 window.salir=function(){document.getElementById('login').style.display='flex';document.getElementById('dash').style.display='none';document.getElementById('btn-out').style.display='none';};
 
-// ── RELOJ ────────────────────────────────────────────────────
-function horario(){const d=new Date().getDay();if(d===0)return{n:'Culto Dominical',i:'8:00 AM',f:'~3:00 PM',mi:480,mf:900};if(d===2)return{n:'Culto de Martes',i:'7:00 PM',f:'9:00 PM',mi:1140,mf:1260};if(d===6)return{n:'Culto de Sábado',i:'7:00 PM',f:'9:00 PM',mi:1140,mf:1260};return null;}
-function tick(){
-  const now=new Date();
-  document.getElementById('clk-t').textContent=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-  document.getElementById('clk-d').textContent=`${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} ${now.getFullYear()}`;
-  document.getElementById('cbar-date').textContent=`${DIAS[now.getDay()]} ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
-  const h=horario(),mins=now.getHours()*60+now.getMinutes(),cb=document.getElementById('cbar'),ct=document.getElementById('cbar-txt');
-  if(h){if(mins>=h.mi&&mins<=h.mf){cb.className='cbar z on';ct.textContent=`${h.n} en curso · ${h.i} – ${h.f}`;}else if(mins<h.mi){cb.className='cbar z';ct.textContent=`Hoy · ${h.n} · ${h.i} – ${h.f}`;}else{cb.className='cbar z';ct.textContent='✅ Culto finalizado';}}
-  else{cb.className='cbar z';ct.textContent='Sin culto hoy · Próximo: Mar o Sáb 7:00 PM';}
-}
-setInterval(tick,1000);tick();
-
 // ── CARGAR ────────────────────────────────────────────────────
 async function cargar(){
   const ms=await getDocs(collection(db,'miembros'));
   miembros=ms.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.activo!==false).sort((a,b)=>a.nombre.localeCompare(b.nombre));
+
+  // Cumpleaños de hoy
+  const bdayHoy=miembros.filter(m=>esCumpleHoy(m));
+  if(bdayHoy.length){
+    document.getElementById('bday-names').textContent=bdayHoy.map(m=>`🎂 ${m.nombre}`).join('  ·  ');
+    document.getElementById('bday-alert').classList.add('show');
+  }
 
   onSnapshot(collection(db,`asistencia/${hoy()}/registros`),snap=>{
     asistidos=new Set(snap.docs.map(d=>d.id));
@@ -406,11 +495,11 @@ async function cargar(){
   const dates=[];
   for(const dd of hSnap.docs){
     const regs=await getDocs(collection(db,`asistencia/${dd.id}/registros`));
-    if(regs.size>0)dates.push({fecha:dd.id,registros:regs.docs.map(r=>({id:r.id,...r.data()}))});
+    if(regs.size>0)dates.push({fecha:dd.id,count:regs.size,registros:regs.docs.map(r=>({id:r.id,...r.data()}))});
   }
   historial=dates.sort((a,b)=>b.fecha.localeCompare(a.fecha));
 
-  renderHermanos();renderHistorial();dayLabel();
+  renderHermanos();renderHistorial();renderCumples();dayLabel();
 }
 
 function dayLabel(){const now=new Date();const el=document.getElementById('dlbl');if(el)el.textContent=`${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;}
@@ -431,8 +520,9 @@ function renderHoy(f='all'){
   if(f==='aus')lista=miembros.filter(m=>!asistidos.has(m.id));
   document.getElementById('tbody-hoy').innerHTML=lista.map(m=>{
     const p=asistidos.has(m.id),h=asistMap[m.id]||'—';
+    const bday=esCumpleHoy(m)?'🎂 ':'';
     return`<tr>
-      <td><div class="tn">${fotoEl(m)} ${m.nombre}</div></td>
+      <td><div class="tn">${fotoEl(m)} ${bday}${m.nombre}</div></td>
       <td class="tid">${m.codigo}</td>
       <td>${rbadge(m.rol)}</td>
       <td><span class="pill ${p?'p':'a'}">${p?'Presente':'Ausente'}</span></td>
@@ -447,60 +537,172 @@ window.filtro=function(f,el){filtroActual=f;document.querySelectorAll('.chip').f
 
 // ── RENDER HERMANOS ───────────────────────────────────────────
 function renderHermanos(){
-  document.getElementById('hcnt').textContent=`${miembros.length} miembro(s) registrado(s)`;
-  document.getElementById('tbody-herm').innerHTML=miembros.map(m=>`<tr>
-    <td><div class="tn">${fotoEl(m)} ${m.nombre}</div></td>
-    <td class="tid">${m.codigo}</td>
-    <td>${rbadge(m.rol)}</td>
-    <td style="color:var(--gold)">${m.dias_asistidos||0} día(s)</td>
-    <td><div class="rack"><button class="rbtn del" onclick="eliminar('${m.id}','${m.nombre.replace(/'/g,'')}')">🗑</button></div></td>
-  </tr>`).join('')||`<tr><td colspan="5" class="etbl">No hay hermanos</td></tr>`;
+  document.getElementById('hcnt').textContent=`${miembros.length} miembro(s)`;
+  document.getElementById('tbody-herm').innerHTML=miembros.map(m=>{
+    const bday=m.cumpleanos||'—';
+    const esBday=esCumpleHoy(m);
+    return`<tr>
+      <td><div class="tn">${fotoEl(m)} ${esBday?'🎂 ':''}${m.nombre}</div></td>
+      <td class="tid">${m.codigo}</td>
+      <td>${rbadge(m.rol)}</td>
+      <td class="ttime">${bday!=='—'?bday.slice(5).replace('-','/')+(esBday?' 🎂':''):bday}</td>
+      <td style="color:var(--gold)">${m.dias_asistidos||0} día(s)</td>
+      <td><div class="rack"><button class="rbtn del" onclick="eliminar('${m.id}','${m.nombre.replace(/'/g,'')}')">🗑</button></div></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="6" class="etbl">No hay hermanos</td></tr>`;
 }
 
-// ── RENDER HISTORIAL ──────────────────────────────────────────
+// ── GRÁFICAS ──────────────────────────────────────────────────
+function renderGraficas(){
+  // Gráfica de línea: últimos 10 cultos
+  const recent=historial.slice(0,10).reverse();
+  const labels=recent.map(d=>d.fecha.slice(5));
+  const data=recent.map(d=>d.count);
+
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const gridColor=isDark?'rgba(200,169,110,.08)':'rgba(100,75,30,.08)';
+  const textColor=isDark?'#B8A888':'#5A4A2A';
+
+  if(chartLine)chartLine.destroy();
+  const ctx1=document.getElementById('chart-line').getContext('2d');
+  chartLine=new Chart(ctx1,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'Presentes',
+        data,
+        borderColor:'#C8A96E',
+        backgroundColor:'rgba(200,169,110,.1)',
+        borderWidth:2.5,
+        pointBackgroundColor:'#C8A96E',
+        pointRadius:5,
+        tension:.4,
+        fill:true,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,font:{size:11}},beginAtZero:true}
+      }
+    }
+  });
+
+  // Gráfica de dona: roles
+  const roleCounts={};
+  miembros.forEach(m=>{const r=m.rol||'Miembro';roleCounts[r]=(roleCounts[r]||0)+1;});
+  const rLabels=Object.keys(roleCounts);
+  const rData=rLabels.map(k=>roleCounts[k]);
+  const RCOLORS={'Pastor':'#F07080','Diácono':'#7EB8FF','Miembro':'#5DC99A','Visitante':'#CE93D8','Líder Jóvenes':'#FFAB40','Líder Martes':'#4DB6AC','Presidenta':'#EF9A9A','Vicepresidenta':'#F48FB1','Secretaria':'#90CAF9','Tesorera':'#A5D6A7','1er Vocal':'#B39DDB','2do Vocal':'#9FA8DA'};
+  const colors=rLabels.map(r=>RCOLORS[r]||'#C8A96E');
+
+  if(chartRoles)chartRoles.destroy();
+  const ctx2=document.getElementById('chart-roles').getContext('2d');
+  chartRoles=new Chart(ctx2,{
+    type:'doughnut',
+    data:{
+      labels:rLabels,
+      datasets:[{data:rData,backgroundColor:colors,borderColor:'rgba(0,0,0,.2)',borderWidth:2,hoverOffset:6}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{labels:{color:textColor,font:{size:11},padding:16}}}
+    }
+  });
+}
+
+// ── CUMPLEAÑOS ────────────────────────────────────────────────
+function renderCumples(){
+  const cont=document.getElementById('cumples-cont');
+  const conBday=miembros.filter(m=>m.cumpleanos).sort((a,b)=>{
+    const[,am,ad]=a.cumpleanos.split('-');
+    const[,bm,bd]=b.cumpleanos.split('-');
+    return(parseInt(am)-parseInt(bm))||(parseInt(ad)-parseInt(bd));
+  });
+
+  if(!conBday.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Ningún hermano tiene fecha de cumpleaños registrada</div>`;return;}
+
+  // Agrupar por mes
+  const byMonth={};
+  conBday.forEach(m=>{const[,mes]=m.cumpleanos.split('-');const key=parseInt(mes);if(!byMonth[key])byMonth[key]=[];byMonth[key].push(m);});
+
+  cont.innerHTML=Object.entries(byMonth).sort((a,b)=>parseInt(a[0])-parseInt(b[0])).map(([mes,lista])=>{
+    const cards=lista.map(m=>{
+      const isHoy=esCumpleHoy(m);
+      const[,mm,dd]=m.cumpleanos.split('-');
+      return`<div class="bday-card${isHoy?' today':''}">
+        ${fotoEl(m,'bday-av')}
+        <div>
+          <div class="bday-name">${isHoy?'🎂 ':''}${m.nombre}</div>
+          <div class="bday-date">${dd}/${mm} · ${rbadge(m.rol)}</div>
+          ${isHoy?'<div class="bday-tag">¡HOY ES SU CUMPLEAÑOS!</div>':''}
+        </div>
+      </div>`;
+    }).join('');
+    return`<div style="margin-bottom:28px;">
+      <h4 style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);">${MESES[parseInt(mes)-1]}</h4>
+      <div class="bday-grid">${cards}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── HISTORIAL ─────────────────────────────────────────────────
 function renderHistorial(){
   const c=document.getElementById('hist-cont');
   if(!historial.length){c.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin historial aún</div>`;return;}
   c.innerHTML=historial.map(d=>{
-    const tot=miembros.length,pct=tot?Math.round(d.registros.length/tot*100):0;
+    const tot=miembros.length,pct=tot?Math.round(d.count/tot*100):0;
     const pills=d.registros.map(r=>{const m=miembros.find(x=>x.id===r.miembro_id||x.id===r.id);return`<span class="hpill">${m?m.nombre:r.miembro_id} <span style="opacity:.55;font-size:10px">${r.hora_llegada||''}</span></span>`;}).join('');
-    return`<div class="hday"><div class="hday-h"><h4>${d.fecha}</h4><span>${d.registros.length}/${tot} presentes · ${pct}%</span></div><div class="hpills">${pills||'<span style="color:var(--cream-s);font-size:12px;">Sin registros</span>'}</div></div>`;
+    return`<div class="hday"><div class="hday-h"><h4>${d.fecha}</h4><span>${d.count}/${tot} presentes · ${pct}%</span></div><div class="hpills">${pills||'<span style="color:var(--cream-s);font-size:12px;">Sin registros</span>'}</div></div>`;
   }).join('');
 }
 
 // ── TABS ──────────────────────────────────────────────────────
-window.tab=function(id,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));document.getElementById('tab-'+id).classList.add('on');el.classList.add('on');};
+window.tab=function(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  el.classList.add('on');
+  if(id==='graficas')setTimeout(renderGraficas,100);
+};
 
 // ── ACCIONES ─────────────────────────────────────────────────
 window.marcar=async function(id){try{const now=new Date();const h=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;await setDoc(doc(db,`asistencia/${hoy()}/registros`,id),{miembro_id:id,hora_llegada:h,timestamp:serverTimestamp()});toast('✓ Asistencia marcada');}catch(e){toast(e.message,'err');}};
 window.quitar=async function(id){try{await deleteDoc(doc(db,`asistencia/${hoy()}/registros`,id));toast('Asistencia removida');}catch(e){toast(e.message,'err');}};
 window.eliminar=async function(id,nombre){if(!confirm(`¿Eliminar a ${nombre}?`))return;try{await updateDoc(doc(db,'miembros',id),{activo:false});miembros=miembros.filter(m=>m.id!==id);renderHermanos();stats();renderHoy(filtroActual);toast(`${nombre} eliminado`);}catch(e){toast(e.message,'err');}};
-window.reiniciar=async function(){if(!confirm('¿Reiniciar asistencia de hoy? No se puede deshacer.'))return;try{const snap=await getDocs(collection(db,`asistencia/${hoy()}/registros`));await Promise.all(snap.docs.map(d=>deleteDoc(d.ref)));toast('Asistencia reiniciada');}catch(e){toast(e.message,'err');}};
+window.reiniciar=async function(){if(!confirm('¿Reiniciar asistencia de hoy?'))return;try{const snap=await getDocs(collection(db,`asistencia/${hoy()}/registros`));await Promise.all(snap.docs.map(d=>deleteDoc(d.ref)));toast('Asistencia reiniciada');}catch(e){toast(e.message,'err');}};
 
 // ── AGREGAR ───────────────────────────────────────────────────
-window.abrirAdd=function(){['fn','fc','ff'].forEach(id=>document.getElementById(id).value='');document.getElementById('frol').value='Estudiante';document.getElementById('ov-add').classList.add('open');setTimeout(()=>document.getElementById('fn').focus(),200);};
+window.abrirAdd=function(){['fn','fc','ff'].forEach(id=>document.getElementById(id).value='');document.getElementById('frol').value='Miembro';document.getElementById('fcumple').value='';document.getElementById('ov-add').classList.add('open');setTimeout(()=>document.getElementById('fn').focus(),200);};
 window.cerrarAdd=function(){document.getElementById('ov-add').classList.remove('open');};
+
 window.agregarMiembro=async function(){
   const nombre=document.getElementById('fn').value.trim();
   let codigo=document.getElementById('fc').value.trim();
   const rol=document.getElementById('frol').value;
+  const cumpleanos=document.getElementById('fcumple').value;
   const foto_url=document.getElementById('ff').value.trim();
   if(!nombre){toast('El nombre es obligatorio','err');return;}
   if(!codigo){const max=miembros.reduce((mx,m)=>Math.max(mx,parseInt(m.codigo)||0),0);codigo=String(max+1).padStart(4,'0');}
   if(miembros.find(m=>m.codigo===codigo)){toast('Ese ID ya existe','err');return;}
   try{
     const ref=doc(collection(db,'miembros'));
-    await setDoc(ref,{nombre,codigo,rol,foto_url:foto_url||'',activo:true,dias_asistidos:0,creado_en:serverTimestamp()});
-    miembros.push({id:ref.id,nombre,codigo,rol,foto_url:foto_url||'',activo:true,dias_asistidos:0});
-    cerrarAdd();renderHermanos();stats();renderHoy(filtroActual);
+    const data={nombre,codigo,rol,foto_url:foto_url||'',activo:true,dias_asistidos:0,creado_en:serverTimestamp()};
+    if(cumpleanos)data.cumpleanos=cumpleanos;
+    await setDoc(ref,data);
+    miembros.push({id:ref.id,...data});
+    cerrarAdd();renderHermanos();stats();renderHoy(filtroActual);renderCumples();
     toast(`✓ ${nombre} agregado — ID: ${codigo}`);
   }catch(e){toast(e.message,'err');}
 };
 
 // ── EXPORTAR ──────────────────────────────────────────────────
 window.exportar=function(){
-  const rows=[['ID','Nombre','Rol','Estado','Hora']];
-  miembros.forEach(m=>rows.push([m.codigo,m.nombre,m.rol||'',asistidos.has(m.id)?'Presente':'Ausente',asistMap[m.id]||'']));
+  const rows=[['ID','Nombre','Rol','Cumpleaños','Estado','Hora']];
+  miembros.forEach(m=>rows.push([m.codigo,m.nombre,m.rol||'',m.cumpleanos||'',asistidos.has(m.id)?'Presente':'Ausente',asistMap[m.id]||'']));
   const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));a.download=`asistencia_${hoy()}.csv`;a.click();
   toast('CSV descargado');
