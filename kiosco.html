@@ -681,8 +681,8 @@ let selId      = null;
 // ── Carga en tiempo real con onSnapshot ──────────────────────
 async function cargarDatos(){
   // Miembros
-  const mSnap = await getDocs(query(collection(db,'miembros'), where('activo','==',true), orderBy('nombre')));
-  miembros = mSnap.docs.map(d=>({id:d.id,...d.data()}));
+  const mSnap = await getDocs(collection(db,'miembros'));
+  miembros = mSnap.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.activo!==false).sort((a,b)=>a.nombre.localeCompare(b.nombre));
 
   // Asistencia de hoy (tiempo real)
   const aRef = collection(db,`asistencia/${hoy()}/registros`);
