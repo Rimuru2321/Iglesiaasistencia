@@ -400,8 +400,8 @@ let miembros=[], asistidos=new Set(), asistMap={}, historial=[], filtroActual='a
 // ── Carga en tiempo real ──────────────────────────────────────
 async function cargar(){
   // Miembros
-  const ms=await getDocs(query(collection(db,'miembros'),where('activo','==',true),orderBy('nombre')));
-  miembros=ms.docs.map(d=>({id:d.id,...d.data()}));
+  const ms=await getDocs(collection(db,'miembros'));
+  miembros=ms.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.activo!==false).sort((a,b)=>a.nombre.localeCompare(b.nombre));
 
   // Asistencia hoy en tiempo real
   const aRef=collection(db,`asistencia/${hoy()}/registros`);
