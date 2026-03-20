@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin · Iglesia Luz y Vida IV</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -20,8 +22,8 @@
   --border:rgba(100,75,30,.2);--border-hi:rgba(100,75,30,.45);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
-body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);min-height:100vh;display:flex;flex-direction:column;transition:background .4s,color .4s;}
+html{height:100%}body{min-height:100%;}
+body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);min-height:100vh;transition:background .4s,color .4s;}
 body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(200,169,110,.1) 0%,transparent 62%),radial-gradient(ellipse 40% 35% at 95% 100%,rgba(139,26,42,.08) 0%,transparent 55%);pointer-events:none;}
 body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeating-linear-gradient(90deg,rgba(200,169,110,.02) 0,transparent 1px,transparent 88px,rgba(200,169,110,.02) 89px),repeating-linear-gradient(0deg,rgba(200,169,110,.015) 0,transparent 1px,transparent 130px,rgba(200,169,110,.015) 131px);pointer-events:none;}
 .z{position:relative;z-index:1;}
@@ -74,7 +76,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .l-err{color:#F07080;font-size:12px;margin-top:10px;display:none;letter-spacing:1px;}
 
 /* DASHBOARD */
-#dash{display:none;flex:1;flex-direction:column;}
+#dash{display:none;flex-direction:column;min-height:calc(100vh - 140px);}
 
 /* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
@@ -93,8 +95,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .sl{font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
 
 /* LAYOUT */
-.dash-body{display:flex;flex:1;min-height:0;}
-.sidebar{width:210px;border-right:1px solid var(--border);padding:22px 0;flex-shrink:0;background:rgba(8,12,20,.5);overflow-y:auto;}
+.dash-body{display:flex;min-height:calc(100vh - 220px);}
+.sidebar{width:210px;border-right:1px solid var(--border);padding:22px 0;flex-shrink:0;background:rgba(8,12,20,.5);position:sticky;top:68px;align-self:flex-start;max-height:calc(100vh - 140px);overflow-y:auto;}
 [data-theme="light"] .sidebar{background:rgba(220,210,185,.3);}
 .slbl{font-size:9px;color:var(--cream-s);letter-spacing:3px;text-transform:uppercase;padding:0 18px;margin-bottom:6px;}
 .sbtn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 18px;border:none;background:transparent;color:var(--cream-s);font-family:'Outfit',sans-serif;font-size:13px;font-weight:400;cursor:pointer;transition:all .2s;text-align:left;border-left:2.5px solid transparent;}
@@ -102,7 +104,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .sbtn.on{color:var(--gold);border-left-color:var(--gold);background:rgba(200,169,110,.08);}
 .ssep{margin:16px 0;border-top:1px solid var(--border);}
 .sico{font-size:15px;width:20px;text-align:center;}
-.main{flex:1;overflow-y:auto;padding:30px 36px 70px;min-height:0;scroll-behavior:smooth;}
+.main{flex:1;padding:30px 36px 70px;overflow-y:visible;min-height:0;}
 
 /* SECTION */
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
@@ -939,33 +941,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 
 <div class="toast" id="toast"></div>
 
-<!-- Bridge: expone funciones del module al scope global -->
-<script>
-// Estas funciones son llamadas por onclick en el HTML
-// Delegan al module cuando ya esté listo
-const _bridge=new Proxy({},{get:(_,fn)=>(...args)=>{
-  if(window['__m_'+fn]) return window['__m_'+fn](...args);
-  console.warn('Función aún no cargada:',fn);
-}});
-['login','salir','toggleTheme','tab','filtro','marcar','quitar','eliminar','reiniciar',
- 'abrirAdd','cerrarAdd','agregarMiembro','exportar','verStats','abrirAddEvento','cerrarAddEvento',
- 'guardarEvento','eliminarEvento','abrirAddFamilia','cerrarAddFamilia','guardarFamilia',
- 'eliminarFamilia','syncColor','guardarColores','resetColores','abrirAddDiezmo','cerrarAddDiezmo',
- 'guardarDiezmo','marcarRespondida','abrirAddAnuncio','cerrarAddAnuncio','guardarAnuncio',
- 'toggleAnuncio','abrirAddFoto','cerrarAddFoto','guardarFoto','abrirAddVotacion','cerrarAddVotacion',
- 'guardarVotacion','abrirAddMision','cerrarAddMision','guardarMision','abrirAddActa','cerrarAddActa',
- 'guardarActa','eliminarDoc','guardarMensaje'].forEach(fn=>{
-  window[fn]=(...args)=>window['__m_'+fn]?window['__m_'+fn](...args):console.warn('Cargando...',fn);
-});
-</script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+<script>
+// Firebase cargado via CDN compat (ver scripts de cabecera)
 
 const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
-const db=getFirestore(initializeApp(firebaseConfig));
+firebase.firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -1025,7 +1008,7 @@ window.salir=function(){document.getElementById('login').style.display='flex';do
 
 // ── CARGAR ────────────────────────────────────────────────────
 async function cargar(){
-  const ms=await getDocs(collection(db,'miembros'));
+  const ms=(await db.collection('miembros').get()).docs;
   miembros=ms.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.activo!==false).sort((a,b)=>a.nombre.localeCompare(b.nombre));
 
   // Cumpleaños de hoy
@@ -1035,22 +1018,26 @@ async function cargar(){
     document.getElementById('bday-alert').classList.add('show');
   }
 
-  onSnapshot(collection(db,`asistencia/${hoy()}/registros`),snap=>{
+  db.collection(`asistencia/${hoy()}/registros`).onSnapshot(snap=>{
     asistidos=new Set(snap.docs.map(d=>d.id));
     asistMap={};snap.docs.forEach(d=>asistMap[d.id]=d.data().hora_llegada);
     stats();renderHoy(filtroActual);
   });
 
   // Historial
-  const hSnap=await getDocs(collection(db,'asistencia'));
+  const hSnap=(await db.collection('asistencia').get()).docs;
   const dates=[];
   for(const dd of hSnap.docs){
-    const regs=await getDocs(collection(db,`asistencia/${dd.id}/registros`));
+    const regs=(await db.collection(`asistencia/${dd.id}/registros`).get()).docs;
     if(regs.size>0)dates.push({fecha:dd.id,count:regs.size,registros:regs.docs.map(r=>({id:r.id,...r.data()}))});
   }
   historial=dates.sort((a,b)=>b.fecha.localeCompare(a.fecha));
 
   renderHermanos();renderHistorial();renderCumples();dayLabel();
+  // Inicializar estado de tabs al cargar el dashboard
+  document.querySelectorAll('.tab').forEach(t=>{t.style.display='none';});
+  const activeTab=document.querySelector('.tab.on');
+  if(activeTab) activeTab.style.display='block';
 }
 
 function dayLabel(){const now=new Date();const el=document.getElementById('dlbl');if(el)el.textContent=`${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;}
@@ -1212,21 +1199,26 @@ function renderHistorial(){
 }
 
 // ── TABS ──────────────────────────────────────────────────────
-// ── TAB NAVIGATION (versión unificada) ──────────────────────
+// ── TAB NAVIGATION (versión definitiva) ─────────────────────
 window.tab=function(id,el){
-  // 1. Ocultar todos los tabs
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  // 1. Ocultar TODOS los tabs con display:none explícito
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.remove('on');
+    t.style.display='none';
+  });
   // 2. Desactivar todos los botones del sidebar
   document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));
-  // 3. Mostrar el tab seleccionado
+  // 3. Mostrar SOLO el tab seleccionado
   const tabEl=document.getElementById('tab-'+id);
-  if(tabEl) tabEl.classList.add('on');
-  // 4. Activar el botón del sidebar
+  if(tabEl){
+    tabEl.classList.add('on');
+    tabEl.style.display='block';
+  }
+  // 4. Activar el botón correcto en el sidebar
   if(el) el.classList.add('on');
-  // 5. Scroll al inicio del main
-  const mainEl=document.querySelector('.main');
-  if(mainEl) mainEl.scrollTo({top:0,behavior:'smooth'});
-  // 6. Cargar datos según el tab
+  // 5. Scroll al tope de la página
+  window.scrollTo({top:0,behavior:'smooth'});
+  // 6. Cargar datos del tab
   const loaders={
     graficas:   ()=>renderGraficas(),
     ranking:    ()=>renderRanking(),
@@ -1242,14 +1234,19 @@ window.tab=function(id,el){
     misiones:   ()=>renderMisiones(),
     actas:      ()=>renderActas(),
   };
-  if(loaders[id]) setTimeout(loaders[id], 80);
+  if(loaders[id]) setTimeout(loaders[id],80);
 };
 
+// Inicializar todos los tabs ocultos menos el primero
+document.querySelectorAll('.tab').forEach(t=>{t.style.display='none';});
+const firstTab=document.getElementById('tab-hoy');
+if(firstTab){firstTab.style.display='block';firstTab.classList.add('on');}
+
 // ── ACCIONES ─────────────────────────────────────────────────
-window.marcar=async function(id){try{const now=new Date();const h=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;await setDoc(doc(db,`asistencia/${hoy()}/registros`,id),{miembro_id:id,hora_llegada:h,timestamp:serverTimestamp()});toast('✓ Asistencia marcada');}catch(e){toast(e.message,'err');}};
-window.quitar=async function(id){try{await deleteDoc(doc(db,`asistencia/${hoy()}/registros`,id));toast('Asistencia removida');}catch(e){toast(e.message,'err');}};
-window.eliminar=async function(id,nombre){if(!confirm(`¿Eliminar a ${nombre}?`))return;try{await updateDoc(doc(db,'miembros',id),{activo:false});miembros=miembros.filter(m=>m.id!==id);renderHermanos();stats();renderHoy(filtroActual);toast(`${nombre} eliminado`);}catch(e){toast(e.message,'err');}};
-window.reiniciar=async function(){if(!confirm('¿Reiniciar asistencia de hoy?'))return;try{const snap=await getDocs(collection(db,`asistencia/${hoy()}/registros`));await Promise.all(snap.docs.map(d=>deleteDoc(d.ref)));toast('Asistencia reiniciada');}catch(e){toast(e.message,'err');}};
+window.marcar=async function(id){try{const now=new Date();const h=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;await db.collection(`asistencia/${hoy()}/registros`).doc(id).set({miembro_id:id,hora_llegada:h,timestamp:firebase.firestore.FieldValue.serverTimestamp()});toast('✓ Asistencia marcada');}catch(e){toast(e.message,'err');}};
+window.quitar=async function(id){try{await db.collection(`asistencia/${hoy()}/registros`).doc(id).delete();toast('Asistencia removida');}catch(e){toast(e.message,'err');}};
+window.eliminar=async function(id,nombre){if(!confirm(`¿Eliminar a ${nombre}?`))return;try{await db.collection('miembros').doc(id).update({activo:false});miembros=miembros.filter(m=>m.id!==id);renderHermanos();stats();renderHoy(filtroActual);toast(`${nombre} eliminado`);}catch(e){toast(e.message,'err');}};
+window.reiniciar=async function(){if(!confirm('¿Reiniciar asistencia de hoy?'))return;try{const snap=(await db.collection(`asistencia/${hoy()}/registros`).get()).docs;await Promise.all(snap.docs.map(d=>d.ref.delete()));toast('Asistencia reiniciada');}catch(e){toast(e.message,'err');}};
 
 // ── AGREGAR ───────────────────────────────────────────────────
 window.abrirAdd=function(){['fn','fc','ff'].forEach(id=>document.getElementById(id).value='');document.getElementById('frol').value='Miembro';document.getElementById('fcumple').value='';document.getElementById('ov-add').classList.add('open');setTimeout(()=>document.getElementById('fn').focus(),200);};
@@ -1265,10 +1262,10 @@ window.agregarMiembro=async function(){
   if(!codigo){const max=miembros.reduce((mx,m)=>Math.max(mx,parseInt(m.codigo)||0),0);codigo=String(max+1).padStart(4,'0');}
   if(miembros.find(m=>m.codigo===codigo)){toast('Ese ID ya existe','err');return;}
   try{
-    const ref=doc(collection(db,'miembros'));
-    const data={nombre,codigo,rol,foto_url:foto_url||'',activo:true,dias_asistidos:0,creado_en:serverTimestamp()};
+    const ref=db.collection('miembros').doc();
+    const data={nombre,codigo,rol,foto_url:foto_url||'',activo:true,dias_asistidos:0,creado_en:firebase.firestore.FieldValue.serverTimestamp()};
     if(cumpleanos)data.cumpleanos=cumpleanos;
-    await setDoc(ref,data);
+    await ref.set(data);
     miembros.push({id:ref.id,...data});
     cerrarAdd();renderHermanos();stats();renderHoy(filtroActual);renderCumples();
     toast(`✓ ${nombre} agregado — ID: ${codigo}`);
@@ -1287,13 +1284,7 @@ window.exportar=function(){
 document.getElementById('ov-add').addEventListener('click',function(e){if(e.target===this)cerrarAdd();});
 document.getElementById('ov-evento').addEventListener('click',function(e){if(e.target===this)cerrarAddEvento();});
 
-// Registrar todas las funciones como __m_X para el bridge
-// Esto permite que los onclick del HTML accedan a funciones del module
-Object.keys(window).forEach(fn => {
-  if(typeof window[fn] === 'function' && !fn.startsWith('__')) {
-    window['__m_'+fn] = window[fn];
-  }
-});
+
 // También registrar explícitamente las más importantes
 ['login','salir','toggleTheme','tab','filtro','marcar','quitar','eliminar','reiniciar',
  'abrirAdd','cerrarAdd','agregarMiembro','exportar','verStats','abrirAddEvento','cerrarAddEvento',
@@ -1351,7 +1342,7 @@ async function renderCalendario(){
   const cont=document.getElementById('calendario-cont');
   cont.innerHTML='<div style="color:var(--cream-s);text-align:center;padding:30px;">Cargando...</div>';
   try{
-    const snap=await getDocs(collection(db,'eventos'));
+    const snap=(await db.collection('eventos').get()).docs;
     const eventos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.fecha.localeCompare(b.fecha));
     const hoyStr=hoy();
     const futuros=eventos.filter(e=>e.fecha>=hoyStr);
@@ -1398,14 +1389,14 @@ window.guardarEvento=async function(){
   const fecha=document.getElementById('ev-fecha').value;
   if(!nombre||!fecha){toast('Nombre y fecha son obligatorios','err');return;}
   try{
-    await setDoc(doc(collection(db,'eventos')),{nombre,fecha,hora:document.getElementById('ev-hora').value,tipo:document.getElementById('ev-tipo').value,descripcion:document.getElementById('ev-desc').value.trim(),creado_en:serverTimestamp()});
+    await db.collection('eventos').doc().set({nombre,fecha,hora:document.getElementById('ev-hora').value,tipo:document.getElementById('ev-tipo').value,descripcion:document.getElementById('ev-desc').value.trim(),creado_en:firebase.firestore.FieldValue.serverTimestamp()});
     cerrarAddEvento();renderCalendario();toast('✓ Evento guardado');
   }catch(e){toast(e.message,'err');}
 };
 
 window.eliminarEvento=async function(id){
   if(!confirm('¿Eliminar este evento?'))return;
-  try{await deleteDoc(doc(db,'eventos',id));renderCalendario();toast('Evento eliminado');}
+  try{await db.collection('eventos').doc(id).delete();renderCalendario();toast('Evento eliminado');}
   catch(e){toast(e.message,'err');}
 };
 
@@ -1458,7 +1449,7 @@ window.verStats=function(id){
 // ── CONFIG: MENSAJE PERSONALIZADO ────────────────────────────
 async function cargarConfig(){
   try{
-    const snap=await getDocs(collection(db,'config'));
+    const snap=(await db.collection('config').get()).docs;
     snap.docs.forEach(d=>{
       if(d.id==='bienvenida'&&d.data().mensaje){
         const el=document.getElementById('msg-bienvenida');
@@ -1471,7 +1462,7 @@ async function cargarConfig(){
 window.guardarMensaje=async function(){
   const msg=document.getElementById('msg-bienvenida').value.trim();
   try{
-    await setDoc(doc(db,'config','bienvenida'),{mensaje:msg,actualizado:serverTimestamp()});
+    await db.collection('config').doc('bienvenida').set({mensaje:msg,actualizado:firebase.firestore.FieldValue.serverTimestamp()});
     toast('✓ Mensaje guardado');
   }catch(e){toast(e.message,'err');}
 };
@@ -1481,7 +1472,7 @@ window.guardarMensaje=async function(){
 // ── DIEZMOS ──────────────────────────────────────────────────
 async function renderDiezmos(){
   try{
-    const snap=await getDocs(collection(db,'diezmos'));
+    const snap=(await db.collection('diezmos').get()).docs;
     const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     // Stats
     const total=todos.reduce((s,d)=>s+(parseFloat(d.monto)||0),0);
@@ -1519,13 +1510,13 @@ window.guardarDiezmo=async function(){
   const monto=document.getElementById('d-monto').value;
   if(!monto){toast('El monto es obligatorio','err');return;}
   try{
-    await setDoc(doc(collection(db,'diezmos')),{
+    await db.collection('diezmos').doc().set({
       miembro_id:document.getElementById('d-miembro').value,
       tipo:document.getElementById('d-tipo').value,
       monto:parseFloat(monto),
       fecha:document.getElementById('d-fecha').value,
       notas:document.getElementById('d-notas').value.trim(),
-      registrado_en:serverTimestamp()
+      registrado_en:firebase.firestore.FieldValue.serverTimestamp()
     });
     cerrarAddDiezmo();renderDiezmos();toast('✓ Diezmo registrado');
   }catch(e){toast(e.message,'err');}
@@ -1534,7 +1525,7 @@ window.guardarDiezmo=async function(){
 // ── ORACIONES ─────────────────────────────────────────────────
 async function renderOraciones(){
   try{
-    const snap=await getDocs(collection(db,'oraciones'));
+    const snap=(await db.collection('oraciones').get()).docs;
     const todas=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     const cont=document.getElementById('oraciones-cont');
     if(!todas.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">No hay peticiones de oración aún</div>`;return;}
@@ -1552,14 +1543,14 @@ async function renderOraciones(){
   }catch(e){}
 }
 window.marcarRespondida=async function(id){
-  try{await updateDoc(doc(db,'oraciones',id),{respondida:true});renderOraciones();toast('✓ Marcada como respondida');}
+  try{await db.collection('oraciones').doc(id).update({respondida:true});renderOraciones();toast('✓ Marcada como respondida');}
   catch(e){toast(e.message,'err');}
 };
 
 // ── ANUNCIOS ──────────────────────────────────────────────────
 async function renderAnuncios(){
   try{
-    const snap=await getDocs(collection(db,'anuncios'));
+    const snap=(await db.collection('anuncios').get()).docs;
     const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.creado_at||'').localeCompare(a.creado_at||''));
     const cont=document.getElementById('anuncios-cont');
     if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin anuncios. ¡Crea el primero!</div>`;return;}
@@ -1578,17 +1569,17 @@ window.cerrarAddAnuncio=function(){document.getElementById('ov-anuncio').classLi
 window.guardarAnuncio=async function(){
   const txt=document.getElementById('an-texto').value.trim();
   if(!txt){toast('El texto es obligatorio','err');return;}
-  try{await setDoc(doc(collection(db,'anuncios')),{texto:txt,icono:document.getElementById('an-icono').value||'📢',activo:true,creado_at:hoy()});cerrarAddAnuncio();renderAnuncios();toast('✓ Anuncio publicado');}
+  try{await db.collection('anuncios').doc().set({texto:txt,icono:document.getElementById('an-icono').value||'📢',activo:true,creado_at:hoy()});cerrarAddAnuncio();renderAnuncios();toast('✓ Anuncio publicado');}
   catch(e){toast(e.message,'err');}
 };
 window.toggleAnuncio=async function(id,activo){
-  try{await updateDoc(doc(db,'anuncios',id),{activo});renderAnuncios();}catch(e){toast(e.message,'err');}
+  try{await db.collection('anuncios').doc(id).update({activo});renderAnuncios();}catch(e){toast(e.message,'err');}
 };
 
 // ── GALERÍA ───────────────────────────────────────────────────
 async function renderGaleria(){
   try{
-    const snap=await getDocs(collection(db,'galeria'));
+    const snap=(await db.collection('galeria').get()).docs;
     const fotos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     const cont=document.getElementById('galeria-cont');
     if(!fotos.length){cont.style.display='block';cont.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin fotos aún. ¡Agrega la primera!</div>`;return;}
@@ -1605,14 +1596,14 @@ window.cerrarAddFoto=function(){document.getElementById('ov-foto').classList.rem
 window.guardarFoto=async function(){
   const url=document.getElementById('f-url').value.trim();
   if(!url){toast('La URL es obligatoria','err');return;}
-  try{await setDoc(doc(collection(db,'galeria')),{url,descripcion:document.getElementById('f-desc').value.trim(),fecha:document.getElementById('f-fecha').value,categoria:document.getElementById('f-cat').value,subida:serverTimestamp()});cerrarAddFoto();renderGaleria();toast('✓ Foto agregada');}
+  try{await db.collection('galeria').doc().set({url,descripcion:document.getElementById('f-desc').value.trim(),fecha:document.getElementById('f-fecha').value,categoria:document.getElementById('f-cat').value,subida:firebase.firestore.FieldValue.serverTimestamp()});cerrarAddFoto();renderGaleria();toast('✓ Foto agregada');}
   catch(e){toast(e.message,'err');}
 };
 
 // ── VOTACIONES ────────────────────────────────────────────────
 async function renderVotaciones(){
   try{
-    const snap=await getDocs(collection(db,'votaciones'));
+    const snap=(await db.collection('votaciones').get()).docs;
     const todos=snap.docs.map(d=>({id:d.id,...d.data()}));
     const cont=document.getElementById('votaciones-cont');
     if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin votaciones. ¡Crea la primera!</div>`;return;}
@@ -1649,14 +1640,14 @@ window.guardarVotacion=async function(){
   const optsRaw=document.getElementById('v-opciones').value.trim().split('\n').filter(l=>l.trim());
   if(!pregunta||optsRaw.length<2){toast('Necesitas pregunta y al menos 2 opciones','err');return;}
   const opciones=optsRaw.slice(0,5).map(t=>({texto:t.trim(),votos:0}));
-  try{await setDoc(doc(collection(db,'votaciones')),{pregunta,opciones,creado:serverTimestamp(),activa:true});cerrarAddVotacion();renderVotaciones();toast('✓ Votación creada');}
+  try{await db.collection('votaciones').doc().set({pregunta,opciones,creado:firebase.firestore.FieldValue.serverTimestamp(),activa:true});cerrarAddVotacion();renderVotaciones();toast('✓ Votación creada');}
   catch(e){toast(e.message,'err');}
 };
 
 // ── MISIONES ──────────────────────────────────────────────────
 async function renderMisiones(){
   try{
-    const snap=await getDocs(collection(db,'misiones'));
+    const snap=(await db.collection('misiones').get()).docs;
     const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.salida?.localeCompare(a.salida)||0);
     const cont=document.getElementById('misiones-cont');
     if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin viajes ministeriales registrados</div>`;return;}
@@ -1683,14 +1674,14 @@ window.cerrarAddMision=function(){document.getElementById('ov-mision').classList
 window.guardarMision=async function(){
   const nombre=document.getElementById('ms-nombre').value.trim();
   if(!nombre){toast('El nombre es obligatorio','err');return;}
-  try{await setDoc(doc(collection(db,'misiones')),{nombre,salida:document.getElementById('ms-salida').value,regreso:document.getElementById('ms-regreso').value,equipo:document.getElementById('ms-equipo').value.trim(),descripcion:document.getElementById('ms-desc').value.trim(),creado:serverTimestamp()});cerrarAddMision();renderMisiones();toast('✓ Misión registrada');}
+  try{await db.collection('misiones').doc().set({nombre,salida:document.getElementById('ms-salida').value,regreso:document.getElementById('ms-regreso').value,equipo:document.getElementById('ms-equipo').value.trim(),descripcion:document.getElementById('ms-desc').value.trim(),creado:firebase.firestore.FieldValue.serverTimestamp()});cerrarAddMision();renderMisiones();toast('✓ Misión registrada');}
   catch(e){toast(e.message,'err');}
 };
 
 // ── ACTAS ─────────────────────────────────────────────────────
 async function renderActas(){
   try{
-    const snap=await getDocs(collection(db,'actas'));
+    const snap=(await db.collection('actas').get()).docs;
     const todas=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     const cont=document.getElementById('actas-cont');
     if(!todas.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin actas registradas</div>`;return;}
@@ -1715,14 +1706,14 @@ window.guardarActa=async function(){
   const titulo=document.getElementById('ac-titulo').value.trim();
   const contenido=document.getElementById('ac-contenido').value.trim();
   if(!titulo||!contenido){toast('Título y contenido son obligatorios','err');return;}
-  try{await setDoc(doc(collection(db,'actas')),{titulo,contenido,tipo:document.getElementById('ac-tipo').value,fecha:document.getElementById('ac-fecha').value,creado:serverTimestamp()});cerrarAddActa();renderActas();toast('✓ Acta guardada');}
+  try{await db.collection('actas').doc().set({titulo,contenido,tipo:document.getElementById('ac-tipo').value,fecha:document.getElementById('ac-fecha').value,creado:firebase.firestore.FieldValue.serverTimestamp()});cerrarAddActa();renderActas();toast('✓ Acta guardada');}
   catch(e){toast(e.message,'err');}
 };
 
 // ── HELPER ELIMINAR ───────────────────────────────────────────
 window.eliminarDoc=async function(coleccion,id,callback){
   if(!confirm('¿Eliminar este registro?'))return;
-  try{await deleteDoc(doc(db,coleccion,id));if(callback)callback();toast('Eliminado');}
+  try{await db.collection(coleccion).doc(id).delete();if(callback)callback();toast('Eliminado');}
   catch(e){toast(e.message,'err');}
 };
 
@@ -1742,7 +1733,7 @@ async function renderFamilias(){
   const cont=document.getElementById('familias-cont');
   cont.innerHTML='<div style="color:var(--cream-s);text-align:center;padding:30px;">Cargando...</div>';
   try{
-    const snap=await getDocs(collection(db,'familias'));
+    const snap=(await db.collection('familias').get()).docs;
     const familias=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.nombre.localeCompare(b.nombre));
     if(!familias.length){
       cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;">No hay familias registradas.<br>¡Crea la primera!</div>`;
@@ -1793,14 +1784,14 @@ window.guardarFamilia=async function(){
   const checks=document.getElementById('fam-miembros-list').querySelectorAll('input[type=checkbox]:checked');
   const miembrosIds=Array.from(checks).map(c=>c.value);
   try{
-    await setDoc(doc(collection(db,'familias')),{nombre,miembros:miembrosIds,creado_en:serverTimestamp()});
+    await db.collection('familias').doc().set({nombre,miembros:miembrosIds,creado_en:firebase.firestore.FieldValue.serverTimestamp()});
     cerrarAddFamilia();renderFamilias();toast(`✓ Familia ${nombre} guardada`);
   }catch(e){toast(e.message,'err');}
 };
 
 window.eliminarFamilia=async function(id,nombre){
   if(!confirm(`¿Eliminar la familia ${nombre}?`))return;
-  try{await deleteDoc(doc(db,'familias',id));renderFamilias();toast('Familia eliminada');}
+  try{await db.collection('familias').doc(id).delete();renderFamilias();toast('Familia eliminada');}
   catch(e){toast(e.message,'err');}
 };
 
@@ -1859,7 +1850,7 @@ window.guardarColores=async function(){
   localStorage.setItem('lviv-colors',JSON.stringify(cols));
   // Guardar en Firebase para que el kiosco también los aplique
   try{
-    await setDoc(doc(db,'config','colores'),{...cols,actualizado:serverTimestamp()});
+    await db.collection('config').doc('colores').set({...cols,actualizado:firebase.firestore.FieldValue.serverTimestamp()});
     toast('🎨 Colores guardados y aplicados');
   }catch(e){toast('Colores guardados localmente','ok');}
   Object.entries(cols).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
