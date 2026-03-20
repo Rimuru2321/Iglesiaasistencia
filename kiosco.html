@@ -301,6 +301,12 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .id-err{color:#F07080;font-size:12px;letter-spacing:1px;margin-top:10px;display:none;}
 
 /* Toast */
+.suggestion-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(200,169,110,.04);cursor:pointer;transition:all .2s;}
+.suggestion-row:hover{border-color:var(--gold);background:rgba(200,169,110,.08);}
+.suggestion-av{width:44px;height:44px;border-radius:50%;background:var(--ink-soft);border:2px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);}
+.suggestion-av img{width:100%;height:100%;object-fit:cover;}
+.suggestion-info strong{display:block;color:var(--cream);font-size:14px;}
+.suggestion-info span{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
 .toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(110px);padding:13px 34px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;z-index:999;pointer-events:none;white-space:nowrap;transition:transform .42s cubic-bezier(.34,1.56,.64,1);background:var(--emerald);color:#fff;box-shadow:0 10px 44px rgba(26,102,71,.55);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--crimson);box-shadow:0 10px 44px rgba(139,26,42,.55);}
@@ -418,6 +424,7 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
       <input id="buscar" type="text" placeholder="Escribe tu nombre aquí..." autocomplete="off" oninput="filtrar()">
     </div>
     <button class="btn-id" onclick="abrirId()">🔢 ID</button>
+    <button class="btn-id" style="background:linear-gradient(135deg,#4A1A6A,#7B2D9E);" onclick="abrirSelfie()">📷 Selfie</button>
   </div>
 </div>
 
@@ -477,6 +484,25 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
     </div>
     <div class="id-err" id="ierr">ID no encontrado.</div>
     <button class="btn-can" style="width:100%;margin-top:16px;position:relative;z-index:1;" onclick="cerrarId()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL SELFIE -->
+<div class="overlay" id="ov-selfie">
+  <div class="modal" style="max-width:420px;">
+    <button class="mx" onclick="cerrarSelfie()">✕</button>
+    <div class="m-nombre" style="margin-bottom:4px;">📷 Búsqueda por Selfie</div>
+    <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;position:relative;z-index:1;margin-bottom:18px;">Tómate una selfie para encontrarte</p>
+    <video id="selfie-video" autoplay playsinline style="width:100%;border-radius:14px;border:1.5px solid var(--border-hi);display:block;position:relative;z-index:1;background:#000;max-height:260px;object-fit:cover;"></video>
+    <canvas id="selfie-canvas" style="display:none;"></canvas>
+    <div id="selfie-results" style="margin-top:16px;display:none;position:relative;z-index:1;">
+      <p style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">¿Eres tú?</p>
+      <div id="selfie-suggestions" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+    <div class="m-btns" style="margin-top:18px;">
+      <button class="btn-can" onclick="cerrarSelfie()">Cancelar</button>
+      <button class="btn-conf" id="btn-snap" onclick="tomarFoto()">📸 Tomar Foto</button>
+    </div>
   </div>
 </div>
 
@@ -750,15 +776,139 @@ window.buscarId=function(){
   if(m){cerrarId();abrirConf(m.id);}else{document.getElementById('ierr').style.display='block';}
 };
 
-['ov1','ov2','ov-upload'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){
+['ov1','ov2','ov-upload','ov-selfie'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('click',function(e){
     if(e.target===this){
       this.classList.remove('open');
       if(id==='ov1')selId=null;
-      if(id==='ov-upload'){uploadId=null;}
+      if(id==='ov-upload')uploadId=null;
+      if(id==='ov-selfie')detenerCamara();
     }
   });
 });
+
+// ── SONIDO BIENVENIDA ─────────────────────────────────────────
+function sonidoBienvenida(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const notas=[523.25,659.25,783.99,1046.50]; // C E G C (acorde mayor)
+    notas.forEach((freq,i)=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=freq;
+      osc.type='sine';
+      gain.gain.setValueAtTime(0,ctx.currentTime+i*0.12);
+      gain.gain.linearRampToValueAtTime(0.18,ctx.currentTime+i*0.12+0.05);
+      gain.gain.linearRampToValueAtTime(0,ctx.currentTime+i*0.12+0.35);
+      osc.start(ctx.currentTime+i*0.12);
+      osc.stop(ctx.currentTime+i*0.12+0.4);
+    });
+  }catch(e){}
+}
+
+// ── MENSAJE PERSONALIZADO ─────────────────────────────────────
+async function cargarMensajeAdmin(){
+  try{
+    const snap=await getDocs(collection(db,'config'));
+    snap.docs.forEach(d=>{
+      if(d.id==='bienvenida'&&d.data().mensaje){
+        window._mensajeBienvenida=d.data().mensaje;
+      }
+    });
+  }catch(e){}
+}
+cargarMensajeAdmin();
+
+// Override mostrarBienvenida para incluir sonido y mensaje personalizado
+const _origBienvenida=mostrarBienvenida;
+window.mostrarBienvenida=function(m){
+  sonidoBienvenida();
+  _origBienvenida(m);
+  if(window._mensajeBienvenida){
+    setTimeout(()=>{
+      const msgEl=document.getElementById('w-msg');
+      if(msgEl) msgEl.textContent=window._mensajeBienvenida;
+    },100);
+  }
+};
+
+// ── SELFIE / BÚSQUEDA VISUAL ──────────────────────────────────
+let stream=null;
+
+window.abrirSelfie=async function(){
+  document.getElementById('ov-selfie').classList.add('open');
+  document.getElementById('selfie-results').style.display='none';
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    document.getElementById('selfie-video').srcObject=stream;
+  }catch(e){
+    toast('No se pudo acceder a la cámara','err');
+    cerrarSelfie();
+  }
+};
+
+window.cerrarSelfie=function(){
+  document.getElementById('ov-selfie').classList.remove('open');
+  detenerCamara();
+};
+
+function detenerCamara(){
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+  const v=document.getElementById('selfie-video');
+  if(v)v.srcObject=null;
+}
+
+window.tomarFoto=function(){
+  const video=document.getElementById('selfie-video');
+  const canvas=document.getElementById('selfie-canvas');
+  canvas.width=video.videoWidth||320;
+  canvas.height=video.videoHeight||240;
+  canvas.getContext('2d').drawImage(video,0,0);
+
+  // Buscar hermanos con foto y mostrar los 3 primeros como sugerencias
+  const conFoto=miembros.filter(m=>m.foto_url);
+  const sinFoto=miembros.filter(m=>!m.foto_url);
+
+  // Mostrar sugerencias: primero con foto (más probable), luego sin foto
+  const sugerencias=[...conFoto,...sinFoto].slice(0,4);
+
+  const sugEl=document.getElementById('selfie-suggestions');
+  sugEl.innerHTML=sugerencias.map(m=>{
+    const i2=ini(m.nombre);
+    const fotoHtml=m.foto_url
+      ?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.parentElement.innerHTML='${i2}'">`
+      :i2;
+    return`<div class="suggestion-row" onclick="seleccionarSugerencia('${m.id}')">
+      <div class="suggestion-av">${fotoHtml}</div>
+      <div class="suggestion-info">
+        <strong>${m.nombre}</strong>
+        <span>ID: ${m.codigo}</span>
+      </div>
+      <span style="margin-left:auto;color:var(--gold);font-size:18px;">→</span>
+    </div>`;
+  }).join('');
+
+  if(!sugerencias.length){
+    sugEl.innerHTML='<p style="color:var(--cream-s);text-align:center;padding:20px;">No hay hermanos registrados</p>';
+  }
+
+  document.getElementById('selfie-results').style.display='block';
+  document.getElementById('selfie-video').style.display='none';
+  document.getElementById('btn-snap').textContent='🔄 Otra vez';
+  document.getElementById('btn-snap').onclick=function(){
+    document.getElementById('selfie-video').style.display='block';
+    document.getElementById('selfie-results').style.display='none';
+    document.getElementById('btn-snap').textContent='📸 Tomar Foto';
+    document.getElementById('btn-snap').onclick=tomarFoto;
+  };
+};
+
+window.seleccionarSugerencia=function(id){
+  cerrarSelfie();
+  abrirConf(id);
+};
 </script>
 </body>
 </html>
