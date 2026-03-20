@@ -192,6 +192,12 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .rbadge.secretaria  {background:rgba(13,71,161,.25);   color:#90CAF9;border:1px solid rgba(13,71,161,.5);}
 .rbadge.tesorera    {background:rgba(27,94,32,.25);    color:#A5D6A7;border:1px solid rgba(27,94,32,.5);}
 .rbadge.vocal1,.rbadge.vocal2{background:rgba(49,27,146,.25);color:#B39DDB;border:1px solid rgba(49,27,146,.5);}
+/* Domingo */
+.rbadge.presd,.rbadge.vpd,.rbadge.secd,.rbadge.tesd,.rbadge.vocal1d,.rbadge.vocal2d{background:rgba(183,28,28,.2);color:#EF9A9A;border:1px solid rgba(183,28,28,.4);}
+/* Martes */
+.rbadge.presm,.rbadge.vpm,.rbadge.secm,.rbadge.tesm,.rbadge.vocal1m,.rbadge.vocal2m{background:rgba(0,105,92,.2);color:#4DB6AC;border:1px solid rgba(0,105,92,.4);}
+/* Jóvenes Sábado */
+.rbadge.presj,.rbadge.vpj,.rbadge.secj,.rbadge.tesj,.rbadge.vocal1j,.rbadge.vocal2j{background:rgba(230,81,0,.2);color:#FFAB40;border:1px solid rgba(230,81,0,.4);}
 
 /* CARD GRANDE */
 .card{position:relative;overflow:hidden;background:var(--ink-card);border:1px solid var(--border);border-radius:22px;cursor:pointer;backdrop-filter:blur(16px);transition:transform .3s cubic-bezier(.34,1.2,.64,1),border-color .3s,box-shadow .3s;animation:fadeUp .45s both;user-select:none;}
@@ -385,8 +391,9 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
   <button class="role-chip diacono"   onclick="setRole('Diácono',this)">🙏 Diácono</button>
   <button class="role-chip miembro"   onclick="setRole('Miembro',this)">👤 Miembro</button>
   <button class="role-chip visitante" onclick="setRole('Visitante',this)">🌟 Visitante</button>
-  <button class="role-chip ljovenes"  onclick="setRole('Líder Jóvenes',this)">🎯 Líd. Jóvenes</button>
-  <button class="role-chip lmartes"   onclick="setRole('Líder Martes',this)">📖 Líd. Martes</button>
+  <button class="role-chip" style="border-color:rgba(183,28,28,.4);" onclick="setRoleGroup('domingo',this)">🕊️ Dir. Domingo</button>
+  <button class="role-chip" style="border-color:rgba(0,105,92,.4);"   onclick="setRoleGroup('martes',this)">📖 Dir. Martes</button>
+  <button class="role-chip" style="border-color:rgba(230,81,0,.4);"   onclick="setRoleGroup('jovenes',this)">🎯 Dir. Jóvenes</button>
 </div>
 
 <!-- OFFLINE -->
@@ -489,8 +496,8 @@ const CLOUDINARY_PRESET = 'TU_UPLOAD_PRESET'; // ← en Cloudinary: Settings > U
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-const RCLS={Pastor:'pastor',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Líder Jóvenes':'ljovenes','Líder Martes':'lmartes',Presidenta:'presidenta',Vicepresidenta:'vp',Secretaria:'secretaria',Tesorera:'tesorera','1er Vocal':'vocal1','2do Vocal':'vocal2'};
-const RICO={Pastor:'⛪',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Líder Jóvenes':'🎯','Líder Martes':'📖',Presidenta:'👑',Vicepresidenta:'🌸',Secretaria:'📋',Tesorera:'💰','1er Vocal':'🎤','2do Vocal':'🎤'};
+const RCLS={Pastor:'pastor',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Pres. Domingo':'presd','Vice. Domingo':'vpd','Sec. Domingo':'secd','Tes. Domingo':'tesd','1er Vocal Dom.':'vocal1d','2do Vocal Dom.':'vocal2d','Pres. Martes':'presm','Vice. Martes':'vpm','Sec. Martes':'secm','Tes. Martes':'tesm','1er Vocal Mar.':'vocal1m','2do Vocal Mar.':'vocal2m','Pres. Jóvenes':'presj','Vice. Jóvenes':'vpj','Sec. Jóvenes':'secj','Tes. Jóvenes':'tesj','1er Vocal Jóv.':'vocal1j','2do Vocal Jóv.':'vocal2j'};
+const RICO={Pastor:'⛪',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Pres. Domingo':'👑','Vice. Domingo':'🌸','Sec. Domingo':'📋','Tes. Domingo':'💰','1er Vocal Dom.':'🎤','2do Vocal Dom.':'🎤','Pres. Martes':'👑','Vice. Martes':'🌸','Sec. Martes':'📋','Tes. Martes':'💰','1er Vocal Mar.':'🎤','2do Vocal Mar.':'🎤','Pres. Jóvenes':'👑','Vice. Jóvenes':'🌸','Sec. Jóvenes':'📋','Tes. Jóvenes':'💰','1er Vocal Jóv.':'🎤','2do Vocal Jóv.':'🎤'};
 const CCOLORS=['#C8A96E','#E4CF96','#F07080','#5DC99A','#7EB8FF','#FFE066','#FF8FA3','#fff'];
 
 let miembros=[],asistidos=new Set(),selId=null,uploadId=null,roleFiltro='all',selectedFile=null;
@@ -577,7 +584,7 @@ cargar().catch(()=>{document.getElementById('obar').classList.add('show');docume
 function render(){
   const q=document.getElementById('buscar').value.trim().toLowerCase();
   let lista=miembros;
-  if(roleFiltro!=='all')lista=lista.filter(m=>m.rol===roleFiltro);
+  if(roleFiltro==='__group__')lista=lista.filter(m=>window._groupFilter&&window._groupFilter.includes(m.rol));  else if(roleFiltro!=='all')lista=lista.filter(m=>m.rol===roleFiltro);
   if(q)lista=lista.filter(m=>m.nombre.toLowerCase().includes(q)||m.codigo.includes(q));
   const grid=document.getElementById('grid');
   if(!lista.length){grid.innerHTML='<div class="empty">No se encontró ningún hermano/a</div>';return;}
@@ -606,6 +613,20 @@ function render(){
 }
 window.filtrar=function(){render();};
 window.setRole=function(r,el){roleFiltro=r;document.querySelectorAll('.role-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');render();};
+
+const GRUPO_DOM=['Pres. Domingo','Vice. Domingo','Sec. Domingo','Tes. Domingo','1er Vocal Dom.','2do Vocal Dom.'];
+const GRUPO_MAR=['Pres. Martes','Vice. Martes','Sec. Martes','Tes. Martes','1er Vocal Mar.','2do Vocal Mar.'];
+const GRUPO_JOV=['Pres. Jóvenes','Vice. Jóvenes','Sec. Jóvenes','Tes. Jóvenes','1er Vocal Jóv.','2do Vocal Jóv.'];
+
+window.setRoleGroup=function(grupo,el){
+  document.querySelectorAll('.role-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  const grupos={domingo:GRUPO_DOM,martes:GRUPO_MAR,jovenes:GRUPO_JOV};
+  const lista=grupos[grupo]||[];
+  roleFiltro='__group__';
+  window._groupFilter=lista;
+  render();
+};
 
 // ── MODAL CONFIRMAR ──────────────────────────────────────────
 window.abrirConf=function(id){
