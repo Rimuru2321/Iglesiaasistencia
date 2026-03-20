@@ -1629,8 +1629,7 @@ window.abrirAddVotacion=function(){document.getElementById('v-pregunta').value='
 window.cerrarAddVotacion=function(){document.getElementById('ov-votacion').classList.remove('open');};
 window.guardarVotacion=async function(){
   const pregunta=document.getElementById('v-pregunta').value.trim();
-  const optsRaw=document.getElementById('v-opciones').value.trim().split('
-').filter(l=>l.trim());
+  const optsRaw=document.getElementById('v-opciones').value.trim().split('\n').filter(l=>l.trim());
   if(!pregunta||optsRaw.length<2){toast('Necesitas pregunta y al menos 2 opciones','err');return;}
   const opciones=optsRaw.slice(0,5).map(t=>({texto:t.trim(),votos:0}));
   try{await setDoc(doc(collection(db,'votaciones')),{pregunta,opciones,creado:serverTimestamp(),activa:true});cerrarAddVotacion();renderVotaciones();toast('✓ Votación creada');}
@@ -1689,8 +1688,7 @@ async function renderActas(){
           <button class="rbtn del" onclick="event.stopPropagation();eliminarDoc('actas','${a.id}',renderActas)">🗑</button>
         </div>
       </div>
-      <div class="acta-body">${a.contenido?.replace(/
-/g,'<br>')||''}</div>
+      <div class="acta-body">${a.contenido?.replace(/\n/g,'<br>')||''}</div>
     </div>`).join('');
   }catch(e){}
 }
