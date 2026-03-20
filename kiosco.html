@@ -307,6 +307,40 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .suggestion-av img{width:100%;height:100%;object-fit:cover;}
 .suggestion-info strong{display:block;color:var(--cream);font-size:14px;}
 .suggestion-info span{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
+/* ══ ANUNCIOS ══ */
+.anuncios-bar{
+  background:linear-gradient(90deg,rgba(139,26,42,.2),rgba(139,26,42,.12),rgba(139,26,42,.2));
+  border-bottom:1px solid rgba(139,26,42,.25);
+  padding:10px 0;overflow:hidden;white-space:nowrap;
+}
+.anuncios-track{
+  display:inline-flex;gap:80px;
+  animation:marquee 30s linear infinite;
+}
+.anuncios-track:hover{animation-play-state:paused;}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.anuncio-item{display:inline-flex;align-items:center;gap:10px;font-size:13px;color:#E08090;letter-spacing:1.5px;}
+.anuncio-item .adot{width:6px;height:6px;border-radius:50%;background:#E08090;flex-shrink:0;}
+
+/* Medallas */
+.medal-wrap{position:relative;z-index:1;}
+.medal{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:1px;}
+.medal.bronce {background:rgba(205,127,50,.2); color:#CD7F32;border:1px solid rgba(205,127,50,.4);}
+.medal.plata  {background:rgba(192,192,192,.2); color:#C0C0C0;border:1px solid rgba(192,192,192,.4);}
+.medal.oro    {background:rgba(255,215,0,.2);   color:#FFD700;border:1px solid rgba(255,215,0,.4);}
+.medal.diamante{background:rgba(126,184,255,.2);color:#7EB8FF;border:1px solid rgba(126,184,255,.4);}
+.medal.fuego  {background:rgba(255,87,34,.2);   color:#FF5722;border:1px solid rgba(255,87,34,.4);}
+
+/* ORACIÓN MODAL */
+.prayer-form textarea{
+  width:100%;background:var(--ink);border:1.5px solid var(--border-hi);
+  border-radius:10px;padding:14px 16px;color:var(--cream);
+  font-family:'Outfit',sans-serif;font-size:14px;
+  resize:none;outline:none;transition:border-color .25s;
+  position:relative;z-index:1;
+}
+.prayer-form textarea:focus{border-color:var(--gold);}
+
 /* ══ SALVAPANTALLAS ══ */
 .screensaver{
   position:fixed;inset:0;z-index:800;
@@ -441,6 +475,11 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
   <button class="reminder-close" onclick="document.getElementById('reminder').classList.remove('show')">✕</button>
 </div>
 
+<!-- ANUNCIOS BAR -->
+<div class="anuncios-bar" id="anuncios-bar" style="display:none;">
+  <div class="anuncios-track" id="anuncios-track"></div>
+</div>
+
 <!-- ROLE BAR -->
 <div class="role-bar">
   <button class="role-chip on"        onclick="setRole('all',this)">Todos</button>
@@ -476,6 +515,7 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
     </div>
     <button class="btn-id" onclick="abrirId()">🔢 ID</button>
     <button class="btn-id" style="background:linear-gradient(135deg,#4A1A6A,#7B2D9E);" onclick="abrirSelfie()">📷 Selfie</button>
+    <button class="btn-id" style="background:linear-gradient(135deg,#1A4A3A,#1A6647);" onclick="abrirOracion()">🙏 Oración</button>
   </div>
 </div>
 
@@ -558,6 +598,24 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- MODAL ORACIÓN -->
+<div class="overlay" id="ov-oracion">
+  <div class="modal" style="max-width:420px;">
+    <button class="mx" onclick="cerrarOracion()">✕</button>
+    <div style="font-size:36px;text-align:center;margin-bottom:16px;position:relative;z-index:1;">🙏</div>
+    <div class="m-nombre" style="margin-bottom:4px;">Petición de Oración</div>
+    <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;position:relative;z-index:1;margin-bottom:20px;">Tu petición llegará al altar de la iglesia</p>
+    <div class="prayer-form">
+      <input class="id-field" id="prayer-nombre" type="text" placeholder="Tu nombre (opcional)" style="font-size:15px;letter-spacing:1px;margin-bottom:12px;width:100%;border-radius:10px;padding:13px 16px;background:var(--ink);border:1.5px solid var(--border-hi);color:var(--cream);outline:none;font-family:'Outfit',sans-serif;">
+      <textarea id="prayer-text" rows="4" placeholder="Escribe tu petición de oración aquí... Todo lo que escribas es confidencial y llegará al pastor."></textarea>
+    </div>
+    <div class="m-btns" style="margin-top:18px;">
+      <button class="btn-can" onclick="cerrarOracion()">Cancelar</button>
+      <button class="btn-conf" onclick="enviarOracion()">🙏 Enviar Petición</button>
+    </div>
+  </div>
+</div>
 
 <!-- SALVAPANTALLAS -->
 <div class="screensaver" id="screensaver">
@@ -1022,6 +1080,101 @@ window.mostrarBienvenida = function(m){
   // TTS
   setTimeout(()=>anunciarVoz(m.nombre.split(' ').slice(0,2).join(' '), m.rol), 600);
 };
+
+// ── MEDALLAS POR RACHA ───────────────────────────────────────
+function calcularMedalla(diasAsistidos){
+  if(diasAsistidos>=50) return{ico:'💎',nom:'Diamante',cls:'diamante'};
+  if(diasAsistidos>=25) return{ico:'🔥',nom:'Fuego',cls:'fuego'};
+  if(diasAsistidos>=15) return{ico:'🥇',nom:'Oro',cls:'oro'};
+  if(diasAsistidos>=8)  return{ico:'🥈',nom:'Plata',cls:'plata'};
+  if(diasAsistidos>=3)  return{ico:'🥉',nom:'Bronce',cls:'bronce'};
+  return null;
+}
+
+// Patch render para incluir medallas
+const _origRender=render;
+window.render=function(){
+  _origRender();
+  // Agregar medallas a las cards
+  document.querySelectorAll('.card').forEach(card=>{
+    const id=card.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+    if(!id)return;
+    const m=miembros.find(x=>x.id===id);
+    if(!m)return;
+    const med=calcularMedalla(m.dias_asistidos||0);
+    if(med){
+      const body=card.querySelector('.card-body');
+      if(body&&!body.querySelector('.medal')){
+        const span=document.createElement('span');
+        span.className=`medal ${med.cls}`;
+        span.innerHTML=`${med.ico} ${med.nom}`;
+        body.appendChild(span);
+      }
+    }
+  });
+};
+window.render=window.render; // trigger
+
+// ── ANUNCIOS ──────────────────────────────────────────────────
+async function cargarAnuncios(){
+  try{
+    const snap=await getDocs(collection(db,'anuncios'));
+    const activos=snap.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.activo);
+    if(!activos.length)return;
+    const bar=document.getElementById('anuncios-bar');
+    const track=document.getElementById('anuncios-track');
+    bar.style.display='block';
+    // Duplicar para efecto infinito
+    const html=activos.map(a=>`<span class="anuncio-item"><span class="adot"></span>${a.icono||'📢'} ${a.texto}</span>`).join('');
+    track.innerHTML=html+html; // doble para loop
+  }catch(e){}
+}
+cargarAnuncios();
+
+// ── ORACIÓN ───────────────────────────────────────────────────
+window.abrirOracion=function(){
+  document.getElementById('prayer-nombre').value='';
+  document.getElementById('prayer-text').value='';
+  document.getElementById('ov-oracion').classList.add('open');
+  setTimeout(()=>document.getElementById('prayer-text').focus(),250);
+};
+window.cerrarOracion=function(){document.getElementById('ov-oracion').classList.remove('open');};
+
+window.enviarOracion=async function(){
+  const texto=document.getElementById('prayer-text').value.trim();
+  const nombre=document.getElementById('prayer-nombre').value.trim();
+  if(!texto){toast('Escribe tu petición primero','err');return;}
+  try{
+    await setDoc(doc(collection(db,'oraciones')),{
+      nombre:nombre||'Anónimo',
+      texto,
+      fecha:hoy(),
+      hora:`${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`,
+      respondida:false,
+      timestamp:serverTimestamp()
+    });
+    cerrarOracion();
+    toast('🙏 Tu petición fue enviada');
+    // Animación especial
+    setTimeout(()=>{
+      const ws=document.getElementById('wscreen');
+      const wp=document.getElementById('w-photo');
+      const wn=document.getElementById('w-name');
+      const wm=document.getElementById('w-msg');
+      const wr=document.getElementById('w-role');
+      if(ws){
+        wp.innerHTML='🙏';wp.style.fontSize='72px';
+        wn.textContent=nombre||'Petición Enviada';
+        wm.textContent='Tu oración llegará al altar · Dios te escucha';
+        wr.innerHTML='';
+        ws.classList.add('show');
+        setTimeout(()=>ws.classList.remove('show'),3500);
+      }
+    },400);
+  }catch(e){toast(e.message,'err');}
+};
+
+document.getElementById('ov-oracion')?.addEventListener('click',function(e){if(e.target===this)cerrarOracion();});
 
 // ── SALVAPANTALLAS ─────────────────────────────────────────────
 let ssTimer=null;
