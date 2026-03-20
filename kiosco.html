@@ -307,6 +307,57 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .suggestion-av img{width:100%;height:100%;object-fit:cover;}
 .suggestion-info strong{display:block;color:var(--cream);font-size:14px;}
 .suggestion-info span{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
+/* ══ SALVAPANTALLAS ══ */
+.screensaver{
+  position:fixed;inset:0;z-index:800;
+  background:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 1s;
+}
+.screensaver.show{opacity:1;pointer-events:all;}
+.ss-logo{
+  width:120px;height:120px;border-radius:50%;
+  background:#fff;border:3px solid var(--gold);overflow:hidden;
+  box-shadow:0 0 60px rgba(200,169,110,.4);
+  animation:ssFloat 4s ease-in-out infinite;
+  position:absolute;
+}
+@keyframes ssFloat{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-18px) scale(1.04);}
+}
+.ss-logo img{width:100%;height:100%;object-fit:contain;}
+.ss-text{
+  position:absolute;bottom:15%;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(16px,3vw,26px);
+  color:rgba(200,169,110,.5);
+  letter-spacing:6px;text-transform:uppercase;
+  animation:ssFade 3s ease-in-out infinite;
+}
+@keyframes ssFade{0%,100%{opacity:.3}50%{opacity:.9}}
+.ss-clock{
+  position:absolute;top:12%;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,12vw,96px);
+  font-weight:200;color:rgba(200,169,110,.35);
+  letter-spacing:8px;
+  animation:ssFade 3s ease-in-out infinite;
+}
+/* Partículas flotantes */
+.ss-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.ss-particle{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:var(--gold);opacity:0;
+  animation:ssParticle linear infinite;
+}
+@keyframes ssParticle{
+  0%{opacity:0;transform:translateY(100vh);}
+  10%{opacity:.6;}
+  90%{opacity:.3;}
+  100%{opacity:0;transform:translateY(-10vh);}
+}
+
 .toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(110px);padding:13px 34px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;z-index:999;pointer-events:none;white-space:nowrap;transition:transform .42s cubic-bezier(.34,1.56,.64,1);background:var(--emerald);color:#fff;box-shadow:0 10px 44px rgba(26,102,71,.55);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--crimson);box-shadow:0 10px 44px rgba(139,26,42,.55);}
@@ -508,10 +559,25 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 
 <div class="toast" id="toast"></div>
 
+<!-- SALVAPANTALLAS -->
+<div class="screensaver" id="screensaver">
+  <div class="ss-particles" id="ss-particles"></div>
+  <div class="ss-clock" id="ss-clock">00:00</div>
+  <div class="ss-logo"><img src="logo.png" alt="Logo"></div>
+  <div class="ss-text">Toca para registrar asistencia</div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// ── COLORES PERSONALIZADOS ────────────────────────────────────
+function aplicarColores(){
+  const saved=localStorage.getItem('lviv-colors');
+  if(saved){try{const cols=JSON.parse(saved);Object.entries(cols).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}catch(e){}}
+}
+aplicarColores();
 
 const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
 const db=getFirestore(initializeApp(firebaseConfig));
@@ -909,6 +975,116 @@ window.seleccionarSugerencia=function(id){
   cerrarSelfie();
   abrirConf(id);
 };
+
+// ── TEXT-TO-SPEECH ─────────────────────────────────────────────
+function anunciarVoz(nombre, rol){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const RICO_TTS={Pastor:'Pastor',Diácono:'Diácono',Miembro:'',Visitante:'Visitante',
+    'Pres. Domingo':'Presidenta','Vice. Domingo':'Vicepresidenta','Sec. Domingo':'Secretaria',
+    'Tes. Domingo':'Tesorera','1er Vocal Dom.':'Primer Vocal','2do Vocal Dom.':'Segundo Vocal',
+    'Pres. Martes':'Presidenta','Vice. Martes':'Vicepresidenta','Sec. Martes':'Secretaria',
+    'Tes. Martes':'Tesorera','1er Vocal Mar.':'Primer Vocal','2do Vocal Mar.':'Segundo Vocal',
+    'Pres. Jóvenes':'Presidenta','Vice. Jóvenes':'Vicepresidenta','Sec. Jóvenes':'Secretaria',
+    'Tes. Jóvenes':'Tesorera','1er Vocal Jóv.':'Primer Vocal','2do Vocal Jóv.':'Segundo Vocal'};
+  const rolText=RICO_TTS[rol]||'';
+  const texto=rolText?`Bienvenido ${rolText} ${nombre}`:`Bienvenido ${nombre}`;
+  const utter=new SpeechSynthesisUtterance(texto);
+  utter.lang='es-DO'; // español dominicano
+  utter.rate=0.9; utter.pitch=1.1; utter.volume=0.85;
+  // Buscar voz en español
+  const voces=window.speechSynthesis.getVoices();
+  const vozEs=voces.find(v=>v.lang.startsWith('es'))||voces[0];
+  if(vozEs) utter.voice=vozEs;
+  window.speechSynthesis.speak(utter);
+}
+// Cargar voces al inicio
+if(window.speechSynthesis){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+}
+
+// ── HORA EXACTA EN BIENVENIDA ─────────────────────────────────
+// Override mostrarBienvenida para incluir TTS + hora exacta
+const _origBienvenidaTTS = window.mostrarBienvenida;
+window.mostrarBienvenida = function(m){
+  // Llamar original
+  _origBienvenidaTTS(m);
+  // Agregar hora exacta
+  const now=new Date();
+  const hora=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  setTimeout(()=>{
+    const msgEl=document.getElementById('w-msg');
+    const h=getH();
+    const base=window._mensajeBienvenida||(h?`Registrado en ${h.n}`:'¡Tu asistencia ha sido registrada!');
+    if(msgEl) msgEl.textContent=`${base} · ${hora}`;
+  },120);
+  // TTS
+  setTimeout(()=>anunciarVoz(m.nombre.split(' ').slice(0,2).join(' '), m.rol), 600);
+};
+
+// ── SALVAPANTALLAS ─────────────────────────────────────────────
+let ssTimer=null;
+const SS_TIMEOUT=90000; // 90 segundos sin interacción
+
+function crearParticulas(){
+  const cont=document.getElementById('ss-particles');
+  if(!cont)return;
+  cont.innerHTML='';
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.className='ss-particle';
+    p.style.cssText=`left:${Math.random()*100}%;animation-duration:${Math.random()*8+6}s;animation-delay:${Math.random()*8}s;opacity:0;`;
+    cont.appendChild(p);
+  }
+}
+
+function mostrarSS(){
+  const ss=document.getElementById('screensaver');
+  if(!ss)return;
+  crearParticulas();
+  ss.classList.add('show');
+  // Mover logo aleatoriamente
+  const logo=ss.querySelector('.ss-logo');
+  if(logo){
+    const maxX=window.innerWidth-140, maxY=window.innerHeight-280;
+    let posX=maxX/2,posY=maxY/2,velX=1.2,velY=0.9;
+    window._ssAnim=setInterval(()=>{
+      posX+=velX;posY+=velY;
+      if(posX<=0||posX>=maxX)velX*=-1;
+      if(posY<=0||posY>=maxY)velY*=-1;
+      logo.style.left=posX+'px';logo.style.top=posY+'px';
+    },16);
+  }
+}
+
+function ocultarSS(){
+  const ss=document.getElementById('screensaver');
+  if(!ss)return;
+  ss.classList.remove('show');
+  if(window._ssAnim){clearInterval(window._ssAnim);window._ssAnim=null;}
+}
+
+function resetSS(){
+  ocultarSS();
+  clearTimeout(ssTimer);
+  ssTimer=setTimeout(mostrarSS, SS_TIMEOUT);
+}
+
+// Actualizar reloj del salvapantallas
+setInterval(()=>{
+  const el=document.getElementById('ss-clock');
+  if(el){const n=new Date();el.textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;}
+},1000);
+
+// Detectar interacción
+['click','touchstart','keydown','mousemove'].forEach(ev=>{
+  document.addEventListener(ev, resetSS, {passive:true});
+});
+// Click en salvapantallas lo oculta
+document.getElementById('screensaver')?.addEventListener('click', resetSS);
+// Iniciar timer
+resetSS();
 </script>
 </body>
 </html>
