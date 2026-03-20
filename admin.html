@@ -224,7 +224,19 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .stat-mini .val{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);}
 .stat-mini .lbl{font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
 
-.toast{position:fixed;bottom:32px;left:50%;.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);padding:13px 32px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;z-index:999;pointer-events:none;white-space:nowrap;transition:transform .42s cubic-bezier(.34,1.56,.64,1);background:var(--emerald);color:#fff;box-shadow:0 10px 44px rgba(26,102,71,.55);}
+.familia-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;background:rgba(200,169,110,.03);}
+.familia-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(200,169,110,.05);}
+.familia-nombre{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);}
+.familia-miembros{padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;}
+.familia-member-pill{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:13px;color:var(--cream);}
+.familia-member-pill img,.familia-member-ini{width:24px;height:24px;border-radius:50%;object-fit:cover;background:var(--ink-soft);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gold);font-family:'Cormorant Garamond',serif;flex-shrink:0;}
+.toast{position:fixed;bottom:32px;left:50%;.familia-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;background:rgba(200,169,110,.03);}
+.familia-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(200,169,110,.05);}
+.familia-nombre{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);}
+.familia-miembros{padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;}
+.familia-member-pill{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:13px;color:var(--cream);}
+.familia-member-pill img,.familia-member-ini{width:24px;height:24px;border-radius:50%;object-fit:cover;background:var(--ink-soft);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gold);font-family:'Cormorant Garamond',serif;flex-shrink:0;}
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);padding:13px 32px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;z-index:999;pointer-events:none;white-space:nowrap;transition:transform .42s cubic-bezier(.34,1.56,.64,1);background:var(--emerald);color:#fff;box-shadow:0 10px 44px rgba(26,102,71,.55);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--crimson);box-shadow:0 10px 44px rgba(139,26,42,.55);}
 
@@ -312,6 +324,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
       <button class="sbtn"    onclick="tab('ranking',this)"><span class="sico">🏆</span><span>Ranking</span></button>
       <button class="sbtn"    onclick="tab('calendario',this)"><span class="sico">📆</span><span>Calendario</span></button>
       <button class="sbtn"    onclick="tab('stats',this)"><span class="sico">📊</span><span>Mi Perfil</span></button>
+      <button class="sbtn"    onclick="tab('familias',this)"><span class="sico">👨‍👩‍👧</span><span>Familias</span></button>
       <button class="sbtn"    onclick="tab('config',this)"><span class="sico">⚙️</span><span>Config</span></button>
       <div class="ssep"></div>
       <div class="slbl">Acciones</div>
@@ -400,10 +413,19 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
         <div id="stats-cont"></div>
       </div>
 
+      <!-- FAMILIAS -->
+      <div class="tab" id="tab-familias">
+        <div class="sec-head">
+          <div><div class="sec-title">👨‍👩‍👧 Familias</div><div class="sec-sub">Grupos familiares de la iglesia</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddFamilia()">➕ Nueva Familia</button></div>
+        </div>
+        <div id="familias-cont"></div>
+      </div>
+
       <!-- CONFIG -->
       <div class="tab" id="tab-config">
         <div class="sec-head"><div><div class="sec-title">⚙️ Configuración</div><div class="sec-sub">Personaliza la app</div></div></div>
-        <div style="max-width:540px;">
+        <div style="max-width:680px;">
           <div class="chart-wrap">
             <div class="chart-title">💬 Mensaje de Bienvenida Personalizado</div>
             <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:14px;">Este mensaje aparece en la pantalla de bienvenida al confirmar asistencia</p>
@@ -411,12 +433,74 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
             <button class="btn-p" style="margin-top:14px;padding:12px 28px;" onclick="guardarMensaje()">💾 Guardar Mensaje</button>
           </div>
           <div class="chart-wrap" style="margin-top:16px;">
+            <div class="chart-title">🎨 Personalizar Colores del Tema</div>
+            <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:18px;">Cambia los colores principales de la app</p>
+            <div class="fgrid" style="margin-bottom:18px;">
+              <div class="fg">
+                <label class="flbl">Color Dorado (principal)</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-gold" value="#C8A96E" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-gold-hex" value="#C8A96E" style="flex:1;" oninput="syncColor('col-gold','col-gold-hex')">
+                </div>
+              </div>
+              <div class="fg">
+                <label class="flbl">Color Crimson (acento)</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-crimson" value="#8B1A2A" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-crimson-hex" value="#8B1A2A" style="flex:1;" oninput="syncColor('col-crimson','col-crimson-hex')">
+                </div>
+              </div>
+              <div class="fg">
+                <label class="flbl">Color Fondo</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-ink" value="#080C14" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-ink-hex" value="#080C14" style="flex:1;" oninput="syncColor('col-ink','col-ink-hex')">
+                </div>
+              </div>
+              <div class="fg">
+                <label class="flbl">Color Esmeralda (éxito)</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-emerald" value="#1A6647" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-emerald-hex" value="#1A6647" style="flex:1;" oninput="syncColor('col-emerald','col-emerald-hex')">
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-p" style="padding:12px 28px;" onclick="guardarColores()">🎨 Aplicar Colores</button>
+              <button class="btn-s" onclick="resetColores()">↺ Restablecer</button>
+            </div>
+          </div>
+
+          <div class="chart-wrap" style="margin-top:16px;">
             <div class="chart-title">🔐 Cambiar Contraseña Admin</div>
             <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:14px;">Edita el archivo admin.html y busca: <code style="color:var(--gold);background:rgba(200,169,110,.1);padding:2px 8px;border-radius:4px;">const PASS='admin1234'</code></p>
           </div>
         </div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- MODAL FAMILIA -->
+<div class="overlay" id="ov-familia">
+  <div class="modal" style="max-width:500px;">
+    <button class="mx" onclick="cerrarAddFamilia()">✕</button>
+    <div class="m-title">Nueva Familia</div>
+    <div class="m-sub">Crear un grupo familiar</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Nombre de la Familia *</label>
+        <input class="finput" id="fam-nombre" placeholder="Ej: Familia García">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Miembros (selecciona)</label>
+        <div id="fam-miembros-list" style="max-height:200px;overflow-y:auto;border:1.5px solid var(--border);border-radius:9px;padding:8px;"></div>
+      </div>
+    </div>
+    <div class="mbtns">
+      <button class="btn-s" onclick="cerrarAddFamilia()">Cancelar</button>
+      <button class="btn-p" onclick="guardarFamilia()">Guardar</button>
+    </div>
   </div>
 </div>
 
@@ -1012,8 +1096,171 @@ window.tab=function(id,el){
   if(id==='config')     cargarConfig();
 };
 
-// Agregar tab stats al sidebar (ya fue añadido arriba en el HTML)
-// Pero necesitamos el botón:
+// ── FAMILIAS ─────────────────────────────────────────────────
+async function renderFamilias(){
+  const cont=document.getElementById('familias-cont');
+  cont.innerHTML='<div style="color:var(--cream-s);text-align:center;padding:30px;">Cargando...</div>';
+  try{
+    const snap=await getDocs(collection(db,'familias'));
+    const familias=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.nombre.localeCompare(b.nombre));
+    if(!familias.length){
+      cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;">No hay familias registradas.<br>¡Crea la primera!</div>`;
+      return;
+    }
+    cont.innerHTML=familias.map(fam=>{
+      const mems=miembros.filter(m=>fam.miembros&&fam.miembros.includes(m.id));
+      const pills=mems.map(m=>{
+        const fotoHtml=m.foto_url
+          ?`<img src="${m.foto_url}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;" onerror="this.outerHTML='<span class=familia-member-ini>${ini(m.nombre)}</span>'">`
+          :`<span class="familia-member-ini">${ini(m.nombre)}</span>`;
+        return`<div class="familia-member-pill">${fotoHtml} ${m.nombre.split(' ').slice(0,2).join(' ')}</div>`;
+      }).join('');
+      return`<div class="familia-card">
+        <div class="familia-header">
+          <div>
+            <div class="familia-nombre">👨‍👩‍👧 ${fam.nombre}</div>
+            <div style="font-size:11px;color:var(--cream-s);letter-spacing:1px;margin-top:3px;">${mems.length} miembro(s)</div>
+          </div>
+          <div class="rack">
+            <button class="rbtn del" onclick="eliminarFamilia('${fam.id}','${fam.nombre.replace(/'/g,'')}')">🗑 Eliminar</button>
+          </div>
+        </div>
+        <div class="familia-miembros">${pills||'<span style="color:var(--cream-s);font-size:13px;font-style:italic;">Sin miembros asignados</span>'}</div>
+      </div>`;
+    }).join('');
+  }catch(e){cont.innerHTML='<div style="color:#F07080;text-align:center;padding:30px;">Error al cargar familias</div>';}
+}
+
+window.abrirAddFamilia=function(){
+  document.getElementById('fam-nombre').value='';
+  // Render checkboxes de miembros
+  const list=document.getElementById('fam-miembros-list');
+  list.innerHTML=miembros.map(m=>`
+    <label style="display:flex;align-items:center;gap:10px;padding:7px 6px;cursor:pointer;border-radius:6px;transition:background .15s;" onmouseover="this.style.background='rgba(200,169,110,.06)'" onmouseout="this.style.background='transparent'">
+      <input type="checkbox" value="${m.id}" style="accent-color:var(--gold);width:16px;height:16px;">
+      <span style="font-size:13px;color:var(--cream);">${m.nombre}</span>
+      ${rbadge(m.rol)}
+    </label>`).join('');
+  document.getElementById('ov-familia').classList.add('open');
+  setTimeout(()=>document.getElementById('fam-nombre').focus(),200);
+};
+window.cerrarAddFamilia=function(){document.getElementById('ov-familia').classList.remove('open');};
+
+window.guardarFamilia=async function(){
+  const nombre=document.getElementById('fam-nombre').value.trim();
+  if(!nombre){toast('El nombre es obligatorio','err');return;}
+  const checks=document.getElementById('fam-miembros-list').querySelectorAll('input[type=checkbox]:checked');
+  const miembrosIds=Array.from(checks).map(c=>c.value);
+  try{
+    await setDoc(doc(collection(db,'familias')),{nombre,miembros:miembrosIds,creado_en:serverTimestamp()});
+    cerrarAddFamilia();renderFamilias();toast(`✓ Familia ${nombre} guardada`);
+  }catch(e){toast(e.message,'err');}
+};
+
+window.eliminarFamilia=async function(id,nombre){
+  if(!confirm(`¿Eliminar la familia ${nombre}?`))return;
+  try{await deleteDoc(doc(db,'familias',id));renderFamilias();toast('Familia eliminada');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── COLORES PERSONALIZADOS ─────────────────────────────────────
+function syncColor(colorId, hexId){
+  const hex=document.getElementById(hexId).value;
+  if(/^#[0-9A-Fa-f]{6}$/.test(hex)){
+    document.getElementById(colorId).value=hex;
+    previewColor(colorId,hex);
+  }
+}
+window.syncColor=syncColor;
+
+// Sincronizar input color → hex
+['col-gold','col-crimson','col-ink','col-emerald'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',function(){
+    const hexEl=document.getElementById(id+'-hex');
+    if(hexEl) hexEl.value=this.value;
+    previewColor(id,this.value);
+  });
+});
+
+function previewColor(id,val){
+  const map={'col-gold':'--gold','col-crimson':'--crimson','col-ink':'--ink','col-emerald':'--emerald'};
+  if(map[id]) document.documentElement.style.setProperty(map[id],val);
+}
+
+// Cargar colores guardados en los inputs
+function cargarColoresInputs(){
+  const saved=localStorage.getItem('lviv-colors');
+  if(!saved) return;
+  try{
+    const cols=JSON.parse(saved);
+    const map={'--gold':'col-gold','--crimson':'col-crimson','--ink':'col-ink','--emerald':'col-emerald'};
+    Object.entries(map).forEach(([cssVar,inputId])=>{
+      if(cols[cssVar]){
+        const colorEl=document.getElementById(inputId);
+        const hexEl=document.getElementById(inputId+'-hex');
+        if(colorEl) colorEl.value=cols[cssVar];
+        if(hexEl) hexEl.value=cols[cssVar];
+      }
+    });
+  }catch(e){}
+}
+
+window.guardarColores=async function(){
+  const cols={
+    '--gold':   document.getElementById('col-gold').value,
+    '--gold-b': ajustarBrillo(document.getElementById('col-gold').value, 30),
+    '--gold-d': ajustarBrillo(document.getElementById('col-gold').value, -30),
+    '--crimson':document.getElementById('col-crimson').value,
+    '--ink':    document.getElementById('col-ink').value,
+    '--emerald':document.getElementById('col-emerald').value,
+  };
+  localStorage.setItem('lviv-colors',JSON.stringify(cols));
+  // Guardar en Firebase para que el kiosco también los aplique
+  try{
+    await setDoc(doc(db,'config','colores'),{...cols,actualizado:serverTimestamp()});
+    toast('🎨 Colores guardados y aplicados');
+  }catch(e){toast('Colores guardados localmente','ok');}
+  Object.entries(cols).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+};
+
+window.resetColores=function(){
+  localStorage.removeItem('lviv-colors');
+  ['--gold','--gold-b','--gold-d','--crimson','--ink','--emerald'].forEach(v=>document.documentElement.style.removeProperty(v));
+  document.getElementById('col-gold').value='#C8A96E';
+  document.getElementById('col-gold-hex').value='#C8A96E';
+  document.getElementById('col-crimson').value='#8B1A2A';
+  document.getElementById('col-crimson-hex').value='#8B1A2A';
+  document.getElementById('col-ink').value='#080C14';
+  document.getElementById('col-ink-hex').value='#080C14';
+  document.getElementById('col-emerald').value='#1A6647';
+  document.getElementById('col-emerald-hex').value='#1A6647';
+  toast('Colores restablecidos');
+};
+
+function ajustarBrillo(hex,amount){
+  const num=parseInt(hex.slice(1),16);
+  const r=Math.min(255,Math.max(0,(num>>16)+amount));
+  const g=Math.min(255,Math.max(0,((num>>8)&0x00FF)+amount));
+  const b=Math.min(255,Math.max(0,(num&0x0000FF)+amount));
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+// Aplicar colores guardados al cargar
+(function(){
+  const saved=localStorage.getItem('lviv-colors');
+  if(saved){try{const cols=JSON.parse(saved);Object.entries(cols).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}catch(e){}}
+})();
+
+// ── OVERRIDE TAB ──────────────────────────────────────────────
+const _origTab2=window.tab;
+window.tab=function(id,el){
+  _origTab2(id,el);
+  if(id==='familias'){renderFamilias();}
+  if(id==='config'){cargarConfig();cargarColoresInputs();}
+};
+
+document.getElementById('ov-familia').addEventListener('click',function(e){if(e.target===this)cerrarAddFamilia();});
 </script>
 </body>
 </html>
