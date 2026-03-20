@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iglesia Luz y Vida IV · Asamblea de Dios</title>
+<meta name="description" content="Iglesia Luz y Vida IV - Asamblea de Dios. Cultos martes, sábado y domingo en República Dominicana.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#070B12;color:#EEE6D4;overflow-x:hidden;}
+
+/* ── VARIABLES ── */
+:root{
+  --gold:#C8A96E;--gold-b:#E4CF96;--gold-d:#7A6235;
+  --ink:#070B12;--ink-mid:#0D1520;--ink-soft:#152030;
+  --crimson:#8B1A2A;--cream:#EEE6D4;--cream-s:#B8A888;
+  --emerald:#1A6647;--border:rgba(200,169,110,.15);
+}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;text-align:center;padding:80px 24px 60px;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&q=80');
+  background-size:cover;background-position:center;
+  filter:brightness(.12) saturate(.5);
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%,rgba(200,169,110,.12) 0%,transparent 60%),
+    linear-gradient(to bottom,rgba(7,11,18,.3) 0%,rgba(7,11,18,.85) 100%);
+}
+.hero-grid{
+  position:absolute;inset:0;z-index:0;
+  background-image:repeating-linear-gradient(90deg,rgba(200,169,110,.02) 0,transparent 1px,transparent 80px,rgba(200,169,110,.02) 81px),
+    repeating-linear-gradient(0deg,rgba(200,169,110,.015) 0,transparent 1px,transparent 120px,rgba(200,169,110,.015) 121px);
+}
+.hero-content{position:relative;z-index:1;max-width:760px;}
+
+.hero-logo{
+  width:110px;height:110px;border-radius:50%;
+  background:#fff;border:4px solid var(--gold);
+  overflow:hidden;margin:0 auto 32px;
+  box-shadow:0 0 80px rgba(200,169,110,.35),0 0 0 14px rgba(200,169,110,.07);
+  animation:logoPop .8s cubic-bezier(.34,1.2,.64,1) both;
+}
+@keyframes logoPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.hero-logo img{width:100%;height:100%;object-fit:contain;}
+
+.hero-tag{
+  font-size:11px;color:var(--gold-d);letter-spacing:4px;
+  text-transform:uppercase;margin-bottom:16px;
+  animation:fadeUp .6s .3s both;
+}
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(38px,8vw,80px);font-weight:300;
+  color:var(--cream);line-height:1.05;letter-spacing:2px;
+  margin-bottom:12px;
+  animation:fadeUp .7s .4s both;
+}
+.hero-title em{font-style:italic;color:var(--gold-b);}
+.hero-sub{
+  font-size:clamp(13px,2vw,17px);color:var(--cream-s);
+  letter-spacing:2px;text-transform:uppercase;font-weight:300;
+  margin-bottom:48px;
+  animation:fadeUp .6s .5s both;
+}
+@keyframes fadeUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .6s both;}
+.btn-primary{
+  padding:15px 36px;border-radius:100px;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold),#D4B870);
+  border:none;color:var(--ink);font-family:'Cormorant Garamond',serif;
+  font-size:17px;font-weight:700;letter-spacing:1.5px;
+  cursor:pointer;text-decoration:none;transition:all .25s;
+  display:inline-block;
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(200,169,110,.4);}
+.btn-outline{
+  padding:15px 36px;border-radius:100px;
+  background:transparent;border:1.5px solid rgba(200,169,110,.5);
+  color:var(--gold);font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:600;letter-spacing:2px;
+  cursor:pointer;text-decoration:none;transition:all .25s;
+  display:inline-block;
+}
+.btn-outline:hover{border-color:var(--gold);background:rgba(200,169,110,.08);}
+
+/* ── SCROLL INDICATOR ── */
+.scroll-ind{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--cream-s);font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  animation:fadeUp .6s 1s both;
+}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:68px;
+  background:rgba(7,11,18,0);
+  backdrop-filter:blur(0px);
+  border-bottom:1px solid transparent;
+  transition:all .4s;
+}
+nav.scrolled{
+  background:rgba(7,11,18,.94);
+  backdrop-filter:blur(24px);
+  border-bottom-color:var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:12px;}
+.nav-logo img{width:38px;height:38px;border-radius:50%;border:2px solid var(--gold);}
+.nav-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--gold-b);letter-spacing:2px;}
+.nav-links{display:flex;gap:32px;}
+.nav-links a{color:var(--cream-s);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{
+  padding:8px 22px;border-radius:100px;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  color:var(--ink);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  text-decoration:none;transition:all .2s;
+}
+.nav-cta:hover{transform:scale(1.04);}
+
+/* ── SECCIONES ── */
+section{padding:100px 24px;}
+.container{max-width:1100px;margin:0 auto;}
+.section-tag{font-size:10px;color:var(--gold-d);letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,54px);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:16px;}
+.section-title em{font-style:italic;color:var(--gold-b);}
+.section-sub{font-size:15px;color:var(--cream-s);line-height:1.7;max-width:600px;}
+.deco-line-h{width:60px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:32px;}
+
+/* ── HORARIOS ── */
+.horarios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:48px;}
+.horario-card{
+  background:rgba(13,21,32,.7);
+  border:1px solid var(--border);border-radius:20px;
+  padding:32px 28px;position:relative;overflow:hidden;
+  transition:all .3s;backdrop-filter:blur(10px);
+}
+.horario-card:hover{border-color:rgba(200,169,110,.4);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.horario-card::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);opacity:.6;}
+.horario-dia{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold-b);margin-bottom:6px;}
+.horario-nombre{font-size:13px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;}
+.horario-hora{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.horario-hora .time{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);}
+.horario-hora .sep{color:var(--cream-s);}
+.horario-nota{font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.horario-icon{font-size:36px;margin-bottom:18px;}
+
+/* ── VALORES ── */
+.valores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:48px;}
+.valor-card{padding:28px 24px;border:1px solid var(--border);border-radius:16px;background:rgba(13,21,32,.5);transition:all .3s;}
+.valor-card:hover{border-color:rgba(200,169,110,.35);background:rgba(13,21,32,.8);}
+.valor-icon{font-size:32px;margin-bottom:16px;}
+.valor-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold-b);margin-bottom:8px;}
+.valor-text{font-size:14px;color:var(--cream-s);line-height:1.7;}
+
+/* ── CTA ── */
+.cta-section{
+  text-align:center;padding:100px 24px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(139,26,42,.08),rgba(200,169,110,.06),rgba(26,102,71,.05));
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.cta-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(200,169,110,.08) 0%,transparent 65%);
+}
+
+/* ── FOOTER ── */
+footer{
+  padding:48px 24px;text-align:center;
+  border-top:1px solid var(--border);
+  background:rgba(7,11,18,.8);
+}
+.footer-logo{width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid var(--gold);overflow:hidden;margin:0 auto 16px;}
+.footer-logo img{width:100%;height:100%;object-fit:contain;}
+.footer-name{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold-b);margin-bottom:4px;}
+.footer-sub{font-size:11px;color:var(--cream-s);letter-spacing:2px;margin-bottom:24px;}
+.footer-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:24px;}
+.footer-links a{font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-copy{font-size:11px;color:rgba(184,168,136,.4);letter-spacing:1px;}
+
+/* ── VERSE BANNER ── */
+.verse-banner{
+  padding:60px 24px;text-align:center;
+  background:rgba(13,21,32,.6);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.verse-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,3vw,28px);font-weight:300;font-style:italic;
+  color:var(--cream);line-height:1.5;max-width:700px;margin:0 auto 12px;
+}
+.verse-ref{font-size:12px;color:var(--gold-d);letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  section{padding:70px 20px;}
+  .hero{padding:80px 20px 60px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">
+    <img src="logo.png" alt="Logo">
+    <span class="nav-name">Luz y Vida IV</span>
+  </div>
+  <div class="nav-links">
+    <a href="#horarios">Horarios</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#valores">Valores</a>
+    <a href="#visita">Visítanos</a>
+  </div>
+  <a href="kiosco.html" class="nav-cta">📋 Asistencia</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-logo"><img src="logo.png" alt="Logo Iglesia Luz y Vida IV"></div>
+    <div class="hero-tag">Asamblea de Dios · República Dominicana</div>
+    <h1 class="hero-title"><em>Iglesia Luz y Vida</em> IV</h1>
+    <p class="hero-sub">Evangelio Pleno · Fe · Comunidad · Propósito</p>
+    <div class="hero-btns">
+      <a href="#visita" class="btn-primary">Visítanos</a>
+      <a href="#horarios" class="btn-outline">Ver Horarios</a>
+    </div>
+  </div>
+  <div class="scroll-ind">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- VERSÍCULO -->
+<div class="verse-banner">
+  <div class="verse-text">
+    "Porque yo sé los planes que tengo para vosotros — planes de bienestar y no de calamidad, para daros un futuro y una esperanza."
+  </div>
+  <div class="verse-ref">Jeremías 29:11</div>
+</div>
+
+<!-- HORARIOS -->
+<section id="horarios">
+  <div class="container">
+    <div class="section-tag">Únete a nosotros</div>
+    <h2 class="section-title">Nuestros <em>Horarios</em></h2>
+    <div class="deco-line-h"></div>
+    <p class="section-sub">Te esperamos con los brazos abiertos. Todos son bienvenidos.</p>
+
+    <div class="horarios-grid">
+      <div class="horario-card">
+        <div class="horario-icon">🕊️</div>
+        <div class="horario-dia">Domingo</div>
+        <div class="horario-nombre">Culto Dominical</div>
+        <div class="horario-hora">
+          <span class="time">8:00 AM</span>
+          <span class="sep">→</span>
+          <span class="time">~3:00 PM</span>
+        </div>
+        <div class="horario-nota">Culto principal de adoración, predicación y comunión</div>
+      </div>
+
+      <div class="horario-card">
+        <div class="horario-icon">📖</div>
+        <div class="horario-dia">Martes</div>
+        <div class="horario-nombre">Culto de Enseñanza</div>
+        <div class="horario-hora">
+          <span class="time">7:00 PM</span>
+          <span class="sep">→</span>
+          <span class="time">9:00 PM</span>
+        </div>
+        <div class="horario-nota">Estudio bíblico, oración y comunidad</div>
+      </div>
+
+      <div class="horario-card">
+        <div class="horario-icon">🎯</div>
+        <div class="horario-dia">Sábado</div>
+        <div class="horario-nombre">Culto de Jóvenes</div>
+        <div class="horario-hora">
+          <span class="time">7:00 PM</span>
+          <span class="sep">→</span>
+          <span class="time">9:00 PM</span>
+        </div>
+        <div class="horario-nota">Ministerio de jóvenes — adoración, juegos y palabra</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros" style="background:rgba(13,21,32,.4);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+      <div>
+        <div class="section-tag">Quiénes somos</div>
+        <h2 class="section-title"><em>Nuestra</em> Historia</h2>
+        <div class="deco-line-h"></div>
+        <p style="font-size:15px;color:var(--cream-s);line-height:1.8;margin-bottom:20px;">
+          Somos una congregación de la Asamblea de Dios comprometida con el Evangelio Pleno de Jesucristo. 
+          Creemos en la Palabra de Dios como fundamento de toda verdad y en el poder del Espíritu Santo 
+          para transformar vidas.
+        </p>
+        <p style="font-size:15px;color:var(--cream-s);line-height:1.8;">
+          Nuestra misión es alcanzar a cada persona con el amor de Cristo, edificar creyentes maduros 
+          y enviar obreros al campo blanco de la cosecha.
+        </p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="background:rgba(200,169,110,.06);border:1px solid var(--border);border-radius:16px;padding:28px 20px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);">Fe</div>
+          <div style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:6px;">En Dios</div>
+        </div>
+        <div style="background:rgba(139,26,42,.08);border:1px solid rgba(139,26,42,.25);border-radius:16px;padding:28px 20px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:48px;color:#F07080;">Amor</div>
+          <div style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:6px;">Al prójimo</div>
+        </div>
+        <div style="background:rgba(26,102,71,.08);border:1px solid rgba(26,102,71,.25);border-radius:16px;padding:28px 20px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:48px;color:#5DC99A;">Luz</div>
+          <div style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:6px;">Al mundo</div>
+        </div>
+        <div style="background:rgba(21,101,192,.08);border:1px solid rgba(21,101,192,.25);border-radius:16px;padding:28px 20px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:48px;color:#7EB8FF;">Vida</div>
+          <div style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:6px;">En Cristo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALORES -->
+<section id="valores">
+  <div class="container">
+    <div class="section-tag">Lo que creemos</div>
+    <h2 class="section-title">Nuestros <em>Valores</em></h2>
+    <div class="deco-line-h"></div>
+    <div class="valores-grid">
+      <div class="valor-card">
+        <div class="valor-icon">✝️</div>
+        <div class="valor-title">La Biblia</div>
+        <div class="valor-text">Creemos que la Biblia es la Palabra inspirada de Dios, infalible y suficiente para la fe y la práctica cristiana.</div>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">🕊️</div>
+        <div class="valor-title">El Espíritu Santo</div>
+        <div class="valor-text">Creemos en el bautismo del Espíritu Santo con la evidencia del hablar en lenguas y los dones espirituales.</div>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">🙏</div>
+        <div class="valor-title">La Oración</div>
+        <div class="valor-text">La oración es el fundamento de nuestra vida espiritual y nuestra conexión directa con el Padre celestial.</div>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">🤝</div>
+        <div class="valor-title">La Comunidad</div>
+        <div class="valor-text">Somos una familia. Nos cuidamos, nos animamos y crecemos juntos en el amor de Cristo.</div>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">🌍</div>
+        <div class="valor-title">Las Misiones</div>
+        <div class="valor-text">Comprometidos con la Gran Comisión: ir y hacer discípulos de todas las naciones.</div>
+      </div>
+      <div class="valor-card">
+        <div class="valor-icon">🎵</div>
+        <div class="valor-title">La Adoración</div>
+        <div class="valor-text">La adoración genuina transforma corazones y crea la atmósfera donde Dios se manifiesta.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISITA CTA -->
+<div class="cta-section" id="visita">
+  <div style="position:relative;z-index:1;max-width:600px;margin:0 auto;">
+    <div class="section-tag" style="text-align:center;">Te esperamos</div>
+    <h2 class="section-title" style="text-align:center;"><em>Visítanos</em> este domingo</h2>
+    <p style="font-size:15px;color:var(--cream-s);line-height:1.7;text-align:center;margin-bottom:36px;">
+      No importa dónde estás en tu vida, aquí encontrarás una familia que te ama y un Dios que te transforma. 
+      Todos son bienvenidos tal como son.
+    </p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="kiosco.html" class="btn-primary">📋 Registrar Asistencia</a>
+      <a href="https://wa.me/1809000000" class="btn-outline" target="_blank">💬 WhatsApp</a>
+    </div>
+    <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-top:24px;text-align:center;">
+      📍 República Dominicana &nbsp;·&nbsp; 📞 (809) 000-0000
+    </p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><img src="logo.png" alt="Logo"></div>
+  <div class="footer-name">Iglesia Luz y Vida IV</div>
+  <div class="footer-sub">Asamblea de Dios · Evangelio Pleno</div>
+  <div class="footer-links">
+    <a href="#inicio">Inicio</a>
+    <a href="#horarios">Horarios</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#valores">Valores</a>
+    <a href="kiosco.html">Asistencia</a>
+    <a href="admin.html">Admin</a>
+  </div>
+  <div class="footer-copy">© 2026 Iglesia Luz y Vida IV · Todos los derechos reservados</div>
+</footer>
+
+<script>
+// Nav scroll effect
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60);
+});
+
+// Animaciones on scroll
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}
+  });
+},{threshold:.1});
+
+document.querySelectorAll('.horario-card,.valor-card,.footer-links').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(24px)';
+  el.style.transition='opacity .6s ease, transform .6s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
