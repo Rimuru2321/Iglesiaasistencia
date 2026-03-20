@@ -6,34 +6,101 @@
 <title>Kiosco · Iglesia Luz y Vida IV</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ══ VARIABLES ══ */
 :root{
-  --ink:#080C14;--ink-mid:#0F1624;--ink-soft:#182030;--ink-card:rgba(15,22,36,.88);
-  --gold:#C8A96E;--gold-b:#E4CF96;--gold-d:#7A6235;--gold-glow:rgba(200,169,110,.18);
+  --gold:#C8A96E;--gold-b:#E4CF96;--gold-d:#7A6235;
+  --ink:#080C14;--ink-mid:#0F1624;--ink-soft:#182030;--ink-card:rgba(8,12,20,.82);
   --crimson:#8B1A2A;--cream:#EEE6D4;--cream-s:#B8A888;--emerald:#1A6647;
   --border:rgba(200,169,110,.15);--border-hi:rgba(200,169,110,.45);
 }
 [data-theme="light"]{
-  --ink:#F5F0E8;--ink-mid:#EDE5D4;--ink-soft:#E0D5C0;--ink-card:rgba(255,250,240,.95);
-  --cream:#2A1F0A;--cream-s:#5A4A2A;
-  --border:rgba(120,90,40,.2);--border-hi:rgba(120,90,40,.5);
+  --ink:#F0EAD8;--ink-mid:#E8DFC8;--ink-soft:#DDD0B5;--ink-card:rgba(255,252,242,.88);
+  --cream:#1A1208;--cream-s:#4A3A20;
+  --border:rgba(100,75,30,.2);--border-hi:rgba(100,75,30,.45);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{height:100%}
 body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;}
-.bg-atm{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 90% 55% at 50% -5%,rgba(200,169,110,.11) 0%,transparent 65%),
-             radial-gradient(ellipse 45% 40% at 95% 100%,rgba(139,26,42,.09) 0%,transparent 55%),
-             radial-gradient(ellipse 35% 35% at 5% 85%,rgba(26,102,71,.07) 0%,transparent 50%);}
+
+/* ── FONDO IGLESIA ── */
+.church-bg{
+  position:fixed;inset:0;z-index:0;
+  background-image:
+    url('https://images.unsplash.com/photo-1438032005730-c779502df39b?w=1600&q=80');
+  background-size:cover;background-position:center;
+  filter:brightness(.18) saturate(.6);
+  transition:filter .4s;
+}
+[data-theme="light"] .church-bg{filter:brightness(.35) saturate(.5);}
+.church-overlay{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 0%,   rgba(200,169,110,.14) 0%,transparent 60%),
+    radial-gradient(ellipse 50%  50% at 100% 100%, rgba(139,26,42,.12)  0%,transparent 55%),
+    linear-gradient(to bottom, rgba(8,12,20,.4) 0%, rgba(8,12,20,.75) 100%);
+}
+[data-theme="light"] .church-overlay{
+  background:linear-gradient(to bottom,rgba(240,234,216,.5) 0%,rgba(240,234,216,.8) 100%);
+}
 .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:repeating-linear-gradient(90deg,rgba(200,169,110,.022) 0,transparent 1px,transparent 88px,rgba(200,169,110,.022) 89px),
-                   repeating-linear-gradient(0deg,rgba(200,169,110,.016) 0,transparent 1px,transparent 130px,rgba(200,169,110,.016) 131px);}
-[data-theme="light"] .bg-atm{background:radial-gradient(ellipse 90% 55% at 50% -5%,rgba(180,140,60,.07) 0%,transparent 65%);}
-[data-theme="light"] .bg-grid{opacity:.35;}
+  background-image:repeating-linear-gradient(90deg,rgba(200,169,110,.018) 0,transparent 1px,transparent 88px,rgba(200,169,110,.018) 89px),
+    repeating-linear-gradient(0deg,rgba(200,169,110,.013) 0,transparent 1px,transparent 130px,rgba(200,169,110,.013) 131px);}
 .wrap{position:relative;z-index:1;}
 
-/* TOPBAR */
-.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:68px;background:rgba(8,12,20,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);}
-[data-theme="light"] .topbar{background:rgba(245,240,232,.96);}
+/* ── INTRO ANIMATION ── */
+.intro-screen{
+  position:fixed;inset:0;z-index:900;
+  background:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  transition:opacity .8s ease-in-out;
+}
+.intro-screen.fade-out{opacity:0;pointer-events:none;}
+.intro-screen.gone{display:none;}
+
+.intro-cross{
+  width:80px;height:80px;position:relative;margin-bottom:32px;
+  animation:crossDrop .7s cubic-bezier(.34,1.2,.64,1) both;
+}
+@keyframes crossDrop{from{transform:translateY(-40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.intro-cross::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);width:10px;height:80px;background:linear-gradient(180deg,#B71C2C,#8B0000);border-radius:3px;}
+.intro-cross::after{content:'';position:absolute;top:22px;left:0;width:80px;height:10px;background:linear-gradient(90deg,#B71C2C,#8B0000);border-radius:3px;}
+
+.intro-logo{
+  width:100px;height:100px;border-radius:50%;background:#fff;
+  border:4px solid var(--gold);overflow:hidden;
+  box-shadow:0 0 60px rgba(200,169,110,.4),0 0 0 12px rgba(200,169,110,.06);
+  animation:logoPop .7s .2s cubic-bezier(.34,1.2,.64,1) both;
+  margin-bottom:28px;
+}
+@keyframes logoPop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.intro-logo img{width:100%;height:100%;object-fit:contain;}
+
+.intro-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(26px,5vw,44px);font-weight:300;
+  color:var(--gold-b);letter-spacing:4px;text-transform:uppercase;
+  animation:titleSlide .7s .4s cubic-bezier(.34,1.2,.64,1) both;
+  text-align:center;padding:0 20px;
+}
+@keyframes titleSlide{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.intro-sub{
+  font-size:12px;color:var(--cream-s);letter-spacing:4px;
+  text-transform:uppercase;margin-top:10px;
+  animation:titleSlide .6s .6s both;
+}
+
+.intro-bar{
+  width:180px;height:2px;background:var(--ink-soft);
+  border-radius:2px;margin-top:36px;overflow:hidden;
+  animation:fadeIn .4s .8s both;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.intro-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:2px;transition:width 1.8s ease-in-out;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:68px;background:rgba(6,9,16,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(28px);}
+[data-theme="light"] .topbar{background:rgba(240,234,216,.92);}
 .brand{display:flex;align-items:center;gap:14px;}
 .brand-logo{width:48px;height:48px;border-radius:50%;background:#fff;border:2.5px solid var(--gold);overflow:hidden;flex-shrink:0;box-shadow:0 0 20px rgba(200,169,110,.28);}
 .brand-logo img{width:100%;height:100%;object-fit:contain;}
@@ -43,103 +110,143 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .clk-time{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--gold-b);letter-spacing:5px;line-height:1;}
 .clk-date{font-size:10px;color:var(--cream-s);letter-spacing:2px;margin-top:2px;}
 .topbar-right{display:flex;align-items:center;gap:10px;}
-.theme-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:1px solid var(--border-hi);color:var(--gold);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;}
-.theme-btn:hover{background:rgba(200,169,110,.1);}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:1px solid var(--border-hi);color:var(--gold);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;}
+.icon-btn:hover{background:rgba(200,169,110,.1);}
 .btn-admin{display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:8px;border:1px solid var(--border-hi);background:transparent;color:var(--gold);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .25s;}
 .btn-admin:hover{background:rgba(200,169,110,.1);border-color:var(--gold);}
 
-/* CULTO STRIP */
-.culto-strip{display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 36px;background:linear-gradient(90deg,transparent,rgba(139,26,42,.14) 20%,rgba(139,26,42,.2) 50%,rgba(139,26,42,.14) 80%,transparent);border-bottom:1px solid rgba(139,26,42,.28);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#D4707E;transition:all .5s;}
-.culto-strip.on{background:linear-gradient(90deg,transparent,rgba(26,102,71,.14) 20%,rgba(26,102,71,.2) 50%,rgba(26,102,71,.14) 80%,transparent);border-bottom-color:rgba(26,102,71,.32);color:#5DC99A;}
+/* ── CULTO STRIP ── */
+.culto-strip{display:flex;align-items:center;justify-content:center;gap:10px;padding:9px 36px;background:linear-gradient(90deg,transparent,rgba(139,26,42,.18) 25%,rgba(139,26,42,.25) 50%,rgba(139,26,42,.18) 75%,transparent);border-bottom:1px solid rgba(139,26,42,.3);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#D4707E;transition:all .5s;}
+.culto-strip.on{background:linear-gradient(90deg,transparent,rgba(26,102,71,.18) 25%,rgba(26,102,71,.24) 50%,rgba(26,102,71,.18) 75%,transparent);border-bottom-color:rgba(26,102,71,.35);color:#5DC99A;}
 .pdot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;animation:pdot 2s ease-in-out infinite;}
 @keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
 
-/* ROLE FILTER */
+/* ── RECORDATORIO CULTO ── */
+.reminder-banner{
+  display:none;align-items:center;justify-content:space-between;
+  padding:13px 28px;margin:12px 24px 0;border-radius:12px;
+  background:linear-gradient(135deg,rgba(200,169,110,.12),rgba(200,169,110,.06));
+  border:1px solid var(--border-hi);
+  animation:slideDown .5s cubic-bezier(.34,1.2,.64,1);
+}
+@keyframes slideDown{from{transform:translateY(-10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.reminder-banner.show{display:flex;}
+.reminder-left{display:flex;align-items:center;gap:14px;}
+.reminder-icon{font-size:26px;}
+.reminder-text strong{display:block;color:var(--gold-b);font-size:14px;font-family:'Cormorant Garamond',serif;font-weight:600;}
+.reminder-text span{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
+.reminder-close{background:transparent;border:none;color:var(--cream-s);font-size:18px;cursor:pointer;padding:4px;transition:color .2s;}
+.reminder-close:hover{color:#F07080;}
+
+/* ── ROLE FILTER ── */
 .role-bar{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
-.role-chip{padding:7px 18px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--cream-s);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.role-chip{padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--cream-s);font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
 .role-chip.on{background:var(--gold);color:var(--ink);border-color:var(--gold);}
 .role-chip:hover:not(.on){border-color:var(--gold-d);color:var(--gold-d);}
-.role-chip.pastor.on  {background:#8B1A2A;border-color:#8B1A2A;color:#fff;}
-.role-chip.diacono.on {background:#1565C0;border-color:#1565C0;color:#fff;}
-.role-chip.estudiante.on{background:#1A6647;border-color:#1A6647;color:#fff;}
+.role-chip.pastor.on    {background:#8B1A2A;border-color:#8B1A2A;color:#fff;}
+.role-chip.diacono.on   {background:#1565C0;border-color:#1565C0;color:#fff;}
+.role-chip.miembro.on   {background:#1A6647;border-color:#1A6647;color:#fff;}
+.role-chip.visitante.on {background:#6A1B9A;border-color:#6A1B9A;color:#fff;}
+.role-chip.ljovenes.on  {background:#E65100;border-color:#E65100;color:#fff;}
+.role-chip.lmartes.on   {background:#00695C;border-color:#00695C;color:#fff;}
 
-/* HERO */
-.hero{text-align:center;padding:50px 20px 36px;}
+/* ── HERO ── */
+.hero{text-align:center;padding:52px 20px 36px;}
 .hero-deco{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:22px;opacity:.45;}
 .deco-line{flex:1;max-width:90px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
 .deco-line.r{background:linear-gradient(90deg,var(--gold),transparent);}
 .deco-diamond{width:9px;height:9px;border:1.5px solid var(--gold);transform:rotate(45deg);}
-.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,60px);font-weight:300;line-height:1.05;color:var(--cream);letter-spacing:2px;margin-bottom:10px;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,7vw,66px);font-weight:300;line-height:1.05;color:var(--cream);letter-spacing:2px;margin-bottom:10px;}
 .hero-title em{font-style:italic;color:var(--gold-b);}
 .hero-sub{font-size:12px;color:var(--cream-s);letter-spacing:3px;text-transform:uppercase;font-weight:300;}
 
-/* SEARCH */
+/* ── SEARCH ── */
 .search-zone{max-width:720px;margin:0 auto 44px;padding:0 24px;}
-.search-shell{display:flex;align-items:center;background:var(--ink-mid);border:1.5px solid var(--border-hi);border-radius:100px;overflow:hidden;transition:all .3s;box-shadow:0 10px 50px rgba(0,0,0,.5);}
-[data-theme="light"] .search-shell{background:rgba(230,220,200,.8);}
+.search-shell{display:flex;align-items:center;background:rgba(8,12,20,.75);border:1.5px solid var(--border-hi);border-radius:100px;overflow:hidden;transition:all .3s;box-shadow:0 10px 50px rgba(0,0,0,.5);backdrop-filter:blur(12px);}
+[data-theme="light"] .search-shell{background:rgba(240,234,216,.75);}
 .search-shell:focus-within{border-color:var(--gold);box-shadow:0 0 0 1px rgba(200,169,110,.25),0 10px 50px rgba(0,0,0,.5);}
-.search-iw{position:relative;flex:1;display:flex;align-items:center;}
-.search-iw svg{position:absolute;left:22px;pointer-events:none;color:var(--gold-d);}
+.siw{position:relative;flex:1;display:flex;align-items:center;}
+.siw svg{position:absolute;left:22px;pointer-events:none;color:var(--gold-d);}
 #buscar{width:100%;background:transparent;border:none;outline:none;color:var(--cream);font-family:'Outfit',sans-serif;font-size:16px;font-weight:300;padding:18px 20px 18px 58px;}
 #buscar::placeholder{color:var(--cream-s);opacity:.55;}
 .btn-id{margin:8px;flex-shrink:0;padding:11px 22px;border-radius:100px;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;color:var(--ink);font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;white-space:nowrap;}
 .btn-id:hover{transform:scale(1.04);box-shadow:0 6px 24px rgba(200,169,110,.4);}
 
-/* OFFLINE */
+/* ── OFFLINE ── */
 .offline-bar{display:none;align-items:center;justify-content:center;gap:10px;padding:10px 24px;margin:0 24px 16px;background:rgba(139,26,42,.12);border:1px solid rgba(139,26,42,.3);border-radius:10px;font-size:12px;color:#E07080;letter-spacing:1px;}
 .offline-bar.show{display:flex;}
 
-/* GRID */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;max-width:1120px;margin:0 auto;padding:0 24px 100px;}
+/* ── GRID - CARDS GRANDES ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;max-width:1200px;margin:0 auto;padding:0 24px 100px;}
 
 /* ROLE BADGES */
 .rbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
-.rbadge.pastor    {background:rgba(139,26,42,.2);   color:#F07080;border:1px solid rgba(139,26,42,.4);}
-.rbadge.diacono   {background:rgba(21,101,192,.2);  color:#7EB8FF;border:1px solid rgba(21,101,192,.4);}
-.rbadge.estudiante{background:rgba(26,102,71,.2);   color:#5DC99A;border:1px solid rgba(26,102,71,.4);}
+.rbadge.pastor      {background:rgba(139,26,42,.25);  color:#F07080;border:1px solid rgba(139,26,42,.5);}
+.rbadge.diacono     {background:rgba(21,101,192,.25);  color:#7EB8FF;border:1px solid rgba(21,101,192,.5);}
+.rbadge.miembro     {background:rgba(26,102,71,.25);   color:#5DC99A;border:1px solid rgba(26,102,71,.5);}
+.rbadge.visitante   {background:rgba(106,27,154,.25);  color:#CE93D8;border:1px solid rgba(106,27,154,.5);}
+.rbadge.ljovenes    {background:rgba(230,81,0,.25);    color:#FFAB40;border:1px solid rgba(230,81,0,.5);}
+.rbadge.lmartes     {background:rgba(0,105,92,.25);    color:#4DB6AC;border:1px solid rgba(0,105,92,.5);}
+.rbadge.presidenta  {background:rgba(183,28,28,.25);   color:#EF9A9A;border:1px solid rgba(183,28,28,.5);}
+.rbadge.vp          {background:rgba(136,14,79,.25);   color:#F48FB1;border:1px solid rgba(136,14,79,.5);}
+.rbadge.secretaria  {background:rgba(13,71,161,.25);   color:#90CAF9;border:1px solid rgba(13,71,161,.5);}
+.rbadge.tesorera    {background:rgba(27,94,32,.25);    color:#A5D6A7;border:1px solid rgba(27,94,32,.5);}
+.rbadge.vocal1,.rbadge.vocal2{background:rgba(49,27,146,.25);color:#B39DDB;border:1px solid rgba(49,27,146,.5);}
 
-/* CARD */
-.card{position:relative;overflow:hidden;background:var(--ink-card);border:1px solid var(--border);border-radius:20px;padding:28px 18px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;backdrop-filter:blur(14px);transition:transform .3s cubic-bezier(.34,1.2,.64,1),border-color .3s,box-shadow .3s;animation:fadeUp .45s both;user-select:none;}
+/* CARD GRANDE */
+.card{position:relative;overflow:hidden;background:var(--ink-card);border:1px solid var(--border);border-radius:22px;cursor:pointer;backdrop-filter:blur(16px);transition:transform .3s cubic-bezier(.34,1.2,.64,1),border-color .3s,box-shadow .3s;animation:fadeUp .45s both;user-select:none;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);opacity:0;transition:opacity .3s;}
-.card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(200,169,110,.07) 0%,transparent 65%);opacity:0;transition:opacity .3s;}
-.card:hover{border-color:var(--border-hi);transform:translateY(-7px);box-shadow:0 22px 65px rgba(0,0,0,.55),0 0 0 1px rgba(200,169,110,.1);}
-.card:hover::before,.card:hover::after{opacity:1;}
+.card:hover{border-color:var(--border-hi);transform:translateY(-7px);box-shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 1px rgba(200,169,110,.1);}
 .card:active{transform:translateY(-2px);}
-.card.ok{border-color:rgba(26,102,71,.55);background:rgba(14,30,22,.85);}
-.card.ok::before{background:linear-gradient(90deg,transparent,var(--emerald),transparent);opacity:1;}
-[data-theme="light"] .card.ok{background:rgba(220,245,235,.9);}
-.avatar{width:88px;height:88px;border-radius:50%;background:var(--ink-soft);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;transition:border-color .3s;position:relative;z-index:1;}
-.avatar img{width:100%;height:100%;object-fit:cover;}
-.avatar .ini{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--gold);}
-.card:hover .avatar{border-color:var(--gold-d);}
-.card.ok .avatar{border-color:rgba(26,102,71,.6);}
-.card-nombre{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--cream);line-height:1.25;margin-bottom:4px;text-align:center;position:relative;z-index:1;}
-.card-codigo{font-size:10px;color:var(--gold-d);letter-spacing:3.5px;text-transform:uppercase;margin-bottom:6px;position:relative;z-index:1;}
-.card-badge{display:none;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#5DC99A;padding:4px 14px;border-radius:100px;border:1px solid rgba(26,102,71,.5);background:rgba(26,102,71,.15);position:relative;z-index:1;}
-.card.ok .card-badge{display:block;}
-.skel{border-radius:20px;height:210px;border:1px solid var(--border);background:linear-gradient(90deg,var(--ink-mid) 25%,rgba(200,169,110,.04) 50%,var(--ink-mid) 75%);background-size:200% 100%;animation:shimmer 1.6s infinite;}
+.card.ok{border-color:rgba(26,102,71,.6);}
+
+/* Foto grande ocupa 2/3 de la card */
+.card-photo-wrap{position:relative;width:100%;padding-top:75%;overflow:hidden;border-radius:22px 22px 0 0;}
+.card-photo-wrap img,.card-photo-ini{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.card-photo-ini{display:flex;align-items:center;justify-content:center;background:var(--ink-soft);font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:600;color:var(--gold);}
+.card-photo-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,20,.85) 0%,transparent 55%);}
+.card.ok .card-photo-overlay{background:linear-gradient(to top,rgba(10,30,18,.9) 0%,transparent 55%);}
+
+/* Badge en foto */
+.card-ok-badge{position:absolute;top:10px;right:10px;background:rgba(26,102,71,.85);color:#5DC99A;border:1px solid rgba(26,102,71,.6);border-radius:20px;padding:4px 10px;font-size:10px;font-weight:700;letter-spacing:1.5px;display:none;backdrop-filter:blur(4px);}
+.card.ok .card-ok-badge{display:block;}
+
+/* Upload photo btn */
+.card-upload-btn{position:absolute;bottom:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(200,169,110,.2);border:1px solid rgba(200,169,110,.4);color:var(--gold);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;backdrop-filter:blur(4px);}
+.card:hover .card-upload-btn{opacity:1;}
+
+.card-body{padding:14px 16px 16px;}
+.card-nombre{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--cream);line-height:1.2;margin-bottom:4px;}
+.card-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.card-codigo{font-size:10px;color:var(--gold-d);letter-spacing:3px;}
+
+/* Bday indicator */
+.bday-icon{font-size:14px;animation:bday 1s ease-in-out infinite alternate;}
+@keyframes bday{from{transform:scale(1)}to{transform:scale(1.25)}}
+
+/* Skeleton */
+.skel{border-radius:22px;height:260px;border:1px solid var(--border);background:linear-gradient(90deg,var(--ink-mid) 25%,rgba(200,169,110,.04) 50%,var(--ink-mid) 75%);background-size:200% 100%;animation:shimmer 1.6s infinite;}
 @keyframes shimmer{to{background-position:-200% 0}}
 .empty{grid-column:1/-1;text-align:center;padding:80px 20px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:var(--cream-s);opacity:.7;}
 
-/* ══ PANTALLA BIENVENIDA ══ */
-.welcome-screen{position:fixed;inset:0;z-index:500;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;opacity:0;pointer-events:none;transition:opacity .5s;}
+/* ══ WELCOME SCREEN ══ */
+.welcome-screen{position:fixed;inset:0;z-index:500;background:rgba(5,8,14,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;opacity:0;pointer-events:none;transition:opacity .5s;backdrop-filter:blur(20px);}
 .welcome-screen.show{opacity:1;pointer-events:all;}
 .welcome-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(200,169,110,.14) 0%,transparent 70%);pointer-events:none;}
-.w-photo{width:190px;height:190px;border-radius:50%;background:var(--ink-soft);border:5px solid var(--gold);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 0 80px rgba(200,169,110,.35),0 0 0 12px rgba(200,169,110,.06);position:relative;z-index:1;animation:wPhotoIn .7s cubic-bezier(.34,1.2,.64,1) both;}
+.w-photo{width:200px;height:200px;border-radius:50%;background:var(--ink-soft);border:5px solid var(--gold);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 0 90px rgba(200,169,110,.35),0 0 0 14px rgba(200,169,110,.06);position:relative;z-index:1;animation:wPhotoIn .7s cubic-bezier(.34,1.2,.64,1) both;}
 @keyframes wPhotoIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 .w-photo img{width:100%;height:100%;object-fit:cover;}
-.w-photo .ini{font-family:'Cormorant Garamond',serif;font-size:70px;font-weight:600;color:var(--gold);}
-.w-role{margin-top:22px;position:relative;z-index:1;animation:fadeUp .5s .25s both;}
-.w-greeting{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,3vw,20px);color:var(--cream-s);letter-spacing:3px;text-transform:uppercase;margin-top:16px;position:relative;z-index:1;animation:fadeUp .5s .35s both;}
-.w-name{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,9vw,78px);font-weight:300;font-style:italic;color:var(--gold-b);line-height:1.05;position:relative;z-index:1;animation:nameIn .7s .45s cubic-bezier(.34,1.2,.64,1) both;text-align:center;padding:0 24px;}
+.w-photo .ini{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:600;color:var(--gold);}
+.w-role{margin-top:24px;position:relative;z-index:1;animation:fadeUp .5s .25s both;}
+.w-greeting{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,3vw,20px);color:var(--cream-s);letter-spacing:3px;text-transform:uppercase;margin-top:18px;position:relative;z-index:1;animation:fadeUp .5s .35s both;}
+.w-name{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,9vw,80px);font-weight:300;font-style:italic;color:var(--gold-b);line-height:1.05;position:relative;z-index:1;animation:nameIn .7s .45s cubic-bezier(.34,1.2,.64,1) both;text-align:center;padding:0 24px;}
 @keyframes nameIn{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
 .w-msg{font-size:14px;color:var(--cream-s);letter-spacing:2px;position:relative;z-index:1;animation:fadeUp .5s .65s both;margin-top:6px;}
-.w-check{width:72px;height:72px;border-radius:50%;background:rgba(26,102,71,.2);border:2px solid var(--emerald);display:flex;align-items:center;justify-content:center;font-size:32px;animation:popIn .5s .85s cubic-bezier(.34,1.56,.64,1) both;position:relative;z-index:1;margin-top:26px;}
+.w-check{width:76px;height:76px;border-radius:50%;background:rgba(26,102,71,.2);border:2px solid var(--emerald);display:flex;align-items:center;justify-content:center;font-size:34px;animation:popIn .5s .85s cubic-bezier(.34,1.56,.64,1) both;position:relative;z-index:1;margin-top:28px;}
 @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 
-/* ══ CONFETI ══ */
-.confetti-box{position:fixed;inset:0;z-index:600;pointer-events:none;overflow:hidden;}
+/* ══ CONFETTI ══ */
+.cbox{position:fixed;inset:0;z-index:600;pointer-events:none;overflow:hidden;}
 .cp{position:absolute;top:-12px;animation:cFall linear forwards;}
 @keyframes cFall{0%{transform:translateY(-12px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
@@ -147,7 +254,7 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .overlay{position:fixed;inset:0;z-index:300;background:rgba(4,7,14,.9);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
 .overlay.open{opacity:1;pointer-events:all;}
 .modal{background:var(--ink-mid);border:1px solid var(--border-hi);border-radius:26px;padding:48px 40px 40px;max-width:460px;width:100%;text-align:center;position:relative;overflow:hidden;box-shadow:0 32px 100px rgba(0,0,0,.75);transform:scale(.88) translateY(24px);transition:transform .38s cubic-bezier(.34,1.2,.64,1);}
-[data-theme="light"] .modal{background:rgba(245,240,232,.98);}
+[data-theme="light"] .modal{background:rgba(245,240,228,.98);}
 .overlay.open .modal{transform:scale(1) translateY(0);}
 .modal::before{content:'';position:absolute;top:0;left:0;right:0;height:220px;background:radial-gradient(ellipse at 50% -15%,rgba(200,169,110,.1) 0%,transparent 68%);pointer-events:none;}
 .mx{position:absolute;top:15px;right:15px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--cream-s);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
@@ -157,24 +264,34 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .m-avatar .ini{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:600;color:var(--gold);}
 .m-nombre{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--cream);margin-bottom:4px;position:relative;z-index:1;}
 .m-codigo{font-size:11px;color:var(--gold-d);letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;position:relative;z-index:1;}
-.m-role-wrap{margin-bottom:18px;position:relative;z-index:1;}
+.m-rw{margin-bottom:18px;position:relative;z-index:1;}
 .m-culto{background:rgba(200,169,110,.06);border:1px solid var(--border);border-radius:12px;padding:13px 20px;margin-bottom:24px;position:relative;z-index:1;}
 .m-culto strong{display:block;color:var(--cream);font-size:15px;margin-bottom:3px;}
 .m-culto span{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
 .m-btns{display:flex;gap:12px;position:relative;z-index:1;}
-.btn-confirmar{flex:1;padding:16px;background:linear-gradient(135deg,var(--gold-d),var(--gold),#D4B870);border:none;border-radius:13px;color:var(--ink);font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .25s;}
-.btn-confirmar:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(200,169,110,.42);}
-.btn-confirmar:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
-.btn-cancelar{padding:16px 20px;border-radius:13px;background:transparent;border:1px solid var(--border);color:var(--cream-s);font-family:'Outfit',sans-serif;font-size:14px;cursor:pointer;transition:all .2s;}
-.btn-cancelar:hover{border-color:var(--crimson);color:#F07080;}
+.btn-conf{flex:1;padding:16px;background:linear-gradient(135deg,var(--gold-d),var(--gold),#D4B870);border:none;border-radius:13px;color:var(--ink);font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .25s;}
+.btn-conf:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(200,169,110,.42);}
+.btn-conf:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-can{padding:16px 20px;border-radius:13px;background:transparent;border:1px solid var(--border);color:var(--cream-s);font-family:'Outfit',sans-serif;font-size:14px;cursor:pointer;transition:all .2s;}
+.btn-can:hover{border-color:var(--crimson);color:#F07080;}
 .m-ya{background:rgba(26,102,71,.12);border:1px solid rgba(26,102,71,.3);border-radius:12px;padding:13px 18px;margin-bottom:22px;font-size:14px;color:#5DC99A;position:relative;z-index:1;}
+
+/* Upload modal */
+.upload-area{border:2px dashed var(--border-hi);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .25s;position:relative;z-index:1;margin-bottom:20px;}
+.upload-area:hover{border-color:var(--gold);background:rgba(200,169,110,.04);}
+.upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-preview{width:80px;height:80px;border-radius:50%;background:var(--ink-soft);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 12px;font-size:28px;}
+.upload-preview img{width:100%;height:100%;object-fit:cover;}
+.upload-status{font-size:13px;color:var(--cream-s);margin-top:8px;letter-spacing:1px;position:relative;z-index:1;}
+.upload-progress{width:100%;height:3px;background:var(--ink-soft);border-radius:3px;margin-top:8px;overflow:hidden;display:none;position:relative;z-index:1;}
+.upload-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:3px;transition:width .3s;}
 
 /* Modal ID */
 .id-row{display:flex;gap:10px;margin-top:20px;}
 .id-field{flex:1;background:var(--ink);border:1.5px solid var(--border-hi);border-radius:10px;padding:15px 16px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:28px;text-align:center;letter-spacing:8px;outline:none;transition:border-color .25s;}
 .id-field:focus{border-color:var(--gold);}
-.btn-buscar{padding:15px 20px;background:var(--gold);border:none;border-radius:10px;color:var(--ink);font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
-.btn-buscar:hover{background:var(--gold-b);}
+.btn-bus{padding:15px 20px;background:var(--gold);border:none;border-radius:10px;color:var(--ink);font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
+.btn-bus:hover{background:var(--gold-b);}
 .id-err{color:#F07080;font-size:12px;letter-spacing:1px;margin-top:10px;display:none;}
 
 /* Toast */
@@ -182,20 +299,34 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--crimson);box-shadow:0 10px 44px rgba(139,26,42,.55);}
 
+/* Hidden file input */
+.hidden-file{display:none;}
+
 @media(max-width:640px){
   .topbar{padding:0 16px;}
   .topbar-clock{display:none;}
   .hero{padding:36px 16px 26px;}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));padding:0 16px 80px;}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));padding:0 16px 80px;}
   .modal{padding:38px 22px 30px;}
   .w-name{font-size:clamp(32px,10vw,56px);}
 }
 </style>
 </head>
 <body>
-<div class="bg-atm"></div>
+
+<!-- BACKGROUNDS -->
+<div class="church-bg"></div>
+<div class="church-overlay"></div>
 <div class="bg-grid"></div>
-<div class="confetti-box" id="cbox"></div>
+<div class="cbox" id="cbox"></div>
+
+<!-- ══ INTRO ANIMATION ══ -->
+<div class="intro-screen" id="intro">
+  <div class="intro-logo"><img src="logo.png" alt="Logo"></div>
+  <div class="intro-title">Iglesia Luz y Vida IV</div>
+  <div class="intro-sub">Asamblea de Dios · Sistema de Asistencia</div>
+  <div class="intro-bar"><div class="intro-bar-fill" id="intro-fill"></div></div>
+</div>
 
 <!-- ══ WELCOME SCREEN ══ -->
 <div class="welcome-screen" id="wscreen">
@@ -212,7 +343,7 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="brand">
-    <div class="brand-logo"><img src="logo.png" alt="Iglesia Luz y Vida IV"></div>
+    <div class="brand-logo"><img src="logo.png" alt="Logo"></div>
     <div>
       <div class="brand-name">Iglesia Luz y Vida IV</div>
       <div class="brand-sub">Asamblea de Dios</div>
@@ -223,7 +354,7 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
     <div class="clk-date"  id="clk-date"></div>
   </div>
   <div class="topbar-right">
-    <button class="theme-btn" id="tbtn" onclick="toggleTheme()" title="Modo claro/oscuro">🌙</button>
+    <button class="icon-btn" id="tbtn" onclick="toggleTheme()" title="Modo claro/oscuro">🌙</button>
     <a href="admin.html" class="btn-admin">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
@@ -235,12 +366,27 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 <!-- CULTO STRIP -->
 <div class="culto-strip" id="cstrip"><span class="pdot"></span><span id="ctxt">Cargando...</span></div>
 
+<!-- RECORDATORIO BANNER -->
+<div class="reminder-banner" id="reminder">
+  <div class="reminder-left">
+    <div class="reminder-icon">🔔</div>
+    <div class="reminder-text">
+      <strong id="reminder-title">Culto esta noche</strong>
+      <span   id="reminder-sub">Recuerda asistir</span>
+    </div>
+  </div>
+  <button class="reminder-close" onclick="document.getElementById('reminder').classList.remove('show')">✕</button>
+</div>
+
 <!-- ROLE BAR -->
 <div class="role-bar">
-  <button class="role-chip on"          onclick="setRole('all',this)">Todos</button>
-  <button class="role-chip pastor"      onclick="setRole('Pastor',this)">⛪ Pastor</button>
-  <button class="role-chip diacono"     onclick="setRole('Diácono',this)">🙏 Diácono</button>
-  <button class="role-chip estudiante"  onclick="setRole('Estudiante',this)">📖 Estudiante</button>
+  <button class="role-chip on"        onclick="setRole('all',this)">Todos</button>
+  <button class="role-chip pastor"    onclick="setRole('Pastor',this)">⛪ Pastor</button>
+  <button class="role-chip diacono"   onclick="setRole('Diácono',this)">🙏 Diácono</button>
+  <button class="role-chip miembro"   onclick="setRole('Miembro',this)">👤 Miembro</button>
+  <button class="role-chip visitante" onclick="setRole('Visitante',this)">🌟 Visitante</button>
+  <button class="role-chip ljovenes"  onclick="setRole('Líder Jóvenes',this)">🎯 Líd. Jóvenes</button>
+  <button class="role-chip lmartes"   onclick="setRole('Líder Martes',this)">📖 Líd. Martes</button>
 </div>
 
 <!-- OFFLINE -->
@@ -258,8 +404,8 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 <!-- SEARCH -->
 <div class="search-zone">
   <div class="search-shell">
-    <div class="search-iw">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="position:absolute;left:22px;pointer-events:none;color:var(--gold-d)">
+    <div class="siw">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
         <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
       </svg>
       <input id="buscar" type="text" placeholder="Escribe tu nombre aquí..." autocomplete="off" oninput="filtrar()">
@@ -271,20 +417,42 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 <!-- GRID -->
 <div class="grid" id="grid">
   <div class="skel"></div><div class="skel"></div><div class="skel"></div>
-  <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+  <div class="skel"></div><div class="skel"></div>
 </div>
-</div>
+</div><!-- wrap -->
 
 <!-- MODAL CONFIRMAR -->
 <div class="overlay" id="ov1">
   <div class="modal">
     <button class="mx" onclick="cerrarConf()">✕</button>
-    <div class="m-avatar"    id="m-av"></div>
-    <div class="m-nombre"    id="m-nb"></div>
-    <div class="m-codigo"    id="m-cd"></div>
-    <div class="m-role-wrap" id="m-rw"></div>
+    <div class="m-avatar" id="m-av"></div>
+    <div class="m-nombre" id="m-nb"></div>
+    <div class="m-codigo" id="m-cd"></div>
+    <div class="m-rw"     id="m-rw"></div>
     <div class="m-culto"><strong id="m-cn">—</strong><span id="m-ch"></span></div>
     <div id="m-act"></div>
+  </div>
+</div>
+
+<!-- MODAL UPLOAD FOTO -->
+<div class="overlay" id="ov-upload">
+  <div class="modal" style="max-width:400px;">
+    <button class="mx" onclick="cerrarUpload()">✕</button>
+    <div class="m-nombre" style="margin-bottom:4px;">Actualizar Foto</div>
+    <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;position:relative;z-index:1;margin-bottom:20px;">Selecciona una foto desde tu dispositivo</p>
+    <div class="upload-area" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept="image/*" onchange="previewPhoto(event)">
+      <div class="upload-preview" id="upload-preview">📷</div>
+      <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;">Toca aquí para elegir foto</p>
+    </div>
+    <div class="upload-status" id="upload-status"></div>
+    <div class="upload-progress" id="upload-progress">
+      <div class="upload-progress-fill" id="upload-fill"></div>
+    </div>
+    <div class="m-btns" style="margin-top:20px;">
+      <button class="btn-can" onclick="cerrarUpload()">Cancelar</button>
+      <button class="btn-conf" id="btn-upload" onclick="subirFoto()">📤 Subir Foto</button>
+    </div>
   </div>
 </div>
 
@@ -298,10 +466,10 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
       <input class="id-field" id="idf" type="text" placeholder="0001" maxlength="4"
         oninput="this.value=this.value.replace(/\D/g,'')"
         onkeydown="if(event.key==='Enter')buscarId()">
-      <button class="btn-buscar" onclick="buscarId()">Buscar</button>
+      <button class="btn-bus" onclick="buscarId()">Buscar</button>
     </div>
-    <div class="id-err" id="ierr">ID no encontrado. Intenta de nuevo.</div>
-    <button class="btn-cancelar" style="width:100%;margin-top:16px;position:relative;z-index:1;" onclick="cerrarId()">Cancelar</button>
+    <div class="id-err" id="ierr">ID no encontrado.</div>
+    <button class="btn-can" style="width:100%;margin-top:16px;position:relative;z-index:1;" onclick="cerrarId()">Cancelar</button>
   </div>
 </div>
 
@@ -309,35 +477,40 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, onSnapshot, serverTimestamp
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",
-  authDomain:"iglesia-luz-vida.firebaseapp.com",
-  projectId:"iglesia-luz-vida",
-  storageBucket:"iglesia-luz-vida.firebasestorage.app",
-  messagingSenderId:"2442440076",
-  appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"
-};
-const db = getFirestore(initializeApp(firebaseConfig));
+const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
+const db=getFirestore(initializeApp(firebaseConfig));
+
+// ⚠️ CLOUDINARY — Cambia estos valores con los de tu cuenta
+const CLOUDINARY_CLOUD = 'TU_CLOUD_NAME'; // ← ve a cloudinary.com, crea cuenta gratis, copia tu cloud name
+const CLOUDINARY_PRESET = 'TU_UPLOAD_PRESET'; // ← en Cloudinary: Settings > Upload > Add upload preset (unsigned)
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-const RCLS={Pastor:'pastor',Diácono:'diacono',Estudiante:'estudiante'};
-const RICO={Pastor:'⛪',Diácono:'🙏',Estudiante:'📖'};
+const RCLS={Pastor:'pastor',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Líder Jóvenes':'ljovenes','Líder Martes':'lmartes',Presidenta:'presidenta',Vicepresidenta:'vp',Secretaria:'secretaria',Tesorera:'tesorera','1er Vocal':'vocal1','2do Vocal':'vocal2'};
+const RICO={Pastor:'⛪',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Líder Jóvenes':'🎯','Líder Martes':'📖',Presidenta:'👑',Vicepresidenta:'🌸',Secretaria:'📋',Tesorera:'💰','1er Vocal':'🎤','2do Vocal':'🎤'};
 const CCOLORS=['#C8A96E','#E4CF96','#F07080','#5DC99A','#7EB8FF','#FFE066','#FF8FA3','#fff'];
 
-let miembros=[],asistidos=new Set(),selId=null,roleFiltro='all';
+let miembros=[],asistidos=new Set(),selId=null,uploadId=null,roleFiltro='all',selectedFile=null;
 
-// ── TEMA ──────────────────────────────────────────────────────
+// ── INTRO ──────────────────────────────────────────────────────
 const savedTheme=localStorage.getItem('lviv-theme')||'dark';
 document.documentElement.setAttribute('data-theme',savedTheme);
 document.getElementById('tbtn').textContent=savedTheme==='dark'?'🌙':'🌞';
 
+setTimeout(()=>{
+  const fill=document.getElementById('intro-fill');
+  fill.style.width='100%';
+},100);
+setTimeout(()=>{
+  document.getElementById('intro').classList.add('fade-out');
+  setTimeout(()=>document.getElementById('intro').classList.add('gone'),900);
+},2400);
+
 window.toggleTheme=function(){
-  const html=document.documentElement;
-  const isDark=html.getAttribute('data-theme')==='dark';
+  const html=document.documentElement;const isDark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',isDark?'light':'dark');
   document.getElementById('tbtn').textContent=isDark?'🌞':'🌙';
   localStorage.setItem('lviv-theme',isDark?'light':'dark');
@@ -346,15 +519,14 @@ window.toggleTheme=function(){
 // ── HELPERS ──────────────────────────────────────────────────
 function hoy(){return new Date().toISOString().split('T')[0];}
 function ini(n){return n.trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
-function toast(m,t='ok'){
-  const el=document.getElementById('toast');
-  el.textContent=m;el.className='toast show'+(t==='err'?' err':'');
-  clearTimeout(el._t);el._t=setTimeout(()=>el.className='toast',3500);
-}
-function rbadge(rol){
-  if(!rol)return'';
-  const c=RCLS[rol]||'estudiante',i=RICO[rol]||'👤';
-  return`<span class="rbadge ${c}">${i} ${rol}</span>`;
+function toast(m,t='ok'){const el=document.getElementById('toast');el.textContent=m;el.className='toast show'+(t==='err'?' err':'');clearTimeout(el._t);el._t=setTimeout(()=>el.className='toast',3500);}
+function rbadge(rol){if(!rol)return'';const c=RCLS[rol]||'miembro',i=RICO[rol]||'👤';return`<span class="rbadge ${c}">${i} ${rol}</span>`;}
+
+function esCumple(m){
+  if(!m.cumpleanos)return false;
+  const hoyDate=new Date();
+  const[,mes,dia]=m.cumpleanos.split('-');
+  return parseInt(mes)===hoyDate.getMonth()+1&&parseInt(dia)===hoyDate.getDate();
 }
 
 // ── CONFETI ──────────────────────────────────────────────────
@@ -363,22 +535,31 @@ function confeti(){
   for(let i=0;i<90;i++){
     const el=document.createElement('div');el.className='cp';
     const c=CCOLORS[Math.floor(Math.random()*CCOLORS.length)];
-    const s=Math.random()*10+6,l=Math.random()*100,d=Math.random()*2.5+1.5,dl=Math.random()*0.8,sh=Math.random()>.5?'50%':'2px';
+    const s=Math.random()*10+6,l=Math.random()*100,d=Math.random()*2.5+1.5,dl=Math.random()*.8,sh=Math.random()>.5?'50%':'2px';
     el.style.cssText=`left:${l}%;width:${s}px;height:${s}px;background:${c};border-radius:${sh};animation-duration:${d}s;animation-delay:${dl}s;`;
     box.appendChild(el);
   }
   setTimeout(()=>box.innerHTML='',4500);
 }
 
-// ── RELOJ ────────────────────────────────────────────────────
+// ── RELOJ + RECORDATORIO ─────────────────────────────────────
 function getH(){const d=new Date().getDay();if(d===0)return{n:'Culto Dominical',i:'8:00 AM',f:'~3:00 PM',mi:480,mf:900};if(d===2)return{n:'Culto de Martes',i:'7:00 PM',f:'9:00 PM',mi:1140,mf:1260};if(d===6)return{n:'Culto de Sábado',i:'7:00 PM',f:'9:00 PM',mi:1140,mf:1260};return null;}
 function tick(){
   const now=new Date();
   document.getElementById('clk-time').textContent=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
   document.getElementById('clk-date').textContent=`${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} ${now.getFullYear()}`;
   const h=getH(),strip=document.getElementById('cstrip'),txt=document.getElementById('ctxt'),mins=now.getHours()*60+now.getMinutes();
-  if(h){if(mins>=h.mi&&mins<=h.mf){strip.className='culto-strip on';txt.textContent=`${h.n} en curso · ${h.i} – ${h.f}`;}else if(mins<h.mi){strip.className='culto-strip';txt.textContent=`Hoy · ${h.n} · ${h.i} – ${h.f}`;}else{strip.className='culto-strip';txt.textContent='✅ Culto finalizado · ¡Hasta la próxima!';}}
-  else{strip.className='culto-strip';txt.textContent='Sin culto hoy · Próximo: Mar o Sáb 7:00 PM';}
+  if(h){
+    if(mins>=h.mi&&mins<=h.mf){strip.className='culto-strip on';txt.textContent=`${h.n} en curso · ${h.i} – ${h.f}`;}
+    else if(mins<h.mi){strip.className='culto-strip';txt.textContent=`Hoy · ${h.n} · ${h.i} – ${h.f}`;}
+    else{strip.className='culto-strip';txt.textContent='✅ Culto finalizado · ¡Hasta la próxima!';}
+    // Recordatorio: 1 hora antes del culto
+    if(mins>=h.mi-60&&mins<h.mi&&!localStorage.getItem('reminder-'+hoy())){
+      document.getElementById('reminder-title').textContent=`${h.n} en ${h.mi-mins} minutos`;
+      document.getElementById('reminder-sub').textContent=`Hoy · ${h.i} – ${h.f} · ¡Recuerda asistir!`;
+      document.getElementById('reminder').classList.add('show');
+    }
+  }else{strip.className='culto-strip';txt.textContent='Sin culto hoy · Próximo: Mar o Sáb 7:00 PM';}
 }
 setInterval(tick,1000);tick();
 
@@ -402,13 +583,24 @@ function render(){
   if(!lista.length){grid.innerHTML='<div class="empty">No se encontró ningún hermano/a</div>';return;}
   grid.innerHTML=lista.map((m,i)=>{
     const ok=asistidos.has(m.id);
-    const foto=m.foto_url?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.parentElement.innerHTML='<span class=ini>${ini(m.nombre)}</span>'">`:`<span class="ini">${ini(m.nombre)}</span>`;
-    return`<div class="card${ok?' ok':''}" style="animation-delay:${i*.04}s" onclick="abrirConf('${m.id}')">
-      <div class="avatar">${foto}</div>
-      <div class="card-nombre">${m.nombre}</div>
-      <div class="card-codigo">ID: ${m.codigo}</div>
-      ${rbadge(m.rol)}
-      <div class="card-badge">✓ Asistió hoy</div>
+    const cumple=esCumple(m);
+    const fotoHtml=m.foto_url
+      ?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="card-photo-ini" style="display:none">${ini(m.nombre)}</div>`
+      :`<div class="card-photo-ini">${ini(m.nombre)}</div>`;
+    return`<div class="card${ok?' ok':''}" style="animation-delay:${i*.035}s" onclick="abrirConf('${m.id}')">
+      <div class="card-photo-wrap">
+        ${fotoHtml}
+        <div class="card-photo-overlay"></div>
+        <div class="card-ok-badge">✓ Asistió</div>
+        <button class="card-upload-btn" onclick="event.stopPropagation();abrirUpload('${m.id}')" title="Cambiar foto">📷</button>
+      </div>
+      <div class="card-body">
+        <div class="card-nombre">${cumple?'🎂 ':''}${m.nombre}</div>
+        <div class="card-meta">
+          <div class="card-codigo">ID: ${m.codigo}</div>
+          ${rbadge(m.rol)}
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -419,8 +611,10 @@ window.setRole=function(r,el){roleFiltro=r;document.querySelectorAll('.role-chip
 window.abrirConf=function(id){
   const m=miembros.find(x=>x.id===id);if(!m)return;selId=id;
   const i2=ini(m.nombre);
-  document.getElementById('m-av').innerHTML=m.foto_url?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.parentElement.innerHTML='<span class=ini>${i2}</span>'">`:`<span class="ini">${i2}</span>`;
-  document.getElementById('m-nb').textContent=m.nombre;
+  document.getElementById('m-av').innerHTML=m.foto_url
+    ?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.parentElement.innerHTML='<span class=ini>${i2}</span>'">`
+    :`<span class="ini">${i2}</span>`;
+  document.getElementById('m-nb').textContent=(esCumple(m)?'🎂 ':'')+m.nombre;
   document.getElementById('m-cd').textContent=`ID: ${m.codigo}`;
   document.getElementById('m-rw').innerHTML=rbadge(m.rol);
   const h=getH();
@@ -428,9 +622,9 @@ window.abrirConf=function(id){
   document.getElementById('m-ch').textContent=h?`${h.i} – ${h.f}`:hoy();
   const act=document.getElementById('m-act');
   if(asistidos.has(id)){
-    act.innerHTML=`<div class="m-ya">✅ Ya registraste tu asistencia hoy</div><button class="btn-cancelar" style="width:100%;" onclick="cerrarConf()">Cerrar</button>`;
+    act.innerHTML=`<div class="m-ya">✅ Ya registraste tu asistencia hoy</div><button class="btn-can" style="width:100%;" onclick="cerrarConf()">Cerrar</button>`;
   }else{
-    act.innerHTML=`<div class="m-btns"><button class="btn-cancelar" onclick="cerrarConf()">Cancelar</button><button class="btn-confirmar" id="bcf" onclick="confirmar()">✓ Confirmar</button></div>`;
+    act.innerHTML=`<div class="m-btns"><button class="btn-can" onclick="cerrarConf()">Cancelar</button><button class="btn-conf" id="bcf" onclick="confirmar()">✓ Confirmar</button></div>`;
   }
   document.getElementById('ov1').classList.add('open');
 };
@@ -453,13 +647,78 @@ window.confirmar=async function(){
 // ── BIENVENIDA ───────────────────────────────────────────────
 function mostrarBienvenida(m){
   const i2=ini(m.nombre);
-  document.getElementById('w-photo').innerHTML=m.foto_url?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.innerHTML='<span class=ini>${i2}</span>'">`:`<span class="ini">${i2}</span>`;
+  document.getElementById('w-photo').innerHTML=m.foto_url
+    ?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.innerHTML='<span class=ini>${i2}</span>'">`
+    :`<span class="ini">${i2}</span>`;
   document.getElementById('w-name').textContent=m.nombre.split(' ').slice(0,2).join(' ');
-  document.getElementById('w-role').innerHTML=rbadge(m.rol);
+  document.getElementById('w-role').innerHTML=rbadge(m.rol)+(esCumple(m)?'&nbsp;<span style="font-size:22px">🎂</span>':'');
   const h=getH();document.getElementById('w-msg').textContent=h?`Registrado en ${h.n}`:'¡Tu asistencia ha sido registrada!';
   document.getElementById('wscreen').classList.add('show');
   setTimeout(()=>document.getElementById('wscreen').classList.remove('show'),4500);
 }
+
+// ── UPLOAD FOTO (Cloudinary) ──────────────────────────────────
+window.abrirUpload=function(id){
+  uploadId=id;selectedFile=null;
+  document.getElementById('upload-preview').innerHTML='📷';
+  document.getElementById('upload-status').textContent='';
+  document.getElementById('upload-progress').style.display='none';
+  document.getElementById('upload-fill').style.width='0%';
+  document.getElementById('file-input').value='';
+  document.getElementById('ov-upload').classList.add('open');
+};
+window.cerrarUpload=function(){document.getElementById('ov-upload').classList.remove('open');uploadId=null;};
+
+window.previewPhoto=function(e){
+  selectedFile=e.target.files[0];
+  if(!selectedFile)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const prev=document.getElementById('upload-preview');
+    prev.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  };
+  reader.readAsDataURL(selectedFile);
+  document.getElementById('upload-status').textContent=selectedFile.name;
+};
+
+window.subirFoto=async function(){
+  if(!selectedFile||!uploadId){toast('Selecciona una foto primero','err');return;}
+  if(CLOUDINARY_CLOUD==='TU_CLOUD_NAME'){toast('Configura Cloudinary en firebase-config.js','err');return;}
+  const btn=document.getElementById('btn-upload');btn.disabled=true;
+  const prog=document.getElementById('upload-progress');
+  const fill=document.getElementById('upload-fill');
+  prog.style.display='block';
+  document.getElementById('upload-status').textContent='Subiendo foto...';
+
+  // Simular progreso mientras se sube
+  let pct=0;const interval=setInterval(()=>{pct=Math.min(pct+8,85);fill.style.width=pct+'%';},200);
+
+  try{
+    const formData=new FormData();
+    formData.append('file',selectedFile);
+    formData.append('upload_preset',CLOUDINARY_PRESET);
+    formData.append('folder','iglesia-luz-vida');
+
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,{method:'POST',body:formData});
+    const data=await res.json();
+    clearInterval(interval);fill.style.width='100%';
+
+    if(data.secure_url){
+      // Actualizar en Firebase
+      await updateDoc(doc(db,'miembros',uploadId),{foto_url:data.secure_url});
+      // Actualizar en memoria
+      const m=miembros.find(x=>x.id===uploadId);
+      if(m)m.foto_url=data.secure_url;
+      cerrarUpload();
+      render();
+      toast('✓ Foto actualizada');
+    }else{throw new Error(data.error?.message||'Error al subir');}
+  }catch(e){
+    clearInterval(interval);
+    toast(e.message,'err');
+    document.getElementById('upload-status').textContent='Error al subir. Intenta de nuevo.';
+  }finally{btn.disabled=false;}
+};
 
 // ── MODAL ID ─────────────────────────────────────────────────
 window.abrirId=function(){document.getElementById('idf').value='';document.getElementById('ierr').style.display='none';document.getElementById('ov2').classList.add('open');setTimeout(()=>document.getElementById('idf').focus(),250);};
@@ -470,8 +729,14 @@ window.buscarId=function(){
   if(m){cerrarId();abrirConf(m.id);}else{document.getElementById('ierr').style.display='block';}
 };
 
-['ov1','ov2'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');if(id==='ov1')selId=null;}});
+['ov1','ov2','ov-upload'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){
+    if(e.target===this){
+      this.classList.remove('open');
+      if(id==='ov1')selId=null;
+      if(id==='ov-upload'){uploadId=null;}
+    }
+  });
 });
 </script>
 </body>
