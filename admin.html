@@ -939,6 +939,26 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 
 <div class="toast" id="toast"></div>
 
+<!-- Bridge: expone funciones del module al scope global -->
+<script>
+// Estas funciones son llamadas por onclick en el HTML
+// Delegan al module cuando ya esté listo
+const _bridge=new Proxy({},{get:(_,fn)=>(...args)=>{
+  if(window['__m_'+fn]) return window['__m_'+fn](...args);
+  console.warn('Función aún no cargada:',fn);
+}});
+['login','salir','toggleTheme','tab','filtro','marcar','quitar','eliminar','reiniciar',
+ 'abrirAdd','cerrarAdd','agregarMiembro','exportar','verStats','abrirAddEvento','cerrarAddEvento',
+ 'guardarEvento','eliminarEvento','abrirAddFamilia','cerrarAddFamilia','guardarFamilia',
+ 'eliminarFamilia','syncColor','guardarColores','resetColores','abrirAddDiezmo','cerrarAddDiezmo',
+ 'guardarDiezmo','marcarRespondida','abrirAddAnuncio','cerrarAddAnuncio','guardarAnuncio',
+ 'toggleAnuncio','abrirAddFoto','cerrarAddFoto','guardarFoto','abrirAddVotacion','cerrarAddVotacion',
+ 'guardarVotacion','abrirAddMision','cerrarAddMision','guardarMision','abrirAddActa','cerrarAddActa',
+ 'guardarActa','eliminarDoc','guardarMensaje'].forEach(fn=>{
+  window[fn]=(...args)=>window['__m_'+fn]?window['__m_'+fn](...args):console.warn('Cargando...',fn);
+});
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp
@@ -1242,6 +1262,25 @@ window.exportar=function(){
 document.getElementById('ov-add').addEventListener('click',function(e){if(e.target===this)cerrarAdd();});
 document.getElementById('ov-evento').addEventListener('click',function(e){if(e.target===this)cerrarAddEvento();});
 
+// Registrar todas las funciones como __m_X para el bridge
+// Esto permite que los onclick del HTML accedan a funciones del module
+Object.keys(window).forEach(fn => {
+  if(typeof window[fn] === 'function' && !fn.startsWith('__')) {
+    window['__m_'+fn] = window[fn];
+  }
+});
+// También registrar explícitamente las más importantes
+['login','salir','toggleTheme','tab','filtro','marcar','quitar','eliminar','reiniciar',
+ 'abrirAdd','cerrarAdd','agregarMiembro','exportar','verStats','abrirAddEvento','cerrarAddEvento',
+ 'guardarEvento','eliminarEvento','abrirAddFamilia','cerrarAddFamilia','guardarFamilia',
+ 'eliminarFamilia','syncColor','guardarColores','resetColores','abrirAddDiezmo','cerrarAddDiezmo',
+ 'guardarDiezmo','marcarRespondida','abrirAddAnuncio','cerrarAddAnuncio','guardarAnuncio',
+ 'toggleAnuncio','abrirAddFoto','cerrarAddFoto','guardarFoto','abrirAddVotacion','cerrarAddVotacion',
+ 'guardarVotacion','abrirAddMision','cerrarAddMision','guardarMision','abrirAddActa','cerrarAddActa',
+ 'guardarActa','eliminarDoc','guardarMensaje'].forEach(fn=>{
+  if(window[fn]) window['__m_'+fn]=window[fn];
+});
+
 // ── RANKING ───────────────────────────────────────────────────
 function renderRanking(){
   const cont=document.getElementById('ranking-cont');
@@ -1437,8 +1476,10 @@ async function renderDiezmos(){
       <div class="stat-mini"><div class="val">${todos.length}</div><div class="lbl">Registros</div></div>`;
     document.getElementById('tbody-diezmos').innerHTML=todos.map(d=>{
       const m=miembros.find(x=>x.id===d.miembro_id);
+      const mNombre=m?m.nombre:'Anónimo';
+      const mFoto=m?fotoEl(m):'<div class="mf">?</div>';
       return`<tr>
-        <td><div class="tn">${fotoEl(m||{nombre:'?',foto_url:''})} ${m?m.nombre:'Anónimo'}</div></td>
+        <td><div class="tn">${mFoto} ${mNombre}</div></td>
         <td><span class="diezmo-tipo ${d.tipo}">${d.tipo}</span></td>
         <td style="color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:16px;">RD$ ${parseFloat(d.monto||0).toLocaleString()}</td>
         <td class="ttime">${d.fecha||'—'}</td>
