@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Perfil · Iglesia Luz y Vida IV</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C8A96E;--gold-b:#E4CF96;--gold-d:#7A6235;
+  --ink:#080C14;--ink-mid:#0F1624;--ink-soft:#182030;
+  --crimson:#8B1A2A;--cream:#EEE6D4;--cream-s:#B8A888;--emerald:#1A6647;
+  --border:rgba(200,169,110,.15);--border-hi:rgba(200,169,110,.42);
+}
+[data-theme="light"]{--ink:#F0EAD8;--ink-mid:#E8DFC8;--cream:#1A1208;--cream-s:#4A3A20;--border:rgba(100,75,30,.2);--border-hi:rgba(100,75,30,.45);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(200,169,110,.1) 0%,transparent 62%);pointer-events:none;}
+.wrap{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:0 20px 80px;}
+
+/* LOGIN */
+.login-box{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.lcard{background:var(--ink-mid);border:1px solid var(--border-hi);border-radius:24px;padding:48px 40px;max-width:380px;width:100%;text-align:center;position:relative;overflow:hidden;}
+.lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:200px;background:radial-gradient(ellipse at 50% -15%,rgba(200,169,110,.1) 0%,transparent 68%);pointer-events:none;}
+.l-logo{width:80px;height:80px;border-radius:50%;background:#fff;border:3px solid var(--gold);overflow:hidden;margin:0 auto 20px;position:relative;z-index:1;}
+.l-logo img{width:100%;height:100%;object-fit:contain;}
+.l-title{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold-b);margin-bottom:4px;position:relative;z-index:1;}
+.l-sub{font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;position:relative;z-index:1;}
+.l-input{width:100%;background:var(--ink);border:1.5px solid var(--border-hi);border-radius:10px;padding:14px 18px;color:var(--cream);font-size:15px;font-family:'Outfit',sans-serif;outline:none;margin-bottom:12px;transition:border-color .25s;text-align:center;letter-spacing:2px;position:relative;z-index:1;}
+.l-input:focus{border-color:var(--gold);}
+.btn-login{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;border-radius:10px;color:var(--ink);font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;cursor:pointer;transition:all .25s;position:relative;z-index:1;}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,169,110,.38);}
+.l-err{color:#F07080;font-size:12px;margin-top:8px;display:none;}
+
+/* PROFILE */
+#profile{display:none;}
+.profile-header{
+  text-align:center;padding:60px 20px 40px;
+  border-bottom:1px solid var(--border);margin-bottom:32px;
+}
+.profile-avatar{
+  width:130px;height:130px;border-radius:50%;
+  background:var(--ink-soft);border:4px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;margin:0 auto 20px;
+  box-shadow:0 0 60px rgba(200,169,110,.3);
+}
+.profile-avatar img{width:100%;height:100%;object-fit:cover;}
+.profile-avatar .ini{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:600;color:var(--gold);}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--cream);margin-bottom:6px;}
+.profile-codigo{font-size:11px;color:var(--gold-d);letter-spacing:4px;margin-bottom:12px;}
+.rbadge{display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+.rbadge.miembro{background:rgba(26,102,71,.2);color:#5DC99A;border:1px solid rgba(26,102,71,.4);}
+.rbadge.pastor{background:rgba(139,26,42,.2);color:#F07080;border:1px solid rgba(139,26,42,.4);}
+.medal{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:1px;margin-top:10px;}
+.medal.oro{background:rgba(255,215,0,.15);color:#FFD700;border:1px solid rgba(255,215,0,.35);}
+.medal.plata{background:rgba(192,192,192,.15);color:#C0C0C0;border:1px solid rgba(192,192,192,.35);}
+.medal.bronce{background:rgba(205,127,50,.15);color:#CD7F32;border:1px solid rgba(205,127,50,.35);}
+.medal.diamante{background:rgba(126,184,255,.15);color:#7EB8FF;border:1px solid rgba(126,184,255,.35);}
+.medal.fuego{background:rgba(255,87,34,.15);color:#FF5722;border:1px solid rgba(255,87,34,.35);}
+
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.stat-box{background:rgba(200,169,110,.05);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold);}
+.stat-lbl{font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+
+.section-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold-b);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+.asist-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
+.asist-item{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-radius:10px;background:rgba(26,102,71,.08);border:1px solid rgba(26,102,71,.2);}
+.asist-fecha{font-size:13px;color:var(--cream);}
+.asist-hora{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
+
+.progress-bar{height:8px;background:var(--ink-soft);border-radius:4px;overflow:hidden;margin-top:8px;}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold-d),var(--gold));transition:width 1.2s ease-out;}
+
+.btn-back{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:100px;border:1px solid var(--border-hi);background:transparent;color:var(--gold);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-bottom:32px;transition:all .25s;margin-top:20px;display:block;text-align:center;}
+.btn-back:hover{background:rgba(200,169,110,.08);}
+
+.bday-box{background:rgba(200,169,110,.06);border:1px solid var(--border-hi);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-box" id="login-box">
+  <div class="lcard">
+    <div class="l-logo"><img src="logo.png" alt="Logo"></div>
+    <div class="l-title">Mi Perfil</div>
+    <div class="l-sub">Ingresa tu código ID</div>
+    <input class="l-input" id="login-codigo" type="text" placeholder="0001" maxlength="4"
+      oninput="this.value=this.value.replace(/\D/g,'')"
+      onkeydown="if(event.key==='Enter')verPerfil()">
+    <button class="btn-login" onclick="verPerfil()">Ver Mi Perfil</button>
+    <div class="l-err" id="l-err">Código no encontrado. Verifica e intenta de nuevo.</div>
+  </div>
+</div>
+
+<!-- PERFIL -->
+<div class="wrap" id="profile">
+  <a href="kiosco.html" class="btn-back">← Volver al Kiosco</a>
+  <div class="profile-header">
+    <div class="profile-avatar" id="p-avatar"></div>
+    <div class="profile-name"  id="p-nombre"></div>
+    <div class="profile-codigo" id="p-codigo"></div>
+    <div id="p-badge"></div>
+    <div id="p-medal"></div>
+  </div>
+
+  <div id="p-bday"></div>
+
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-val" id="p-asist">0</div><div class="stat-lbl">Asistencias</div></div>
+    <div class="stat-box"><div class="stat-val" id="p-ausen" style="color:#F07080;">0</div><div class="stat-lbl">Ausencias</div></div>
+    <div class="stat-box"><div class="stat-val" id="p-pct" style="color:var(--gold-b);">0%</div><div class="stat-lbl">Asistencia</div></div>
+  </div>
+
+  <div style="margin-bottom:28px;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+      <span style="font-size:12px;color:var(--cream-s);letter-spacing:1px;">Porcentaje de asistencia</span>
+      <span id="p-pct2" style="font-size:12px;color:var(--gold);">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="p-prog" style="width:0%"></div></div>
+  </div>
+
+  <div class="section-title">📅 Últimas Asistencias</div>
+  <div class="asist-list" id="p-asist-list"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
+const db=getFirestore(initializeApp(firebaseConfig));
+
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const RCLS={Pastor:'pastor',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Pres. Domingo':'presd','Vice. Domingo':'vpd','Sec. Domingo':'secd','Tes. Domingo':'tesd','1er Vocal Dom.':'vocal1d','2do Vocal Dom.':'vocal2d','Pres. Martes':'presm','Vice. Martes':'vpm','Sec. Martes':'secm','Tes. Martes':'tesm','1er Vocal Mar.':'vocal1m','2do Vocal Mar.':'vocal2m','Pres. Jóvenes':'presj','Vice. Jóvenes':'vpj','Sec. Jóvenes':'secj','Tes. Jóvenes':'tesj','1er Vocal Jóv.':'vocal1j','2do Vocal Jóv.':'vocal2j'};
+const RICO={Pastor:'⛪',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Pres. Domingo':'👑','Vice. Domingo':'🌸','Sec. Domingo':'📋','Tes. Domingo':'💰','1er Vocal Dom.':'🎤','2do Vocal Dom.':'🎤','Pres. Martes':'👑','Vice. Martes':'🌸','Sec. Martes':'📋','Tes. Martes':'💰','1er Vocal Mar.':'🎤','2do Vocal Mar.':'🎤','Pres. Jóvenes':'👑','Vice. Jóvenes':'🌸','Sec. Jóvenes':'📋','Tes. Jóvenes':'💰','1er Vocal Jóv.':'🎤','2do Vocal Jóv.':'🎤'};
+
+function ini(n){return n.trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+function calcularMedalla(d){
+  if(d>=50)return{ico:'💎',nom:'Diamante',cls:'diamante'};
+  if(d>=25)return{ico:'🔥',nom:'Fuego',cls:'fuego'};
+  if(d>=15)return{ico:'🥇',nom:'Oro',cls:'oro'};
+  if(d>=8) return{ico:'🥈',nom:'Plata',cls:'plata'};
+  if(d>=3) return{ico:'🥉',nom:'Bronce',cls:'bronce'};
+  return null;
+}
+
+window.verPerfil=async function(){
+  const codigo=document.getElementById('login-codigo').value.trim().padStart(4,'0');
+  try{
+    const msSnap=await getDocs(collection(db,'miembros'));
+    const m=msSnap.docs.map(d=>({id:d.id,...d.data()})).find(x=>x.codigo===codigo&&x.activo!==false);
+    if(!m){document.getElementById('l-err').style.display='block';return;}
+
+    document.getElementById('login-box').style.display='none';
+    document.getElementById('profile').style.display='block';
+
+    // Avatar
+    const avEl=document.getElementById('p-avatar');
+    avEl.innerHTML=m.foto_url?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.parentElement.innerHTML='<span class=ini>${ini(m.nombre)}</span>'">`:`<span class="ini">${ini(m.nombre)}</span>`;
+
+    document.getElementById('p-nombre').textContent=m.nombre;
+    document.getElementById('p-codigo').textContent=`ID: ${m.codigo}`;
+
+    // Badge rol
+    const rolCls=RCLS[m.rol]||'miembro';
+    const rolIco=RICO[m.rol]||'👤';
+    document.getElementById('p-badge').innerHTML=m.rol?`<span class="rbadge ${rolCls}">${rolIco} ${m.rol}</span>`:'';
+
+    // Cumpleaños
+    if(m.cumpleanos){
+      const [,mes,dia]=m.cumpleanos.split('-');
+      const hoyDate=new Date();
+      const esHoy=parseInt(mes)===hoyDate.getMonth()+1&&parseInt(dia)===hoyDate.getDate();
+      document.getElementById('p-bday').innerHTML=`<div class="bday-box"><span style="font-size:28px;">🎂</span><div><strong style="color:var(--gold-b);">${esHoy?'¡Hoy es tu cumpleaños!':'Tu Cumpleaños'}</strong><div style="font-size:13px;color:var(--cream-s);margin-top:3px;">${dia} de ${MESES[parseInt(mes)-1]}</div></div></div>`;
+    }
+
+    // Historial de asistencia
+    const hSnap=await getDocs(collection(db,'asistencia'));
+    let totalCultos=0, asistencias=[], cultosList=[];
+    for(const dd of hSnap.docs){
+      totalCultos++;
+      const regs=await getDocs(collection(db,`asistencia/${dd.id}/registros`));
+      const reg=regs.docs.find(r=>r.id===m.id||r.data().miembro_id===m.id);
+      if(reg) asistencias.push({fecha:dd.id,hora:reg.data().hora_llegada||''});
+    }
+    asistencias.sort((a,b)=>b.fecha.localeCompare(a.fecha));
+    const pct=totalCultos?Math.round(asistencias.length/totalCultos*100):0;
+
+    document.getElementById('p-asist').textContent=asistencias.length;
+    document.getElementById('p-ausen').textContent=totalCultos-asistencias.length;
+    document.getElementById('p-pct').textContent=pct+'%';
+    document.getElementById('p-pct2').textContent=pct+'%';
+    setTimeout(()=>{document.getElementById('p-prog').style.width=pct+'%';},200);
+
+    // Medalla
+    const med=calcularMedalla(asistencias.length);
+    document.getElementById('p-medal').innerHTML=med?`<span class="medal ${med.cls}" style="margin-top:10px;">${med.ico} ${med.nom}</span>`:'';
+
+    // Lista asistencias
+    const listaEl=document.getElementById('p-asist-list');
+    if(!asistencias.length){listaEl.innerHTML='<p style="color:var(--cream-s);font-style:italic;text-align:center;padding:20px;">Sin asistencias registradas aún</p>';return;}
+    listaEl.innerHTML=asistencias.slice(0,12).map(a=>`<div class="asist-item">
+      <span class="asist-fecha">✅ ${a.fecha}</span>
+      <span class="asist-hora">${a.hora?a.hora:''}</span>
+    </div>`).join('');
+
+  }catch(e){document.getElementById('l-err').textContent=e.message;document.getElementById('l-err').style.display='block';}
+};
+</script>
+</body>
+</html>
