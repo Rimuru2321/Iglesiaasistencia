@@ -93,8 +93,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .sl{font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
 
 /* LAYOUT */
-.dash-body{display:flex;flex:1;overflow:hidden;}
-.sidebar{width:210px;border-right:1px solid var(--border);padding:22px 0;flex-shrink:0;background:rgba(8,12,20,.5);}
+.dash-body{display:flex;flex:1;min-height:0;}
+.sidebar{width:210px;border-right:1px solid var(--border);padding:22px 0;flex-shrink:0;background:rgba(8,12,20,.5);overflow-y:auto;}
 [data-theme="light"] .sidebar{background:rgba(220,210,185,.3);}
 .slbl{font-size:9px;color:var(--cream-s);letter-spacing:3px;text-transform:uppercase;padding:0 18px;margin-bottom:6px;}
 .sbtn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 18px;border:none;background:transparent;color:var(--cream-s);font-family:'Outfit',sans-serif;font-size:13px;font-weight:400;cursor:pointer;transition:all .2s;text-align:left;border-left:2.5px solid transparent;}
@@ -102,7 +102,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .sbtn.on{color:var(--gold);border-left-color:var(--gold);background:rgba(200,169,110,.08);}
 .ssep{margin:16px 0;border-top:1px solid var(--border);}
 .sico{font-size:15px;width:20px;text-align:center;}
-.main{flex:1;overflow-y:auto;padding:30px 36px 70px;}
+.main{flex:1;overflow-y:auto;padding:30px 36px 70px;min-height:0;scroll-behavior:smooth;}
 
 /* SECTION */
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
@@ -1212,12 +1212,37 @@ function renderHistorial(){
 }
 
 // ── TABS ──────────────────────────────────────────────────────
+// ── TAB NAVIGATION (versión unificada) ──────────────────────
 window.tab=function(id,el){
+  // 1. Ocultar todos los tabs
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  // 2. Desactivar todos los botones del sidebar
   document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('tab-'+id).classList.add('on');
-  el.classList.add('on');
-  if(id==='graficas')setTimeout(renderGraficas,100);
+  // 3. Mostrar el tab seleccionado
+  const tabEl=document.getElementById('tab-'+id);
+  if(tabEl) tabEl.classList.add('on');
+  // 4. Activar el botón del sidebar
+  if(el) el.classList.add('on');
+  // 5. Scroll al inicio del main
+  const mainEl=document.querySelector('.main');
+  if(mainEl) mainEl.scrollTo({top:0,behavior:'smooth'});
+  // 6. Cargar datos según el tab
+  const loaders={
+    graficas:   ()=>renderGraficas(),
+    ranking:    ()=>renderRanking(),
+    calendario: ()=>renderCalendario(),
+    stats:      ()=>poblarStatsSelect(),
+    familias:   ()=>renderFamilias(),
+    config:     ()=>{cargarConfig();cargarColoresInputs();},
+    diezmos:    ()=>renderDiezmos(),
+    oraciones:  ()=>renderOraciones(),
+    anuncios:   ()=>renderAnuncios(),
+    galeria:    ()=>renderGaleria(),
+    votaciones: ()=>renderVotaciones(),
+    misiones:   ()=>renderMisiones(),
+    actas:      ()=>renderActas(),
+  };
+  if(loaders[id]) setTimeout(loaders[id], 80);
 };
 
 // ── ACCIONES ─────────────────────────────────────────────────
@@ -1451,15 +1476,7 @@ window.guardarMensaje=async function(){
   }catch(e){toast(e.message,'err');}
 };
 
-// ── OVERRIDE TAB para cargar datos dinámicos ──────────────────
-const _origTab=window.tab;
-window.tab=function(id,el){
-  _origTab(id,el);
-  if(id==='ranking')    renderRanking();
-  if(id==='calendario') renderCalendario();
-  if(id==='stats')      poblarStatsSelect();
-  if(id==='config')     cargarConfig();
-};
+
 
 // ── DIEZMOS ──────────────────────────────────────────────────
 async function renderDiezmos(){
@@ -1710,12 +1727,7 @@ window.eliminarDoc=async function(coleccion,id,callback){
 };
 
 // ── OVERRIDE TAB (agregar nuevos) ─────────────────────────────
-const _origTab3=window.tab;
-window.tab=function(id,el){
-  _origTab3(id,el);
-  const map={diezmos:renderDiezmos,oraciones:renderOraciones,anuncios:renderAnuncios,galeria:renderGaleria,votaciones:renderVotaciones,misiones:renderMisiones,actas:renderActas};
-  if(map[id])map[id]();
-};
+
 
 // ── OVERLAY CLOSES ────────────────────────────────────────────
 ['ov-diezmo','ov-anuncio','ov-foto','ov-votacion','ov-mision','ov-acta'].forEach(id=>{
@@ -1881,13 +1893,7 @@ function ajustarBrillo(hex,amount){
   if(saved){try{const cols=JSON.parse(saved);Object.entries(cols).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}catch(e){}}
 })();
 
-// ── OVERRIDE TAB ──────────────────────────────────────────────
-const _origTab2=window.tab;
-window.tab=function(id,el){
-  _origTab2(id,el);
-  if(id==='familias'){renderFamilias();}
-  if(id==='config'){cargarConfig();cargarColoresInputs();}
-};
+
 
 document.getElementById('ov-familia').addEventListener('click',function(e){if(e.target===this)cerrarAddFamilia();});
 </script>
