@@ -1006,7 +1006,7 @@ window.salir=function(){document.getElementById('login').style.display='flex';do
 
 // ── CARGAR ────────────────────────────────────────────────────
 async function cargar(){
-  const ms=(await db.collection('miembros').get()).docs;
+  const ms=(await db.collection('miembros').get());
   miembros=ms.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.activo!==false).sort((a,b)=>a.nombre.localeCompare(b.nombre));
 
   // Cumpleaños de hoy
@@ -1023,10 +1023,10 @@ async function cargar(){
   });
 
   // Historial
-  const hSnap=(await db.collection('asistencia').get()).docs;
+  const hSnap=(await db.collection('asistencia').get());
   const dates=[];
   for(const dd of hSnap.docs){
-    const regs=(await db.collection(`asistencia/${dd.id}/registros`).get()).docs;
+    const regs=(await db.collection(`asistencia/${dd.id}/registros`).get());
     if(regs.size>0)dates.push({fecha:dd.id,count:regs.size,registros:regs.docs.map(r=>({id:r.id,...r.data()}))});
   }
   historial=dates.sort((a,b)=>b.fecha.localeCompare(a.fecha));
@@ -1327,7 +1327,7 @@ async function renderCalendario(){
   const cont=document.getElementById('calendario-cont');
   cont.innerHTML='<div style="color:var(--cream-s);text-align:center;padding:30px;">Cargando...</div>';
   try{
-    const snap=(await db.collection('eventos').get()).docs;
+    const snap=(await db.collection('eventos').get());
     const eventos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.fecha.localeCompare(b.fecha));
     const hoyStr=hoy();
     const futuros=eventos.filter(e=>e.fecha>=hoyStr);
@@ -1434,7 +1434,7 @@ window.verStats=function(id){
 // ── CONFIG: MENSAJE PERSONALIZADO ────────────────────────────
 async function cargarConfig(){
   try{
-    const snap=(await db.collection('config').get()).docs;
+    const snap=(await db.collection('config').get());
     snap.docs.forEach(d=>{
       if(d.id==='bienvenida'&&d.data().mensaje){
         const el=document.getElementById('msg-bienvenida');
@@ -1457,7 +1457,7 @@ window.guardarMensaje=async function(){
 // ── DIEZMOS ──────────────────────────────────────────────────
 async function renderDiezmos(){
   try{
-    const snap=(await db.collection('diezmos').get()).docs;
+    const snap=(await db.collection('diezmos').get());
     const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     // Stats
     const total=todos.reduce((s,d)=>s+(parseFloat(d.monto)||0),0);
@@ -1510,7 +1510,7 @@ window.guardarDiezmo=async function(){
 // ── ORACIONES ─────────────────────────────────────────────────
 async function renderOraciones(){
   try{
-    const snap=(await db.collection('oraciones').get()).docs;
+    const snap=(await db.collection('oraciones').get());
     const todas=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     const cont=document.getElementById('oraciones-cont');
     if(!todas.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">No hay peticiones de oración aún</div>`;return;}
@@ -1535,7 +1535,7 @@ window.marcarRespondida=async function(id){
 // ── ANUNCIOS ──────────────────────────────────────────────────
 async function renderAnuncios(){
   try{
-    const snap=(await db.collection('anuncios').get()).docs;
+    const snap=(await db.collection('anuncios').get());
     const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.creado_at||'').localeCompare(a.creado_at||''));
     const cont=document.getElementById('anuncios-cont');
     if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin anuncios. ¡Crea el primero!</div>`;return;}
@@ -1564,7 +1564,7 @@ window.toggleAnuncio=async function(id,activo){
 // ── GALERÍA ───────────────────────────────────────────────────
 async function renderGaleria(){
   try{
-    const snap=(await db.collection('galeria').get()).docs;
+    const snap=(await db.collection('galeria').get());
     const fotos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     const cont=document.getElementById('galeria-cont');
     if(!fotos.length){cont.style.display='block';cont.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin fotos aún. ¡Agrega la primera!</div>`;return;}
@@ -1588,7 +1588,7 @@ window.guardarFoto=async function(){
 // ── VOTACIONES ────────────────────────────────────────────────
 async function renderVotaciones(){
   try{
-    const snap=(await db.collection('votaciones').get()).docs;
+    const snap=(await db.collection('votaciones').get());
     const todos=snap.docs.map(d=>({id:d.id,...d.data()}));
     const cont=document.getElementById('votaciones-cont');
     if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin votaciones. ¡Crea la primera!</div>`;return;}
@@ -1632,7 +1632,7 @@ window.guardarVotacion=async function(){
 // ── MISIONES ──────────────────────────────────────────────────
 async function renderMisiones(){
   try{
-    const snap=(await db.collection('misiones').get()).docs;
+    const snap=(await db.collection('misiones').get());
     const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.salida?.localeCompare(a.salida)||0);
     const cont=document.getElementById('misiones-cont');
     if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin viajes ministeriales registrados</div>`;return;}
@@ -1666,7 +1666,7 @@ window.guardarMision=async function(){
 // ── ACTAS ─────────────────────────────────────────────────────
 async function renderActas(){
   try{
-    const snap=(await db.collection('actas').get()).docs;
+    const snap=(await db.collection('actas').get());
     const todas=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
     const cont=document.getElementById('actas-cont');
     if(!todas.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin actas registradas</div>`;return;}
@@ -1718,7 +1718,7 @@ async function renderFamilias(){
   const cont=document.getElementById('familias-cont');
   cont.innerHTML='<div style="color:var(--cream-s);text-align:center;padding:30px;">Cargando...</div>';
   try{
-    const snap=(await db.collection('familias').get()).docs;
+    const snap=(await db.collection('familias').get());
     const familias=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.nombre.localeCompare(b.nombre));
     if(!familias.length){
       cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;">No hay familias registradas.<br>¡Crea la primera!</div>`;
