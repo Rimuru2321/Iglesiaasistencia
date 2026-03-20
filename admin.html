@@ -944,10 +944,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 
 
 <script>
-// Firebase cargado via CDN compat (ver scripts de cabecera)
-
 const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
-firebase.firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
@@ -1246,7 +1244,7 @@ if(firstTab){firstTab.style.display='block';firstTab.classList.add('on');}
 window.marcar=async function(id){try{const now=new Date();const h=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;await db.collection(`asistencia/${hoy()}/registros`).doc(id).set({miembro_id:id,hora_llegada:h,timestamp:firebase.firestore.FieldValue.serverTimestamp()});toast('✓ Asistencia marcada');}catch(e){toast(e.message,'err');}};
 window.quitar=async function(id){try{await db.collection(`asistencia/${hoy()}/registros`).doc(id).delete();toast('Asistencia removida');}catch(e){toast(e.message,'err');}};
 window.eliminar=async function(id,nombre){if(!confirm(`¿Eliminar a ${nombre}?`))return;try{await db.collection('miembros').doc(id).update({activo:false});miembros=miembros.filter(m=>m.id!==id);renderHermanos();stats();renderHoy(filtroActual);toast(`${nombre} eliminado`);}catch(e){toast(e.message,'err');}};
-window.reiniciar=async function(){if(!confirm('¿Reiniciar asistencia de hoy?'))return;try{const snap=(await db.collection(`asistencia/${hoy()}/registros`).get()).docs;await Promise.all(snap.docs.map(d=>d.ref.delete()));toast('Asistencia reiniciada');}catch(e){toast(e.message,'err');}};
+window.reiniciar=async function(){if(!confirm('¿Reiniciar asistencia de hoy?'))return;try{const snap=await db.collection(`asistencia/${hoy()}/registros`).get();await Promise.all(snap.docs.map(d=>d.ref.delete()));toast('Asistencia reiniciada');}catch(e){toast(e.message,'err');}};
 
 // ── AGREGAR ───────────────────────────────────────────────────
 window.abrirAdd=function(){['fn','fc','ff'].forEach(id=>document.getElementById(id).value='');document.getElementById('frol').value='Miembro';document.getElementById('fcumple').value='';document.getElementById('ov-add').classList.add('open');setTimeout(()=>document.getElementById('fn').focus(),200);};
@@ -1283,19 +1281,6 @@ window.exportar=function(){
 
 document.getElementById('ov-add').addEventListener('click',function(e){if(e.target===this)cerrarAdd();});
 document.getElementById('ov-evento').addEventListener('click',function(e){if(e.target===this)cerrarAddEvento();});
-
-
-// También registrar explícitamente las más importantes
-['login','salir','toggleTheme','tab','filtro','marcar','quitar','eliminar','reiniciar',
- 'abrirAdd','cerrarAdd','agregarMiembro','exportar','verStats','abrirAddEvento','cerrarAddEvento',
- 'guardarEvento','eliminarEvento','abrirAddFamilia','cerrarAddFamilia','guardarFamilia',
- 'eliminarFamilia','syncColor','guardarColores','resetColores','abrirAddDiezmo','cerrarAddDiezmo',
- 'guardarDiezmo','marcarRespondida','abrirAddAnuncio','cerrarAddAnuncio','guardarAnuncio',
- 'toggleAnuncio','abrirAddFoto','cerrarAddFoto','guardarFoto','abrirAddVotacion','cerrarAddVotacion',
- 'guardarVotacion','abrirAddMision','cerrarAddMision','guardarMision','abrirAddActa','cerrarAddActa',
- 'guardarActa','eliminarDoc','guardarMensaje'].forEach(fn=>{
-  if(window[fn]) window['__m_'+fn]=window[fn];
-});
 
 // ── RANKING ───────────────────────────────────────────────────
 function renderRanking(){
