@@ -641,8 +641,8 @@ const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomai
 const db=getFirestore(initializeApp(firebaseConfig));
 
 // ⚠️ CLOUDINARY — Cambia estos valores con los de tu cuenta
-const CLOUDINARY_CLOUD = 'TU_CLOUD_NAME'; // ← ve a cloudinary.com, crea cuenta gratis, copia tu cloud name
-const CLOUDINARY_PRESET = 'TU_UPLOAD_PRESET'; // ← en Cloudinary: Settings > Upload > Add upload preset (unsigned)
+const CLOUDINARY_CLOUD  = 'df6xaavst';    // Cloud Name de Cloudinary
+const CLOUDINARY_PRESET = 'iglesia-luz-vida'; // Upload Preset (Unsigned)
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -854,7 +854,7 @@ window.previewPhoto=function(e){
 
 window.subirFoto=async function(){
   if(!selectedFile||!uploadId){toast('Selecciona una foto primero','err');return;}
-  if(CLOUDINARY_CLOUD==='TU_CLOUD_NAME'){toast('Configura Cloudinary en firebase-config.js','err');return;}
+  // Cloudinary configurado ✓
   const btn=document.getElementById('btn-upload');btn.disabled=true;
   const prog=document.getElementById('upload-progress');
   const fill=document.getElementById('upload-fill');
