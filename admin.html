@@ -203,7 +203,28 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .btn-s:hover{border-color:var(--crimson);color:#F07080;}
 
 /* Toast */
-.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);padding:13px 32px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;z-index:999;pointer-events:none;white-space:nowrap;transition:transform .42s cubic-bezier(.34,1.56,.64,1);background:var(--emerald);color:#fff;box-shadow:0 10px 44px rgba(26,102,71,.55);}
+.rank-card{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:rgba(200,169,110,.04);margin-bottom:10px;transition:all .2s;}
+.rank-card:hover{border-color:var(--border-hi);background:rgba(200,169,110,.08);}
+.rank-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;min-width:44px;text-align:center;}
+.rank-num.gold{color:#FFD700;}.rank-num.silver{color:#C0C0C0;}.rank-num.bronze{color:#CD7F32;}
+.rank-num.rest{color:var(--cream-s);}
+.rank-bar-wrap{flex:1;}
+.rank-bar{height:6px;background:var(--ink-soft);border-radius:3px;margin-top:6px;overflow:hidden;}
+.rank-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-d),var(--gold));transition:width 1s ease-out;}
+.rank-pct{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
+
+.evento-card{padding:14px 18px;border-radius:12px;border-left:4px solid var(--gold);background:rgba(200,169,110,.05);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.evento-card.especial{border-left-color:#F07080;background:rgba(139,26,42,.08);}
+.evento-fecha{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);font-weight:600;min-width:80px;}
+.evento-info strong{display:block;color:var(--cream);font-size:15px;}
+.evento-info span{font-size:12px;color:var(--cream-s);letter-spacing:1px;}
+
+.stat-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.stat-mini{background:rgba(200,169,110,.06);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.stat-mini .val{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);}
+.stat-mini .lbl{font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
+
+.toast{position:fixed;bottom:32px;left:50%;.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);padding:13px 32px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;z-index:999;pointer-events:none;white-space:nowrap;transition:transform .42s cubic-bezier(.34,1.56,.64,1);background:var(--emerald);color:#fff;box-shadow:0 10px 44px rgba(26,102,71,.55);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--crimson);box-shadow:0 10px 44px rgba(139,26,42,.55);}
 
@@ -288,6 +309,10 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
       <button class="sbtn"    onclick="tab('graficas',this)"><span class="sico">📊</span><span>Gráficas</span></button>
       <button class="sbtn"    onclick="tab('cumples',this)"><span class="sico">🎂</span><span>Cumpleaños</span></button>
       <button class="sbtn"    onclick="tab('hist',this)"><span class="sico">📅</span><span>Historial</span></button>
+      <button class="sbtn"    onclick="tab('ranking',this)"><span class="sico">🏆</span><span>Ranking</span></button>
+      <button class="sbtn"    onclick="tab('calendario',this)"><span class="sico">📆</span><span>Calendario</span></button>
+      <button class="sbtn"    onclick="tab('stats',this)"><span class="sico">📊</span><span>Mi Perfil</span></button>
+      <button class="sbtn"    onclick="tab('config',this)"><span class="sico">⚙️</span><span>Config</span></button>
       <div class="ssep"></div>
       <div class="slbl">Acciones</div>
       <button class="sbtn" onclick="abrirAdd()"><span class="sico">➕</span><span>Agregar</span></button>
@@ -348,7 +373,91 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
         <div class="sec-head"><div><div class="sec-title">Historial</div><div class="sec-sub">Todos los cultos</div></div></div>
         <div id="hist-cont"></div>
       </div>
+
+      <!-- RANKING -->
+      <div class="tab" id="tab-ranking">
+        <div class="sec-head"><div><div class="sec-title">🏆 Ranking de Asistencia</div><div class="sec-sub">Los hermanos más fieles</div></div></div>
+        <div id="ranking-cont"></div>
+      </div>
+
+      <!-- CALENDARIO -->
+      <div class="tab" id="tab-calendario">
+        <div class="sec-head">
+          <div><div class="sec-title">📆 Calendario de Cultos</div><div class="sec-sub">Eventos y cultos especiales</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddEvento()">➕ Agregar Evento</button></div>
+        </div>
+        <div id="calendario-cont"></div>
+      </div>
+
+      <!-- ESTADÍSTICAS INDIVIDUALES -->
+      <div class="tab" id="tab-stats">
+        <div class="sec-head">
+          <div><div class="sec-title">📊 Estadísticas por Hermano</div><div class="sec-sub">Selecciona un hermano</div></div>
+        </div>
+        <select class="finput" id="stats-select" onchange="verStats(this.value)" style="margin-bottom:20px;max-width:320px;">
+          <option value="">— Selecciona un hermano —</option>
+        </select>
+        <div id="stats-cont"></div>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="tab" id="tab-config">
+        <div class="sec-head"><div><div class="sec-title">⚙️ Configuración</div><div class="sec-sub">Personaliza la app</div></div></div>
+        <div style="max-width:540px;">
+          <div class="chart-wrap">
+            <div class="chart-title">💬 Mensaje de Bienvenida Personalizado</div>
+            <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:14px;">Este mensaje aparece en la pantalla de bienvenida al confirmar asistencia</p>
+            <textarea id="msg-bienvenida" class="finput" rows="3" style="width:100%;resize:vertical;" placeholder="Ej: ¡Dios te bendiga! Nos alegra tenerte aquí hoy 🙏"></textarea>
+            <button class="btn-p" style="margin-top:14px;padding:12px 28px;" onclick="guardarMensaje()">💾 Guardar Mensaje</button>
+          </div>
+          <div class="chart-wrap" style="margin-top:16px;">
+            <div class="chart-title">🔐 Cambiar Contraseña Admin</div>
+            <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:14px;">Edita el archivo admin.html y busca: <code style="color:var(--gold);background:rgba(200,169,110,.1);padding:2px 8px;border-radius:4px;">const PASS='admin1234'</code></p>
+          </div>
+        </div>
+      </div>
     </main>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR EVENTO -->
+<div class="overlay" id="ov-evento">
+  <div class="modal" style="max-width:460px;">
+    <button class="mx" onclick="cerrarAddEvento()">✕</button>
+    <div class="m-title">Agregar Evento</div>
+    <div class="m-sub">Culto especial o evento en el calendario</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Nombre del Evento *</label>
+        <input class="finput" id="ev-nombre" placeholder="Ej: Aniversario de la Iglesia">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha *</label>
+        <input class="finput" id="ev-fecha" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Hora</label>
+        <input class="finput" id="ev-hora" type="time" value="19:00">
+      </div>
+      <div class="fg">
+        <label class="flbl">Tipo</label>
+        <select class="finput" id="ev-tipo">
+          <option value="culto">📅 Culto Regular</option>
+          <option value="especial">⭐ Evento Especial</option>
+          <option value="aniversario">🎉 Aniversario</option>
+          <option value="retiro">🏕️ Retiro</option>
+          <option value="ayuno">🙏 Día de Ayuno</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <label class="flbl">Descripción (opcional)</label>
+        <input class="finput" id="ev-desc" placeholder="Detalles del evento...">
+      </div>
+    </div>
+    <div class="mbtns">
+      <button class="btn-s" onclick="cerrarAddEvento()">Cancelar</button>
+      <button class="btn-p" onclick="guardarEvento()">Guardar</button>
+    </div>
   </div>
 </div>
 
@@ -721,6 +830,190 @@ window.exportar=function(){
 };
 
 document.getElementById('ov-add').addEventListener('click',function(e){if(e.target===this)cerrarAdd();});
+document.getElementById('ov-evento').addEventListener('click',function(e){if(e.target===this)cerrarAddEvento();});
+
+// ── RANKING ───────────────────────────────────────────────────
+function renderRanking(){
+  const cont=document.getElementById('ranking-cont');
+  if(!historial.length&&miembros.length===0){cont.innerHTML='<div style="text-align:center;padding:60px;color:var(--cream-s);font-family:Cormorant Garamond,serif;font-style:italic;font-size:20px;">Sin datos de asistencia aún</div>';return;}
+
+  // Contar asistencias por miembro en todo el historial
+  const conteo={};
+  historial.forEach(d=>{
+    d.registros.forEach(r=>{
+      const id=r.miembro_id||r.id;
+      conteo[id]=(conteo[id]||0)+1;
+    });
+  });
+
+  const maxCultos=historial.length||1;
+  const ranked=miembros.map(m=>({...m,total:conteo[m.id]||0,pct:Math.round((conteo[m.id]||0)/maxCultos*100)}))
+    .sort((a,b)=>b.total-a.total);
+
+  const MEDALS=['gold','silver','bronze'];
+  const EMOJIS=['🥇','🥈','🥉'];
+
+  cont.innerHTML=ranked.map((m,i)=>{
+    const cls=i<3?MEDALS[i]:'rest';
+    const emoji=i<3?EMOJIS[i]:`${i+1}`;
+    return`<div class="rank-card">
+      ${fotoEl(m,'mf')}
+      <div class="rank-num ${cls}">${emoji}</div>
+      <div class="rank-bar-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <strong style="color:var(--cream);font-size:14px;">${m.nombre}</strong>
+          <span style="color:var(--gold);font-size:13px;font-family:'Cormorant Garamond',serif;">${m.total} cultos</span>
+        </div>
+        <div class="rank-bar"><div class="rank-bar-fill" style="width:${m.pct}%"></div></div>
+        <div class="rank-pct">${m.pct}% de asistencia</div>
+      </div>
+      ${rbadge(m.rol)}
+    </div>`;
+  }).join('');
+}
+
+// ── CALENDARIO ────────────────────────────────────────────────
+async function renderCalendario(){
+  const cont=document.getElementById('calendario-cont');
+  cont.innerHTML='<div style="color:var(--cream-s);text-align:center;padding:30px;">Cargando...</div>';
+  try{
+    const snap=await getDocs(collection(db,'eventos'));
+    const eventos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.fecha.localeCompare(b.fecha));
+    const hoyStr=hoy();
+    const futuros=eventos.filter(e=>e.fecha>=hoyStr);
+    const pasados=eventos.filter(e=>e.fecha<hoyStr).reverse();
+
+    if(!futuros.length&&!pasados.length){
+      cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;">No hay eventos programados.<br>¡Agrega el primero!</div>`;
+      return;
+    }
+
+    const TIPO_ICONS={culto:'📅',especial:'⭐',aniversario:'🎉',retiro:'🏕️',ayuno:'🙏'};
+    const renderEvento=e=>{
+      const isEsp=e.tipo&&e.tipo!=='culto';
+      const icon=TIPO_ICONS[e.tipo]||'📅';
+      const fecha=new Date(e.fecha+'T12:00:00');
+      const fechaStr=`${DIAS[fecha.getDay()]} ${fecha.getDate()} de ${MESES[fecha.getMonth()]}`;
+      return`<div class="evento-card${isEsp?' especial':''}">
+        <div class="evento-fecha">${fecha.getDate()}</div>
+        <div class="evento-info">
+          <strong>${icon} ${e.nombre}</strong>
+          <span>${fechaStr}${e.hora?' · '+e.hora:''}</span>
+          ${e.descripcion?`<span style="display:block;margin-top:3px;opacity:.7">${e.descripcion}</span>`:''}
+        </div>
+        <button class="rbtn del" onclick="eliminarEvento('${e.id}')">🗑</button>
+      </div>`;
+    };
+
+    cont.innerHTML=(futuros.length?`<h4 style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);margin-bottom:14px;">Próximos Eventos</h4>${futuros.map(renderEvento).join('')}`:'')
+      +(pasados.length?`<h4 style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream-s);margin-bottom:14px;margin-top:28px;">Eventos Pasados</h4>${pasados.map(renderEvento).join('')}`:'');
+  }catch(e){cont.innerHTML='<div style="color:#F07080;text-align:center;padding:30px;">Error al cargar eventos</div>';}
+}
+
+window.abrirAddEvento=function(){
+  ['ev-nombre','ev-desc','ev-hora'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=id==='ev-hora'?'19:00':'';});
+  document.getElementById('ev-fecha').value=hoy();
+  document.getElementById('ev-tipo').value='culto';
+  document.getElementById('ov-evento').classList.add('open');
+  setTimeout(()=>document.getElementById('ev-nombre').focus(),200);
+};
+window.cerrarAddEvento=function(){document.getElementById('ov-evento').classList.remove('open');};
+
+window.guardarEvento=async function(){
+  const nombre=document.getElementById('ev-nombre').value.trim();
+  const fecha=document.getElementById('ev-fecha').value;
+  if(!nombre||!fecha){toast('Nombre y fecha son obligatorios','err');return;}
+  try{
+    await setDoc(doc(collection(db,'eventos')),{nombre,fecha,hora:document.getElementById('ev-hora').value,tipo:document.getElementById('ev-tipo').value,descripcion:document.getElementById('ev-desc').value.trim(),creado_en:serverTimestamp()});
+    cerrarAddEvento();renderCalendario();toast('✓ Evento guardado');
+  }catch(e){toast(e.message,'err');}
+};
+
+window.eliminarEvento=async function(id){
+  if(!confirm('¿Eliminar este evento?'))return;
+  try{await deleteDoc(doc(db,'eventos',id));renderCalendario();toast('Evento eliminado');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── ESTADÍSTICAS INDIVIDUALES ────────────────────────────────
+function poblarStatsSelect(){
+  const sel=document.getElementById('stats-select');
+  sel.innerHTML='<option value="">— Selecciona un hermano —</option>';
+  miembros.forEach(m=>{
+    const opt=document.createElement('option');
+    opt.value=m.id;opt.textContent=`${m.nombre} (${m.codigo})`;
+    sel.appendChild(opt);
+  });
+}
+
+window.verStats=function(id){
+  const cont=document.getElementById('stats-cont');
+  if(!id){cont.innerHTML='';return;}
+  const m=miembros.find(x=>x.id===id);
+  if(!m)return;
+
+  // Contar en historial
+  const cultosTotales=historial.length;
+  const cultosAsistidos=historial.filter(d=>d.registros.some(r=>(r.miembro_id||r.id)===id));
+  const pct=cultosTotales?Math.round(cultosAsistidos.length/cultosTotales*100):0;
+
+  // Últimas asistencias
+  const ultimas=cultosAsistidos.slice(0,8).map(d=>{
+    const reg=d.registros.find(r=>(r.miembro_id||r.id)===id);
+    return`<div class="hpill">${d.fecha} <span style="opacity:.6">${reg?.hora_llegada||''}</span></div>`;
+  }).join('');
+
+  cont.innerHTML=`
+    <div style="display:flex;align-items:center;gap:18px;margin-bottom:20px;">
+      ${fotoEl(m,'mf')}
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);">${m.nombre}</div>
+        <div style="font-size:11px;color:var(--gold-d);letter-spacing:3px;">ID: ${m.codigo}</div>
+        <div style="margin-top:6px;">${rbadge(m.rol)}</div>
+      </div>
+    </div>
+    <div class="stat-overview">
+      <div class="stat-mini"><div class="val">${cultosAsistidos.length}</div><div class="lbl">Asistencias</div></div>
+      <div class="stat-mini"><div class="val">${cultosTotales-cultosAsistidos.length}</div><div class="lbl" style="color:#F07080;">Ausencias</div></div>
+      <div class="stat-mini"><div class="val" style="color:${pct>=75?'#5DC99A':pct>=50?'var(--gold)':'#F07080'}">${pct}%</div><div class="lbl">Asistencia</div></div>
+    </div>
+    ${cultosAsistidos.length?`<div><p style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Últimas asistencias</p><div class="hpills">${ultimas}</div></div>`:'<p style="color:var(--cream-s);font-style:italic;">Sin asistencias registradas</p>'}
+  `;
+};
+
+// ── CONFIG: MENSAJE PERSONALIZADO ────────────────────────────
+async function cargarConfig(){
+  try{
+    const snap=await getDocs(collection(db,'config'));
+    snap.docs.forEach(d=>{
+      if(d.id==='bienvenida'&&d.data().mensaje){
+        const el=document.getElementById('msg-bienvenida');
+        if(el)el.value=d.data().mensaje;
+      }
+    });
+  }catch(e){}
+}
+
+window.guardarMensaje=async function(){
+  const msg=document.getElementById('msg-bienvenida').value.trim();
+  try{
+    await setDoc(doc(db,'config','bienvenida'),{mensaje:msg,actualizado:serverTimestamp()});
+    toast('✓ Mensaje guardado');
+  }catch(e){toast(e.message,'err');}
+};
+
+// ── OVERRIDE TAB para cargar datos dinámicos ──────────────────
+const _origTab=window.tab;
+window.tab=function(id,el){
+  _origTab(id,el);
+  if(id==='ranking')    renderRanking();
+  if(id==='calendario') renderCalendario();
+  if(id==='stats')      poblarStatsSelect();
+  if(id==='config')     cargarConfig();
+};
+
+// Agregar tab stats al sidebar (ya fue añadido arriba en el HTML)
+// Pero necesitamos el botón:
 </script>
 </body>
 </html>
