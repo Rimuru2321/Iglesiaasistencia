@@ -224,13 +224,97 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 .stat-mini .val{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);}
 .stat-mini .lbl{font-size:10px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
 
+.diezmo-tipo{display:inline-block;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.diezmo-tipo.diezmo{background:rgba(200,169,110,.15);color:var(--gold);border:1px solid rgba(200,169,110,.3);}
+.diezmo-tipo.ofrenda{background:rgba(26,102,71,.15);color:#5DC99A;border:1px solid rgba(26,102,71,.3);}
+.diezmo-tipo.especial{background:rgba(139,26,42,.15);color:#F07080;border:1px solid rgba(139,26,42,.3);}
+
+.prayer-card{padding:16px 20px;border-radius:12px;border-left:4px solid rgba(200,169,110,.5);background:rgba(200,169,110,.04);margin-bottom:10px;}
+.prayer-card.respondida{border-left-color:rgba(26,102,71,.6);background:rgba(26,102,71,.04);}
+.prayer-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);margin-bottom:4px;}
+.prayer-card-text{font-size:14px;color:var(--cream-s);line-height:1.6;}
+.prayer-card-meta{font-size:10px;color:var(--cream-s);letter-spacing:1px;margin-top:8px;}
+
+.anuncio-admin-card{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:rgba(200,169,110,.04);margin-bottom:10px;flex-wrap:wrap;gap:10px;}
+.anuncio-admin-card.inactivo{opacity:.5;}
+.anuncio-text-preview{font-size:14px;color:var(--cream);flex:1;}
+
+.foto-thumb{border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:var(--ink-soft);position:relative;cursor:pointer;}
+.foto-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
+.foto-thumb:hover img{transform:scale(1.05);}
+.foto-thumb-overlay{position:absolute;inset:0;background:rgba(8,12,20,.6);opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center;}
+.foto-thumb:hover .foto-thumb-overlay{opacity:1;}
+.foto-thumb-label{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(to top,rgba(8,12,20,.85),transparent);font-size:11px;color:var(--cream);letter-spacing:1px;}
+
+.voto-card{border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;background:rgba(200,169,110,.03);}
+.voto-pregunta{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);margin-bottom:14px;}
+.voto-opcion{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.voto-bar{flex:1;height:8px;background:var(--ink-soft);border-radius:4px;overflow:hidden;}
+.voto-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:4px;transition:width 1s ease-out;}
+.voto-pct{font-size:12px;color:var(--gold);min-width:40px;text-align:right;}
+.voto-count{font-size:10px;color:var(--cream-s);}
+
+.mision-card{padding:16px 20px;border-radius:12px;border-left:4px solid rgba(21,101,192,.5);background:rgba(21,101,192,.04);margin-bottom:10px;}
+.mision-card.completada{border-left-color:rgba(26,102,71,.6);background:rgba(26,102,71,.04);}
+.mision-titulo{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold);margin-bottom:4px;}
+.mision-meta{font-size:12px;color:var(--cream-s);letter-spacing:1px;}
+
+.acta-card{padding:18px 20px;border-radius:12px;border:1px solid var(--border);background:rgba(200,169,110,.03);margin-bottom:12px;cursor:pointer;transition:all .2s;}
+.acta-card:hover{border-color:var(--border-hi);background:rgba(200,169,110,.06);}
+.acta-titulo{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--cream);margin-bottom:4px;}
+.acta-meta{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
+.acta-body{font-size:14px;color:var(--cream-s);line-height:1.7;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:none;}
+.acta-card.open .acta-body{display:block;}
+
 .familia-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;background:rgba(200,169,110,.03);}
 .familia-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(200,169,110,.05);}
 .familia-nombre{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);}
 .familia-miembros{padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;}
 .familia-member-pill{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:13px;color:var(--cream);}
 .familia-member-pill img,.familia-member-ini{width:24px;height:24px;border-radius:50%;object-fit:cover;background:var(--ink-soft);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gold);font-family:'Cormorant Garamond',serif;flex-shrink:0;}
-.toast{position:fixed;bottom:32px;left:50%;.familia-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;background:rgba(200,169,110,.03);}
+.toast{position:fixed;bottom:32px;left:50%;.diezmo-tipo{display:inline-block;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.diezmo-tipo.diezmo{background:rgba(200,169,110,.15);color:var(--gold);border:1px solid rgba(200,169,110,.3);}
+.diezmo-tipo.ofrenda{background:rgba(26,102,71,.15);color:#5DC99A;border:1px solid rgba(26,102,71,.3);}
+.diezmo-tipo.especial{background:rgba(139,26,42,.15);color:#F07080;border:1px solid rgba(139,26,42,.3);}
+
+.prayer-card{padding:16px 20px;border-radius:12px;border-left:4px solid rgba(200,169,110,.5);background:rgba(200,169,110,.04);margin-bottom:10px;}
+.prayer-card.respondida{border-left-color:rgba(26,102,71,.6);background:rgba(26,102,71,.04);}
+.prayer-card-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);margin-bottom:4px;}
+.prayer-card-text{font-size:14px;color:var(--cream-s);line-height:1.6;}
+.prayer-card-meta{font-size:10px;color:var(--cream-s);letter-spacing:1px;margin-top:8px;}
+
+.anuncio-admin-card{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:rgba(200,169,110,.04);margin-bottom:10px;flex-wrap:wrap;gap:10px;}
+.anuncio-admin-card.inactivo{opacity:.5;}
+.anuncio-text-preview{font-size:14px;color:var(--cream);flex:1;}
+
+.foto-thumb{border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:var(--ink-soft);position:relative;cursor:pointer;}
+.foto-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
+.foto-thumb:hover img{transform:scale(1.05);}
+.foto-thumb-overlay{position:absolute;inset:0;background:rgba(8,12,20,.6);opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center;}
+.foto-thumb:hover .foto-thumb-overlay{opacity:1;}
+.foto-thumb-label{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(to top,rgba(8,12,20,.85),transparent);font-size:11px;color:var(--cream);letter-spacing:1px;}
+
+.voto-card{border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;background:rgba(200,169,110,.03);}
+.voto-pregunta{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--cream);margin-bottom:14px;}
+.voto-opcion{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.voto-bar{flex:1;height:8px;background:var(--ink-soft);border-radius:4px;overflow:hidden;}
+.voto-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:4px;transition:width 1s ease-out;}
+.voto-pct{font-size:12px;color:var(--gold);min-width:40px;text-align:right;}
+.voto-count{font-size:10px;color:var(--cream-s);}
+
+.mision-card{padding:16px 20px;border-radius:12px;border-left:4px solid rgba(21,101,192,.5);background:rgba(21,101,192,.04);margin-bottom:10px;}
+.mision-card.completada{border-left-color:rgba(26,102,71,.6);background:rgba(26,102,71,.04);}
+.mision-titulo{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold);margin-bottom:4px;}
+.mision-meta{font-size:12px;color:var(--cream-s);letter-spacing:1px;}
+
+.acta-card{padding:18px 20px;border-radius:12px;border:1px solid var(--border);background:rgba(200,169,110,.03);margin-bottom:12px;cursor:pointer;transition:all .2s;}
+.acta-card:hover{border-color:var(--border-hi);background:rgba(200,169,110,.06);}
+.acta-titulo{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--cream);margin-bottom:4px;}
+.acta-meta{font-size:11px;color:var(--cream-s);letter-spacing:1px;}
+.acta-body{font-size:14px;color:var(--cream-s);line-height:1.7;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:none;}
+.acta-card.open .acta-body{display:block;}
+
+.familia-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;background:rgba(200,169,110,.03);}
 .familia-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(200,169,110,.05);}
 .familia-nombre{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);}
 .familia-miembros{padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;}
@@ -326,6 +410,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
       <button class="sbtn"    onclick="tab('stats',this)"><span class="sico">📊</span><span>Mi Perfil</span></button>
       <button class="sbtn"    onclick="tab('familias',this)"><span class="sico">👨‍👩‍👧</span><span>Familias</span></button>
       <button class="sbtn"    onclick="tab('config',this)"><span class="sico">⚙️</span><span>Config</span></button>
+      <button class="sbtn" onclick="tab('diezmos',this)"><span class="sico">💰</span><span>Diezmos</span></button>
+      <button class="sbtn" onclick="tab('oraciones',this)"><span class="sico">🙏</span><span>Oración</span></button>
+      <button class="sbtn" onclick="tab('anuncios',this)"><span class="sico">📢</span><span>Anuncios</span></button>
+      <button class="sbtn" onclick="tab('galeria',this)"><span class="sico">🎬</span><span>Galería</span></button>
+      <button class="sbtn" onclick="tab('votaciones',this)"><span class="sico">🗳️</span><span>Votar</span></button>
+      <button class="sbtn" onclick="tab('misiones',this)"><span class="sico">✈️</span><span>Misiones</span></button>
+      <button class="sbtn" onclick="tab('actas',this)"><span class="sico">📝</span><span>Actas</span></button>
       <div class="ssep"></div>
       <div class="slbl">Acciones</div>
       <button class="sbtn" onclick="abrirAdd()"><span class="sico">➕</span><span>Agregar</span></button>
@@ -422,6 +513,70 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
         <div id="familias-cont"></div>
       </div>
 
+      <!-- DIEZMOS -->
+      <div class="tab" id="tab-diezmos">
+        <div class="sec-head">
+          <div><div class="sec-title">💰 Diezmos y Ofrendas</div><div class="sec-sub">Registro financiero de la congregación</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddDiezmo()">➕ Registrar</button></div>
+        </div>
+        <div class="stat-overview" id="diezmos-stats" style="margin-bottom:20px;"></div>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>Hermano/a</th><th>Tipo</th><th>Monto</th><th>Fecha</th><th>Notas</th><th>Acción</th></tr></thead>
+          <tbody id="tbody-diezmos"></tbody>
+        </table></div>
+      </div>
+
+      <!-- ORACIONES -->
+      <div class="tab" id="tab-oraciones">
+        <div class="sec-head"><div><div class="sec-title">🙏 Peticiones de Oración</div><div class="sec-sub">Enviadas desde el kiosco</div></div></div>
+        <div id="oraciones-cont"></div>
+      </div>
+
+      <!-- ANUNCIOS -->
+      <div class="tab" id="tab-anuncios">
+        <div class="sec-head">
+          <div><div class="sec-title">📢 Anuncios</div><div class="sec-sub">Aparecen en la barra del kiosco</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddAnuncio()">➕ Nuevo Anuncio</button></div>
+        </div>
+        <div id="anuncios-cont"></div>
+      </div>
+
+      <!-- GALERÍA -->
+      <div class="tab" id="tab-galeria">
+        <div class="sec-head">
+          <div><div class="sec-title">🎬 Galería de Eventos</div><div class="sec-sub">Fotos de cultos y eventos especiales</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddFoto()">➕ Agregar Foto</button></div>
+        </div>
+        <div id="galeria-cont" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;"></div>
+      </div>
+
+      <!-- VOTACIONES -->
+      <div class="tab" id="tab-votaciones">
+        <div class="sec-head">
+          <div><div class="sec-title">🗳️ Votaciones y Encuestas</div><div class="sec-sub">Consulta a la congregación</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddVotacion()">➕ Nueva Votación</button></div>
+        </div>
+        <div id="votaciones-cont"></div>
+      </div>
+
+      <!-- MISIONES -->
+      <div class="tab" id="tab-misiones">
+        <div class="sec-head">
+          <div><div class="sec-title">✈️ Misiones y Viajes</div><div class="sec-sub">Registro ministerial</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddMision()">➕ Registrar Viaje</button></div>
+        </div>
+        <div id="misiones-cont"></div>
+      </div>
+
+      <!-- ACTAS -->
+      <div class="tab" id="tab-actas">
+        <div class="sec-head">
+          <div><div class="sec-title">📝 Actas de Reuniones</div><div class="sec-sub">Directiva y consejos</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddActa()">➕ Nueva Acta</button></div>
+        </div>
+        <div id="actas-cont"></div>
+      </div>
+
       <!-- CONFIG -->
       <div class="tab" id="tab-config">
         <div class="sec-head"><div><div class="sec-title">⚙️ Configuración</div><div class="sec-sub">Personaliza la app</div></div></div>
@@ -478,6 +633,177 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
         </div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- MODAL DIEZMO -->
+<div class="overlay" id="ov-diezmo">
+  <div class="modal" style="max-width:480px;">
+    <button class="mx" onclick="cerrarAddDiezmo()">✕</button>
+    <div class="m-title">Registrar Diezmo / Ofrenda</div>
+    <div class="m-sub">Registro financiero de la congregación</div>
+    <div class="fgrid">
+      <div class="fg">
+        <label class="flbl">Hermano/a</label>
+        <select class="finput" id="d-miembro"><option value="">— Selecciona —</option></select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Tipo</label>
+        <select class="finput" id="d-tipo">
+          <option value="diezmo">💰 Diezmo</option>
+          <option value="ofrenda">🙏 Ofrenda</option>
+          <option value="especial">⭐ Especial</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Monto (RD$)</label>
+        <input class="finput" id="d-monto" type="number" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha</label>
+        <input class="finput" id="d-fecha" type="date">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Notas (opcional)</label>
+        <input class="finput" id="d-notas" placeholder="Observaciones...">
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddDiezmo()">Cancelar</button><button class="btn-p" onclick="guardarDiezmo()">Guardar</button></div>
+  </div>
+</div>
+
+<!-- MODAL ANUNCIO -->
+<div class="overlay" id="ov-anuncio">
+  <div class="modal" style="max-width:460px;">
+    <button class="mx" onclick="cerrarAddAnuncio()">✕</button>
+    <div class="m-title">Nuevo Anuncio</div>
+    <div class="m-sub">Aparecerá en la barra del kiosco</div>
+    <div class="fgrid">
+      <div class="fg">
+        <label class="flbl">Ícono (emoji)</label>
+        <input class="finput" id="an-icono" placeholder="📢" maxlength="4">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Texto del Anuncio *</label>
+        <input class="finput" id="an-texto" placeholder="Ej: Retiro espiritual el próximo sábado 7pm">
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddAnuncio()">Cancelar</button><button class="btn-p" onclick="guardarAnuncio()">Publicar</button></div>
+  </div>
+</div>
+
+<!-- MODAL FOTO GALERÍA -->
+<div class="overlay" id="ov-foto">
+  <div class="modal" style="max-width:460px;">
+    <button class="mx" onclick="cerrarAddFoto()">✕</button>
+    <div class="m-title">Agregar Foto</div>
+    <div class="m-sub">Galería de eventos y cultos</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">URL de la Foto *</label>
+        <input class="finput" id="f-url" type="url" placeholder="https://...">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Descripción</label>
+        <input class="finput" id="f-desc" placeholder="Ej: Culto de aniversario 2025">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha del Evento</label>
+        <input class="finput" id="f-fecha" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Categoría</label>
+        <select class="finput" id="f-cat">
+          <option>Culto</option><option>Jóvenes</option><option>Retiro</option>
+          <option>Aniversario</option><option>Misiones</option><option>Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddFoto()">Cancelar</button><button class="btn-p" onclick="guardarFoto()">Guardar</button></div>
+  </div>
+</div>
+
+<!-- MODAL VOTACIÓN -->
+<div class="overlay" id="ov-votacion">
+  <div class="modal" style="max-width:500px;">
+    <button class="mx" onclick="cerrarAddVotacion()">✕</button>
+    <div class="m-title">Nueva Votación</div>
+    <div class="m-sub">Encuesta para la congregación</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Pregunta *</label>
+        <input class="finput" id="v-pregunta" placeholder="Ej: ¿Cuál día prefieren para el retiro?">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Opciones (una por línea, máx. 5)</label>
+        <textarea class="finput" id="v-opciones" rows="5" placeholder="Sábado 15&#10;Domingo 16&#10;Sábado 22"></textarea>
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddVotacion()">Cancelar</button><button class="btn-p" onclick="guardarVotacion()">Crear Votación</button></div>
+  </div>
+</div>
+
+<!-- MODAL MISIÓN -->
+<div class="overlay" id="ov-mision">
+  <div class="modal" style="max-width:500px;">
+    <button class="mx" onclick="cerrarAddMision()">✕</button>
+    <div class="m-title">Registrar Misión / Viaje</div>
+    <div class="m-sub">Actividad ministerial fuera de la iglesia</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Nombre del Viaje / Misión *</label>
+        <input class="finput" id="ms-nombre" placeholder="Ej: Misión a Barahona">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha de Salida</label>
+        <input class="finput" id="ms-salida" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha de Regreso</label>
+        <input class="finput" id="ms-regreso" type="date">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Participantes / Equipo</label>
+        <input class="finput" id="ms-equipo" placeholder="Ej: Pastor Roberto, María García...">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Descripción / Objetivos</label>
+        <input class="finput" id="ms-desc" placeholder="Propósito y actividades del viaje">
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddMision()">Cancelar</button><button class="btn-p" onclick="guardarMision()">Registrar</button></div>
+  </div>
+</div>
+
+<!-- MODAL ACTA -->
+<div class="overlay" id="ov-acta">
+  <div class="modal" style="max-width:560px;">
+    <button class="mx" onclick="cerrarAddActa()">✕</button>
+    <div class="m-title">Nueva Acta</div>
+    <div class="m-sub">Registro de reunión de directiva</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Título del Acta *</label>
+        <input class="finput" id="ac-titulo" placeholder="Ej: Reunión de Directiva — Marzo 2026">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha</label>
+        <input class="finput" id="ac-fecha" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Tipo de Reunión</label>
+        <select class="finput" id="ac-tipo">
+          <option>Directiva General</option><option>Directiva Martes</option>
+          <option>Directiva Jóvenes</option><option>Directiva Domingo</option>
+          <option>Consejo Pastoral</option><option>Otra</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <label class="flbl">Contenido del Acta *</label>
+        <textarea class="finput" id="ac-contenido" rows="6" placeholder="Puntos tratados, acuerdos tomados, firmas..."></textarea>
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddActa()">Cancelar</button><button class="btn-p" onclick="guardarActa()">Guardar Acta</button></div>
   </div>
 </div>
 
@@ -1095,6 +1421,270 @@ window.tab=function(id,el){
   if(id==='stats')      poblarStatsSelect();
   if(id==='config')     cargarConfig();
 };
+
+// ── DIEZMOS ──────────────────────────────────────────────────
+async function renderDiezmos(){
+  try{
+    const snap=await getDocs(collection(db,'diezmos'));
+    const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
+    // Stats
+    const total=todos.reduce((s,d)=>s+(parseFloat(d.monto)||0),0);
+    const mes=new Date().getMonth()+1,yr=new Date().getFullYear();
+    const esteMes=todos.filter(d=>d.fecha?.startsWith(`${yr}-${String(mes).padStart(2,'0')}`)).reduce((s,d)=>s+(parseFloat(d.monto)||0),0);
+    document.getElementById('diezmos-stats').innerHTML=`
+      <div class="stat-mini"><div class="val" style="font-size:24px;">RD$ ${total.toLocaleString()}</div><div class="lbl">Total General</div></div>
+      <div class="stat-mini"><div class="val" style="font-size:24px;color:#5DC99A;">RD$ ${esteMes.toLocaleString()}</div><div class="lbl">Este Mes</div></div>
+      <div class="stat-mini"><div class="val">${todos.length}</div><div class="lbl">Registros</div></div>`;
+    document.getElementById('tbody-diezmos').innerHTML=todos.map(d=>{
+      const m=miembros.find(x=>x.id===d.miembro_id);
+      return`<tr>
+        <td><div class="tn">${fotoEl(m||{nombre:'?',foto_url:''})} ${m?m.nombre:'Anónimo'}</div></td>
+        <td><span class="diezmo-tipo ${d.tipo}">${d.tipo}</span></td>
+        <td style="color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:16px;">RD$ ${parseFloat(d.monto||0).toLocaleString()}</td>
+        <td class="ttime">${d.fecha||'—'}</td>
+        <td class="ttime">${d.notas||'—'}</td>
+        <td><button class="rbtn del" onclick="eliminarDoc('diezmos','${d.id}',renderDiezmos)">🗑</button></td>
+      </tr>`;
+    }).join('')||`<tr><td colspan="6" class="etbl">Sin registros de diezmos</td></tr>`;
+  }catch(e){toast(e.message,'err');}
+}
+window.abrirAddDiezmo=function(){
+  const sel=document.getElementById('d-miembro');
+  sel.innerHTML='<option value="">— Selecciona hermano —</option>'+miembros.map(m=>`<option value="${m.id}">${m.nombre}</option>`).join('');
+  document.getElementById('d-fecha').value=hoy();
+  document.getElementById('d-monto').value='';
+  document.getElementById('d-notas').value='';
+  document.getElementById('ov-diezmo').classList.add('open');
+};
+window.cerrarAddDiezmo=function(){document.getElementById('ov-diezmo').classList.remove('open');};
+window.guardarDiezmo=async function(){
+  const monto=document.getElementById('d-monto').value;
+  if(!monto){toast('El monto es obligatorio','err');return;}
+  try{
+    await setDoc(doc(collection(db,'diezmos')),{
+      miembro_id:document.getElementById('d-miembro').value,
+      tipo:document.getElementById('d-tipo').value,
+      monto:parseFloat(monto),
+      fecha:document.getElementById('d-fecha').value,
+      notas:document.getElementById('d-notas').value.trim(),
+      registrado_en:serverTimestamp()
+    });
+    cerrarAddDiezmo();renderDiezmos();toast('✓ Diezmo registrado');
+  }catch(e){toast(e.message,'err');}
+};
+
+// ── ORACIONES ─────────────────────────────────────────────────
+async function renderOraciones(){
+  try{
+    const snap=await getDocs(collection(db,'oraciones'));
+    const todas=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
+    const cont=document.getElementById('oraciones-cont');
+    if(!todas.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">No hay peticiones de oración aún</div>`;return;}
+    cont.innerHTML=todas.map(p=>`<div class="prayer-card${p.respondida?' respondida':''}">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+        <div class="prayer-card-name">🙏 ${p.nombre||'Anónimo'}</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          ${!p.respondida?`<button class="rbtn" onclick="marcarRespondida('${p.id}')">✓ Respondida</button>`:'<span style="color:#5DC99A;font-size:11px;letter-spacing:1px;">✓ RESPONDIDA</span>'}
+          <button class="rbtn del" onclick="eliminarDoc('oraciones','${p.id}',renderOraciones)">🗑</button>
+        </div>
+      </div>
+      <div class="prayer-card-text">"${p.texto}"</div>
+      <div class="prayer-card-meta">${p.fecha||''} ${p.hora?'· '+p.hora:''}</div>
+    </div>`).join('');
+  }catch(e){}
+}
+window.marcarRespondida=async function(id){
+  try{await updateDoc(doc(db,'oraciones',id),{respondida:true});renderOraciones();toast('✓ Marcada como respondida');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── ANUNCIOS ──────────────────────────────────────────────────
+async function renderAnuncios(){
+  try{
+    const snap=await getDocs(collection(db,'anuncios'));
+    const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.creado_at||'').localeCompare(a.creado_at||''));
+    const cont=document.getElementById('anuncios-cont');
+    if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin anuncios. ¡Crea el primero!</div>`;return;}
+    cont.innerHTML=todos.map(a=>`<div class="anuncio-admin-card${a.activo?'':' inactivo'}">
+      <div style="font-size:22px;">${a.icono||'📢'}</div>
+      <div class="anuncio-text-preview">${a.texto}</div>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <button class="rbtn" onclick="toggleAnuncio('${a.id}',${!a.activo})">${a.activo?'⏸ Pausar':'▶ Activar'}</button>
+        <button class="rbtn del" onclick="eliminarDoc('anuncios','${a.id}',renderAnuncios)">🗑</button>
+      </div>
+    </div>`).join('');
+  }catch(e){}
+}
+window.abrirAddAnuncio=function(){document.getElementById('an-texto').value='';document.getElementById('an-icono').value='📢';document.getElementById('ov-anuncio').classList.add('open');setTimeout(()=>document.getElementById('an-texto').focus(),200);};
+window.cerrarAddAnuncio=function(){document.getElementById('ov-anuncio').classList.remove('open');};
+window.guardarAnuncio=async function(){
+  const txt=document.getElementById('an-texto').value.trim();
+  if(!txt){toast('El texto es obligatorio','err');return;}
+  try{await setDoc(doc(collection(db,'anuncios')),{texto:txt,icono:document.getElementById('an-icono').value||'📢',activo:true,creado_at:hoy()});cerrarAddAnuncio();renderAnuncios();toast('✓ Anuncio publicado');}
+  catch(e){toast(e.message,'err');}
+};
+window.toggleAnuncio=async function(id,activo){
+  try{await updateDoc(doc(db,'anuncios',id),{activo});renderAnuncios();}catch(e){toast(e.message,'err');}
+};
+
+// ── GALERÍA ───────────────────────────────────────────────────
+async function renderGaleria(){
+  try{
+    const snap=await getDocs(collection(db,'galeria'));
+    const fotos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
+    const cont=document.getElementById('galeria-cont');
+    if(!fotos.length){cont.style.display='block';cont.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin fotos aún. ¡Agrega la primera!</div>`;return;}
+    cont.style.display='grid';
+    cont.innerHTML=fotos.map(f=>`<div class="foto-thumb">
+      <img src="${f.url}" alt="${f.descripcion||''}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 75%22><rect fill=%22%23182030%22 width=%22100%22 height=%22100%25%22/><text x=%2250%22 y=%2238%22 text-anchor=%22middle%22 fill=%22%23C8A96E%22 font-size=%2214%22>📷</text></svg>'">
+      <div class="foto-thumb-overlay"><button class="rbtn del" onclick="eliminarDoc('galeria','${f.id}',renderGaleria)" style="background:rgba(139,26,42,.8);">🗑</button></div>
+      ${f.descripcion?`<div class="foto-thumb-label">${f.descripcion}</div>`:''}
+    </div>`).join('');
+  }catch(e){}
+}
+window.abrirAddFoto=function(){['f-url','f-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-fecha').value=hoy();document.getElementById('ov-foto').classList.add('open');};
+window.cerrarAddFoto=function(){document.getElementById('ov-foto').classList.remove('open');};
+window.guardarFoto=async function(){
+  const url=document.getElementById('f-url').value.trim();
+  if(!url){toast('La URL es obligatoria','err');return;}
+  try{await setDoc(doc(collection(db,'galeria')),{url,descripcion:document.getElementById('f-desc').value.trim(),fecha:document.getElementById('f-fecha').value,categoria:document.getElementById('f-cat').value,subida:serverTimestamp()});cerrarAddFoto();renderGaleria();toast('✓ Foto agregada');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── VOTACIONES ────────────────────────────────────────────────
+async function renderVotaciones(){
+  try{
+    const snap=await getDocs(collection(db,'votaciones'));
+    const todos=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const cont=document.getElementById('votaciones-cont');
+    if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin votaciones. ¡Crea la primera!</div>`;return;}
+    cont.innerHTML=todos.map(v=>{
+      const opciones=v.opciones||[];
+      const totalVotos=opciones.reduce((s,o)=>s+(o.votos||0),0);
+      const opcionesHtml=opciones.map(o=>{
+        const pct=totalVotos?Math.round((o.votos||0)/totalVotos*100):0;
+        return`<div class="voto-opcion">
+          <span style="font-size:13px;color:var(--cream);min-width:120px;">${o.texto}</span>
+          <div class="voto-bar"><div class="voto-bar-fill" style="width:${pct}%"></div></div>
+          <span class="voto-pct">${pct}%</span>
+          <span class="voto-count">(${o.votos||0})</span>
+        </div>`;
+      }).join('');
+      return`<div class="voto-card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+          <div class="voto-pregunta">🗳️ ${v.pregunta}</div>
+          <div style="display:flex;gap:8px;">
+            <span style="font-size:11px;color:var(--cream-s);">${totalVotos} votos</span>
+            <button class="rbtn del" onclick="eliminarDoc('votaciones','${v.id}',renderVotaciones)">🗑</button>
+          </div>
+        </div>
+        ${opcionesHtml}
+        <p style="font-size:11px;color:var(--cream-s);margin-top:10px;letter-spacing:1px;">Enlace para votar: <code style="color:var(--gold);background:rgba(200,169,110,.1);padding:2px 8px;border-radius:4px;">luzyvida.pages.dev/votar.html?id=${v.id}</code></p>
+      </div>`;
+    }).join('');
+  }catch(e){}
+}
+window.abrirAddVotacion=function(){document.getElementById('v-pregunta').value='';document.getElementById('v-opciones').value='';document.getElementById('ov-votacion').classList.add('open');};
+window.cerrarAddVotacion=function(){document.getElementById('ov-votacion').classList.remove('open');};
+window.guardarVotacion=async function(){
+  const pregunta=document.getElementById('v-pregunta').value.trim();
+  const optsRaw=document.getElementById('v-opciones').value.trim().split('
+').filter(l=>l.trim());
+  if(!pregunta||optsRaw.length<2){toast('Necesitas pregunta y al menos 2 opciones','err');return;}
+  const opciones=optsRaw.slice(0,5).map(t=>({texto:t.trim(),votos:0}));
+  try{await setDoc(doc(collection(db,'votaciones')),{pregunta,opciones,creado:serverTimestamp(),activa:true});cerrarAddVotacion();renderVotaciones();toast('✓ Votación creada');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── MISIONES ──────────────────────────────────────────────────
+async function renderMisiones(){
+  try{
+    const snap=await getDocs(collection(db,'misiones'));
+    const todos=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.salida?.localeCompare(a.salida)||0);
+    const cont=document.getElementById('misiones-cont');
+    if(!todos.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin viajes ministeriales registrados</div>`;return;}
+    cont.innerHTML=todos.map(m=>{
+      const hoyStr=hoy();
+      const completada=m.regreso&&m.regreso<hoyStr;
+      return`<div class="mision-card${completada?' completada':''}">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+          <div class="mision-titulo">✈️ ${m.nombre}</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="pill ${completada?'p':'a'}" style="font-size:9px;">${completada?'Completada':'En planificación'}</span>
+            <button class="rbtn del" onclick="eliminarDoc('misiones','${m.id}',renderMisiones)">🗑</button>
+          </div>
+        </div>
+        <div class="mision-meta">${m.salida?'Salida: '+m.salida:''} ${m.regreso?'· Regreso: '+m.regreso:''}</div>
+        ${m.equipo?`<div class="mision-meta" style="margin-top:4px;">👥 ${m.equipo}</div>`:''}
+        ${m.descripcion?`<div style="font-size:13px;color:var(--cream-s);margin-top:8px;line-height:1.6;">${m.descripcion}</div>`:''}
+      </div>`;
+    }).join('');
+  }catch(e){}
+}
+window.abrirAddMision=function(){['ms-nombre','ms-equipo','ms-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('ms-salida').value=hoy();document.getElementById('ms-regreso').value='';document.getElementById('ov-mision').classList.add('open');};
+window.cerrarAddMision=function(){document.getElementById('ov-mision').classList.remove('open');};
+window.guardarMision=async function(){
+  const nombre=document.getElementById('ms-nombre').value.trim();
+  if(!nombre){toast('El nombre es obligatorio','err');return;}
+  try{await setDoc(doc(collection(db,'misiones')),{nombre,salida:document.getElementById('ms-salida').value,regreso:document.getElementById('ms-regreso').value,equipo:document.getElementById('ms-equipo').value.trim(),descripcion:document.getElementById('ms-desc').value.trim(),creado:serverTimestamp()});cerrarAddMision();renderMisiones();toast('✓ Misión registrada');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── ACTAS ─────────────────────────────────────────────────────
+async function renderActas(){
+  try{
+    const snap=await getDocs(collection(db,'actas'));
+    const todas=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.fecha?.localeCompare(a.fecha)||0);
+    const cont=document.getElementById('actas-cont');
+    if(!todas.length){cont.innerHTML=`<div style="text-align:center;padding:60px;color:var(--cream-s);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px;">Sin actas registradas</div>`;return;}
+    cont.innerHTML=todas.map(a=>`<div class="acta-card" onclick="this.classList.toggle('open')">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div>
+          <div class="acta-titulo">📝 ${a.titulo}</div>
+          <div class="acta-meta">${a.tipo||''} ${a.fecha?'· '+a.fecha:''}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="color:var(--cream-s);font-size:18px;">▼</span>
+          <button class="rbtn del" onclick="event.stopPropagation();eliminarDoc('actas','${a.id}',renderActas)">🗑</button>
+        </div>
+      </div>
+      <div class="acta-body">${a.contenido?.replace(/
+/g,'<br>')||''}</div>
+    </div>`).join('');
+  }catch(e){}
+}
+window.abrirAddActa=function(){['ac-titulo','ac-contenido'].forEach(id=>document.getElementById(id).value='');document.getElementById('ac-fecha').value=hoy();document.getElementById('ov-acta').classList.add('open');};
+window.cerrarAddActa=function(){document.getElementById('ov-acta').classList.remove('open');};
+window.guardarActa=async function(){
+  const titulo=document.getElementById('ac-titulo').value.trim();
+  const contenido=document.getElementById('ac-contenido').value.trim();
+  if(!titulo||!contenido){toast('Título y contenido son obligatorios','err');return;}
+  try{await setDoc(doc(collection(db,'actas')),{titulo,contenido,tipo:document.getElementById('ac-tipo').value,fecha:document.getElementById('ac-fecha').value,creado:serverTimestamp()});cerrarAddActa();renderActas();toast('✓ Acta guardada');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── HELPER ELIMINAR ───────────────────────────────────────────
+window.eliminarDoc=async function(coleccion,id,callback){
+  if(!confirm('¿Eliminar este registro?'))return;
+  try{await deleteDoc(doc(db,coleccion,id));if(callback)callback();toast('Eliminado');}
+  catch(e){toast(e.message,'err');}
+};
+
+// ── OVERRIDE TAB (agregar nuevos) ─────────────────────────────
+const _origTab3=window.tab;
+window.tab=function(id,el){
+  _origTab3(id,el);
+  const map={diezmos:renderDiezmos,oraciones:renderOraciones,anuncios:renderAnuncios,galeria:renderGaleria,votaciones:renderVotaciones,misiones:renderMisiones,actas:renderActas};
+  if(map[id])map[id]();
+};
+
+// ── OVERLAY CLOSES ────────────────────────────────────────────
+['ov-diezmo','ov-anuncio','ov-foto','ov-votacion','ov-mision','ov-acta'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('click',function(e){
+    if(e.target===this) this.classList.remove('open');
+  });
+});
 
 // ── FAMILIAS ─────────────────────────────────────────────────
 async function renderFamilias(){
