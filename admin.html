@@ -1030,31 +1030,26 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
             <option value="Miembro">👤 Miembro</option>
             <option value="Visitante">🌟 Visitante</option>
             <option value="Pastor">⛪ Pastor</option>
+            <option value="Co-Pastor">⛪ Co-Pastor</option>
+            <option value="Secretario General">📋 Secretario General</option>
+            <option value="Tesorero General">💰 Tesorero General</option>
             <option value="Diácono">🙏 Diácono</option>
           </optgroup>
-          <optgroup label="── Directiva Domingo ──">
-            <option value="Pres. Domingo">👑 Presidenta</option>
-            <option value="Vice. Domingo">🌸 Vicepresidenta</option>
-            <option value="Sec. Domingo">📋 Secretaria</option>
-            <option value="Tes. Domingo">💰 Tesorera</option>
-            <option value="1er Vocal Dom.">🎤 1er Vocal</option>
-            <option value="2do Vocal Dom.">🎤 2do Vocal</option>
+          <optgroup label="── Directiva Dayca (Martes) ──">
+            <option value="Pres. Dayca">👑 Presidenta</option>
+            <option value="Vice. Dayca">🌸 Vicepresidenta</option>
+            <option value="Sec. Dayca">📋 Secretaria</option>
+            <option value="Tes. Dayca">💰 Tesorera</option>
+            <option value="1er Vocal Dayca">🎤 1er Vocal</option>
+            <option value="2do Vocal Dayca">🎤 2do Vocal</option>
           </optgroup>
-          <optgroup label="── Directiva Martes ──">
-            <option value="Pres. Martes">👑 Presidenta</option>
-            <option value="Vice. Martes">🌸 Vicepresidenta</option>
-            <option value="Sec. Martes">📋 Secretaria</option>
-            <option value="Tes. Martes">💰 Tesorera</option>
-            <option value="1er Vocal Mar.">🎤 1er Vocal</option>
-            <option value="2do Vocal Mar.">🎤 2do Vocal</option>
-          </optgroup>
-          <optgroup label="── Directiva Jóvenes (Sábado) ──">
-            <option value="Pres. Jóvenes">👑 Presidenta</option>
-            <option value="Vice. Jóvenes">🌸 Vicepresidenta</option>
-            <option value="Sec. Jóvenes">📋 Secretaria</option>
-            <option value="Tes. Jóvenes">💰 Tesorera</option>
-            <option value="1er Vocal Jóv.">🎤 1er Vocal</option>
-            <option value="2do Vocal Jóv.">🎤 2do Vocal</option>
+          <optgroup label="── Directiva Juvenil (Sábado) ──">
+            <option value="Pres. Juvenil">👑 Presidenta</option>
+            <option value="Vice. Juvenil">🌸 Vicepresidenta</option>
+            <option value="Sec. Juvenil">📋 Secretaria</option>
+            <option value="Tes. Juvenil">💰 Tesorera</option>
+            <option value="1er Vocal Juv.">🎤 1er Vocal</option>
+            <option value="2do Vocal Juv.">🎤 2do Vocal</option>
           </optgroup>
         </select>
       </div>
@@ -1101,8 +1096,8 @@ const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MESES_S=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const PASS='admin1234'; // ← CAMBIA AQUÍ
-const RCLS={Pastor:'pastor',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Pres. Domingo':'presd','Vice. Domingo':'vpd','Sec. Domingo':'secd','Tes. Domingo':'tesd','1er Vocal Dom.':'vocal1d','2do Vocal Dom.':'vocal2d','Pres. Martes':'presm','Vice. Martes':'vpm','Sec. Martes':'secm','Tes. Martes':'tesm','1er Vocal Mar.':'vocal1m','2do Vocal Mar.':'vocal2m','Pres. Jóvenes':'presj','Vice. Jóvenes':'vpj','Sec. Jóvenes':'secj','Tes. Jóvenes':'tesj','1er Vocal Jóv.':'vocal1j','2do Vocal Jóv.':'vocal2j'};
-const RICO={Pastor:'⛪',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Pres. Domingo':'👑','Vice. Domingo':'🌸','Sec. Domingo':'📋','Tes. Domingo':'💰','1er Vocal Dom.':'🎤','2do Vocal Dom.':'🎤','Pres. Martes':'👑','Vice. Martes':'🌸','Sec. Martes':'📋','Tes. Martes':'💰','1er Vocal Mar.':'🎤','2do Vocal Mar.':'🎤','Pres. Jóvenes':'👑','Vice. Jóvenes':'🌸','Sec. Jóvenes':'📋','Tes. Jóvenes':'💰','1er Vocal Jóv.':'🎤','2do Vocal Jóv.':'🎤'};
+const RCLS={Pastor:'pastor','Co-Pastor':'copastor','Secretario General':'secgen','Tesorero General':'tesgen',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Pres. Dayca':'presd','Vice. Dayca':'vpd','Sec. Dayca':'secd','Tes. Dayca':'tesd','1er Vocal Dayca':'vocal1d','2do Vocal Dayca':'vocal2d','Pres. Juvenil':'presj','Vice. Juvenil':'vpj','Sec. Juvenil':'secj','Tes. Juvenil':'tesj','1er Vocal Juv.':'vocal1j','2do Vocal Juv.':'vocal2j'};
+const RICO={Pastor:'⛪','Co-Pastor':'⛪','Secretario General':'📋','Tesorero General':'💰',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Pres. Dayca':'👑','Vice. Dayca':'🌸','Sec. Dayca':'📋','Tes. Dayca':'💰','1er Vocal Dayca':'🎤','2do Vocal Dayca':'🎤','Pres. Juvenil':'👑','Vice. Juvenil':'🌸','Sec. Juvenil':'📋','Tes. Juvenil':'💰','1er Vocal Juv.':'🎤','2do Vocal Juv.':'🎤'};
 
 let miembros=[],asistidos=new Set(),asistMap={},historial=[],filtroActual='all';
 let chartLine=null,chartRoles=null;
