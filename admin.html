@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Iglesia Luz y Vida IV</title>
+
+<!-- Firebase compat -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<!-- Fuentes -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Estilos -->
+<link rel="stylesheet" href="admin.css">
+</head>
+
+</head>
+<body>
+
+<header class="topbar z">
+  <div class="brand">
+    <div class="brand-logo"><img src="logo.png" alt="Logo"></div>
+    <div>
+      <div class="brand-name">Panel de Administración</div>
+      <div class="brand-sub">Iglesia Luz y Vida IV</div>
+    </div>
+  </div>
+  <div style="text-align:center;">
+    <div class="clk-t" id="clk-t">--:--:--</div>
+    <div class="clk-d" id="clk-d"></div>
+  </div>
+  <div class="tr">
+    <button class="icon-btn" id="tbtn" onclick="toggleTheme()">🌙</button>
+    <a href="kiosco.html" class="tbtn ghost">📱 Kiosco</a>
+    <button class="tbtn red" id="btn-out" style="display:none" onclick="salir()">🔓 Salir</button>
+  </div>
+</header>
+
+<div class="cbar z" id="cbar">
+  <div><span class="pdot"></span><span id="cbar-txt">Cargando...</span></div>
+  <span id="cbar-date" style="font-size:10px;opacity:.65;"></span>
+</div>
+
+<!-- BIRTHDAY ALERT -->
+<div class="bday-alert z" id="bday-alert">
+  <span style="font-size:26px;">🎂</span>
+  <div>
+    <div style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;">Cumpleaños de hoy</div>
+    <div class="bday-names" id="bday-names">—</div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="z">
+  <div class="lcard">
+    <div class="l-logo"><img src="logo.png" alt="Logo"></div>
+    <div class="l-title">Acceso Restringido</div>
+    <div class="l-sub">Solo personal autorizado</div>
+    <input class="l-input" type="password" id="pass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-login" onclick="login()">Ingresar</button>
+    <div class="l-err" id="lerr">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash" class="z">
+  <div class="stats">
+    <div class="stt s1"><div class="sv" id="st-tot">—</div><div class="sl">Total</div></div>
+    <div class="stt s2"><div class="sv" id="st-pre">—</div><div class="sl">Presentes</div></div>
+    <div class="stt s3"><div class="sv" id="st-aus">—</div><div class="sl">Ausentes</div></div>
+    <div class="stt s4"><div class="sv" id="st-pct">—</div><div class="sl">Asistencia</div></div>
+  </div>
+
+  <div class="dash-body">
+    <nav class="sidebar">
+      <div class="slbl">Menú</div>
+      <button class="sbtn on" onclick="tab('hoy',this)"><span class="sico">📋</span><span>Hoy</span></button>
+      <button class="sbtn"    onclick="tab('herm',this)"><span class="sico">👥</span><span>Hermanos</span></button>
+      <button class="sbtn"    onclick="tab('graficas',this)"><span class="sico">📊</span><span>Gráficas</span></button>
+      <button class="sbtn"    onclick="tab('cumples',this)"><span class="sico">🎂</span><span>Cumpleaños</span></button>
+      <button class="sbtn"    onclick="tab('hist',this)"><span class="sico">📅</span><span>Historial</span></button>
+      <button class="sbtn"    onclick="tab('ranking',this)"><span class="sico">🏆</span><span>Ranking</span></button>
+      <button class="sbtn"    onclick="tab('calendario',this)"><span class="sico">📆</span><span>Calendario</span></button>
+      <button class="sbtn"    onclick="tab('stats',this)"><span class="sico">📊</span><span>Mi Perfil</span></button>
+      <button class="sbtn"    onclick="tab('familias',this)"><span class="sico">👨‍👩‍👧</span><span>Familias</span></button>
+      <button class="sbtn"    onclick="tab('config',this)"><span class="sico">⚙️</span><span>Config</span></button>
+      <button class="sbtn" onclick="tab('diezmos',this)"><span class="sico">💰</span><span>Diezmos</span></button>
+      <button class="sbtn" onclick="tab('oraciones',this)"><span class="sico">🙏</span><span>Oración</span></button>
+      <button class="sbtn" onclick="tab('anuncios',this)"><span class="sico">📢</span><span>Anuncios</span></button>
+      <button class="sbtn" onclick="tab('galeria',this)"><span class="sico">🎬</span><span>Galería</span></button>
+      <button class="sbtn" onclick="tab('votaciones',this)"><span class="sico">🗳️</span><span>Votar</span></button>
+      <button class="sbtn" onclick="tab('misiones',this)"><span class="sico">✈️</span><span>Misiones</span></button>
+      <button class="sbtn" onclick="tab('actas',this)"><span class="sico">📝</span><span>Actas</span></button>
+      <div class="ssep"></div>
+      <div class="slbl">Acciones</div>
+      <button class="sbtn" onclick="abrirAdd()"><span class="sico">➕</span><span>Agregar</span></button>
+      <button class="sbtn" onclick="exportar()"><span class="sico">📥</span><span>Exportar</span></button>
+      <button class="sbtn" style="color:#F07080" onclick="reiniciar()"><span class="sico">🔄</span><span>Reiniciar</span></button>
+    </nav>
+
+    <main class="main">
+      <!-- HOY -->
+      <div class="tab on" id="tab-hoy">
+        <div class="sec-head">
+          <div><div class="sec-title">Asistencia del Día</div><div class="sec-sub" id="dlbl">—</div></div>
+        </div>
+        <div class="chips">
+          <button class="chip on" onclick="filtro('all',this)">Todos</button>
+          <button class="chip"    onclick="filtro('pre',this)">✅ Presentes</button>
+          <button class="chip"    onclick="filtro('aus',this)">❌ Ausentes</button>
+        </div>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>Hermano/a</th><th>ID</th><th>Rol</th><th>Estado</th><th>Hora</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-hoy"></tbody>
+        </table></div>
+      </div>
+
+      <!-- HERMANOS -->
+      <div class="tab" id="tab-herm">
+        <div class="sec-head">
+          <div><div class="sec-title">Lista de Hermanos</div><div class="sec-sub" id="hcnt">—</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAdd()">➕ Agregar</button></div>
+        </div>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>Hermano/a</th><th>ID</th><th>Rol</th><th>Cumpleaños</th><th>Días Asist.</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-herm"></tbody>
+        </table></div>
+      </div>
+
+      <!-- GRÁFICAS -->
+      <div class="tab" id="tab-graficas">
+        <div class="sec-head"><div><div class="sec-title">Gráficas de Asistencia</div><div class="sec-sub">Últimos cultos registrados</div></div></div>
+        <div class="chart-wrap">
+          <div class="chart-title">📈 Asistencia por Culto</div>
+          <canvas class="chart-canvas" id="chart-line"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title">🍩 Distribución por Roles</div>
+          <canvas class="chart-canvas" id="chart-roles" style="max-height:220px;"></canvas>
+        </div>
+      </div>
+
+      <!-- CUMPLEAÑOS -->
+      <div class="tab" id="tab-cumples">
+        <div class="sec-head"><div><div class="sec-title">Cumpleaños</div><div class="sec-sub">Este mes y próximos</div></div></div>
+        <div id="cumples-cont"></div>
+      </div>
+
+      <!-- HISTORIAL -->
+      <div class="tab" id="tab-hist">
+        <div class="sec-head"><div><div class="sec-title">Historial</div><div class="sec-sub">Todos los cultos</div></div></div>
+        <div id="hist-cont"></div>
+      </div>
+
+      <!-- RANKING -->
+      <div class="tab" id="tab-ranking">
+        <div class="sec-head"><div><div class="sec-title">🏆 Ranking de Asistencia</div><div class="sec-sub">Los hermanos más fieles</div></div></div>
+        <div id="ranking-cont"></div>
+      </div>
+
+      <!-- CALENDARIO -->
+      <div class="tab" id="tab-calendario">
+        <div class="sec-head">
+          <div><div class="sec-title">📆 Calendario de Cultos</div><div class="sec-sub">Eventos y cultos especiales</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddEvento()">➕ Agregar Evento</button></div>
+        </div>
+        <div id="calendario-cont"></div>
+      </div>
+
+      <!-- ESTADÍSTICAS INDIVIDUALES -->
+      <div class="tab" id="tab-stats">
+        <div class="sec-head">
+          <div><div class="sec-title">📊 Estadísticas por Hermano</div><div class="sec-sub">Selecciona un hermano</div></div>
+        </div>
+        <select class="finput" id="stats-select" onchange="verStats(this.value)" style="margin-bottom:20px;max-width:320px;">
+          <option value="">— Selecciona un hermano —</option>
+        </select>
+        <div id="stats-cont"></div>
+      </div>
+
+      <!-- FAMILIAS -->
+      <div class="tab" id="tab-familias">
+        <div class="sec-head">
+          <div><div class="sec-title">👨‍👩‍👧 Familias</div><div class="sec-sub">Grupos familiares de la iglesia</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddFamilia()">➕ Nueva Familia</button></div>
+        </div>
+        <div id="familias-cont"></div>
+      </div>
+
+      <!-- DIEZMOS -->
+      <div class="tab" id="tab-diezmos">
+        <div class="sec-head">
+          <div><div class="sec-title">💰 Diezmos y Ofrendas</div><div class="sec-sub">Registro financiero de la congregación</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddDiezmo()">➕ Registrar</button></div>
+        </div>
+        <div class="stat-overview" id="diezmos-stats" style="margin-bottom:20px;"></div>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>Hermano/a</th><th>Tipo</th><th>Monto</th><th>Fecha</th><th>Notas</th><th>Acción</th></tr></thead>
+          <tbody id="tbody-diezmos"></tbody>
+        </table></div>
+      </div>
+
+      <!-- ORACIONES -->
+      <div class="tab" id="tab-oraciones">
+        <div class="sec-head"><div><div class="sec-title">🙏 Peticiones de Oración</div><div class="sec-sub">Enviadas desde el kiosco</div></div></div>
+        <div id="oraciones-cont"></div>
+      </div>
+
+      <!-- ANUNCIOS -->
+      <div class="tab" id="tab-anuncios">
+        <div class="sec-head">
+          <div><div class="sec-title">📢 Anuncios</div><div class="sec-sub">Aparecen en la barra del kiosco</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddAnuncio()">➕ Nuevo Anuncio</button></div>
+        </div>
+        <div id="anuncios-cont"></div>
+      </div>
+
+      <!-- GALERÍA -->
+      <div class="tab" id="tab-galeria">
+        <div class="sec-head">
+          <div><div class="sec-title">🎬 Galería de Eventos</div><div class="sec-sub">Fotos de cultos y eventos especiales</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddFoto()">➕ Agregar Foto</button></div>
+        </div>
+        <div id="galeria-cont" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;"></div>
+      </div>
+
+      <!-- VOTACIONES -->
+      <div class="tab" id="tab-votaciones">
+        <div class="sec-head">
+          <div><div class="sec-title">🗳️ Votaciones y Encuestas</div><div class="sec-sub">Consulta a la congregación</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddVotacion()">➕ Nueva Votación</button></div>
+        </div>
+        <div id="votaciones-cont"></div>
+      </div>
+
+      <!-- MISIONES -->
+      <div class="tab" id="tab-misiones">
+        <div class="sec-head">
+          <div><div class="sec-title">✈️ Misiones y Viajes</div><div class="sec-sub">Registro ministerial</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddMision()">➕ Registrar Viaje</button></div>
+        </div>
+        <div id="misiones-cont"></div>
+      </div>
+
+      <!-- ACTAS -->
+      <div class="tab" id="tab-actas">
+        <div class="sec-head">
+          <div><div class="sec-title">📝 Actas de Reuniones</div><div class="sec-sub">Directiva y consejos</div></div>
+          <div><button class="tbtn ghost" onclick="abrirAddActa()">➕ Nueva Acta</button></div>
+        </div>
+        <div id="actas-cont"></div>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="tab" id="tab-config">
+        <div class="sec-head"><div><div class="sec-title">⚙️ Configuración</div><div class="sec-sub">Personaliza la app</div></div></div>
+        <div style="max-width:680px;">
+          <div class="chart-wrap">
+            <div class="chart-title">💬 Mensaje de Bienvenida Personalizado</div>
+            <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:14px;">Este mensaje aparece en la pantalla de bienvenida al confirmar asistencia</p>
+            <textarea id="msg-bienvenida" class="finput" rows="3" style="width:100%;resize:vertical;" placeholder="Ej: ¡Dios te bendiga! Nos alegra tenerte aquí hoy 🙏"></textarea>
+            <button class="btn-p" style="margin-top:14px;padding:12px 28px;" onclick="guardarMensaje()">💾 Guardar Mensaje</button>
+          </div>
+          <div class="chart-wrap" style="margin-top:16px;">
+            <div class="chart-title">🎨 Personalizar Colores del Tema</div>
+            <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:18px;">Cambia los colores principales de la app</p>
+            <div class="fgrid" style="margin-bottom:18px;">
+              <div class="fg">
+                <label class="flbl">Color Dorado (principal)</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-gold" value="#C8A96E" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-gold-hex" value="#C8A96E" style="flex:1;" oninput="syncColor('col-gold','col-gold-hex')">
+                </div>
+              </div>
+              <div class="fg">
+                <label class="flbl">Color Crimson (acento)</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-crimson" value="#8B1A2A" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-crimson-hex" value="#8B1A2A" style="flex:1;" oninput="syncColor('col-crimson','col-crimson-hex')">
+                </div>
+              </div>
+              <div class="fg">
+                <label class="flbl">Color Fondo</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-ink" value="#080C14" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-ink-hex" value="#080C14" style="flex:1;" oninput="syncColor('col-ink','col-ink-hex')">
+                </div>
+              </div>
+              <div class="fg">
+                <label class="flbl">Color Esmeralda (éxito)</label>
+                <div style="display:flex;gap:10px;align-items:center;">
+                  <input type="color" id="col-emerald" value="#1A6647" style="width:48px;height:38px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;">
+                  <input class="finput" id="col-emerald-hex" value="#1A6647" style="flex:1;" oninput="syncColor('col-emerald','col-emerald-hex')">
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-p" style="padding:12px 28px;" onclick="guardarColores()">🎨 Aplicar Colores</button>
+              <button class="btn-s" onclick="resetColores()">↺ Restablecer</button>
+            </div>
+          </div>
+
+          <div class="chart-wrap" style="margin-top:16px;">
+            <div class="chart-title">🔐 Cambiar Contraseña Admin</div>
+            <p style="font-size:12px;color:var(--cream-s);letter-spacing:1px;margin-bottom:14px;">Edita el archivo admin.html y busca: <code style="color:var(--gold);background:rgba(200,169,110,.1);padding:2px 8px;border-radius:4px;">const PASS='admin1234'</code></p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODAL DIEZMO -->
+<div class="overlay" id="ov-diezmo">
+  <div class="modal" style="max-width:480px;">
+    <button class="mx" onclick="cerrarAddDiezmo()">✕</button>
+    <div class="m-title">Registrar Diezmo / Ofrenda</div>
+    <div class="m-sub">Registro financiero de la congregación</div>
+    <div class="fgrid">
+      <div class="fg">
+        <label class="flbl">Hermano/a</label>
+        <select class="finput" id="d-miembro"><option value="">— Selecciona —</option></select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Tipo</label>
+        <select class="finput" id="d-tipo">
+          <option value="diezmo">💰 Diezmo</option>
+          <option value="ofrenda">🙏 Ofrenda</option>
+          <option value="especial">⭐ Especial</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Monto (RD$)</label>
+        <input class="finput" id="d-monto" type="number" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha</label>
+        <input class="finput" id="d-fecha" type="date">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Notas (opcional)</label>
+        <input class="finput" id="d-notas" placeholder="Observaciones...">
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddDiezmo()">Cancelar</button><button class="btn-p" onclick="guardarDiezmo()">Guardar</button></div>
+  </div>
+</div>
+
+<!-- MODAL ANUNCIO -->
+<div class="overlay" id="ov-anuncio">
+  <div class="modal" style="max-width:460px;">
+    <button class="mx" onclick="cerrarAddAnuncio()">✕</button>
+    <div class="m-title">Nuevo Anuncio</div>
+    <div class="m-sub">Aparecerá en la barra del kiosco</div>
+    <div class="fgrid">
+      <div class="fg">
+        <label class="flbl">Ícono (emoji)</label>
+        <input class="finput" id="an-icono" placeholder="📢" maxlength="4">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Texto del Anuncio *</label>
+        <input class="finput" id="an-texto" placeholder="Ej: Retiro espiritual el próximo sábado 7pm">
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddAnuncio()">Cancelar</button><button class="btn-p" onclick="guardarAnuncio()">Publicar</button></div>
+  </div>
+</div>
+
+<!-- MODAL FOTO GALERÍA -->
+<div class="overlay" id="ov-foto">
+  <div class="modal" style="max-width:460px;">
+    <button class="mx" onclick="cerrarAddFoto()">✕</button>
+    <div class="m-title">Agregar Foto</div>
+    <div class="m-sub">Galería de eventos y cultos</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">URL de la Foto *</label>
+        <input class="finput" id="f-url" type="url" placeholder="https://...">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Descripción</label>
+        <input class="finput" id="f-desc" placeholder="Ej: Culto de aniversario 2025">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha del Evento</label>
+        <input class="finput" id="f-fecha" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Categoría</label>
+        <select class="finput" id="f-cat">
+          <option>Culto</option><option>Jóvenes</option><option>Retiro</option>
+          <option>Aniversario</option><option>Misiones</option><option>Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddFoto()">Cancelar</button><button class="btn-p" onclick="guardarFoto()">Guardar</button></div>
+  </div>
+</div>
+
+<!-- MODAL VOTACIÓN -->
+<div class="overlay" id="ov-votacion">
+  <div class="modal" style="max-width:500px;">
+    <button class="mx" onclick="cerrarAddVotacion()">✕</button>
+    <div class="m-title">Nueva Votación</div>
+    <div class="m-sub">Encuesta para la congregación</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Pregunta *</label>
+        <input class="finput" id="v-pregunta" placeholder="Ej: ¿Cuál día prefieren para el retiro?">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Opciones (una por línea, máx. 5)</label>
+        <textarea class="finput" id="v-opciones" rows="5" placeholder="Sábado 15&#10;Domingo 16&#10;Sábado 22"></textarea>
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddVotacion()">Cancelar</button><button class="btn-p" onclick="guardarVotacion()">Crear Votación</button></div>
+  </div>
+</div>
+
+<!-- MODAL MISIÓN -->
+<div class="overlay" id="ov-mision">
+  <div class="modal" style="max-width:500px;">
+    <button class="mx" onclick="cerrarAddMision()">✕</button>
+    <div class="m-title">Registrar Misión / Viaje</div>
+    <div class="m-sub">Actividad ministerial fuera de la iglesia</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Nombre del Viaje / Misión *</label>
+        <input class="finput" id="ms-nombre" placeholder="Ej: Misión a Barahona">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha de Salida</label>
+        <input class="finput" id="ms-salida" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha de Regreso</label>
+        <input class="finput" id="ms-regreso" type="date">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Participantes / Equipo</label>
+        <input class="finput" id="ms-equipo" placeholder="Ej: Pastor Roberto, María García...">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Descripción / Objetivos</label>
+        <input class="finput" id="ms-desc" placeholder="Propósito y actividades del viaje">
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddMision()">Cancelar</button><button class="btn-p" onclick="guardarMision()">Registrar</button></div>
+  </div>
+</div>
+
+<!-- MODAL ACTA -->
+<div class="overlay" id="ov-acta">
+  <div class="modal" style="max-width:560px;">
+    <button class="mx" onclick="cerrarAddActa()">✕</button>
+    <div class="m-title">Nueva Acta</div>
+    <div class="m-sub">Registro de reunión de directiva</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Título del Acta *</label>
+        <input class="finput" id="ac-titulo" placeholder="Ej: Reunión de Directiva — Marzo 2026">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha</label>
+        <input class="finput" id="ac-fecha" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Tipo de Reunión</label>
+        <select class="finput" id="ac-tipo">
+          <option>Directiva General</option><option>Directiva Martes</option>
+          <option>Directiva Jóvenes</option><option>Directiva Domingo</option>
+          <option>Consejo Pastoral</option><option>Otra</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <label class="flbl">Contenido del Acta *</label>
+        <textarea class="finput" id="ac-contenido" rows="6" placeholder="Puntos tratados, acuerdos tomados, firmas..."></textarea>
+      </div>
+    </div>
+    <div class="mbtns"><button class="btn-s" onclick="cerrarAddActa()">Cancelar</button><button class="btn-p" onclick="guardarActa()">Guardar Acta</button></div>
+  </div>
+</div>
+
+<!-- MODAL FAMILIA -->
+<div class="overlay" id="ov-familia">
+  <div class="modal" style="max-width:500px;">
+    <button class="mx" onclick="cerrarAddFamilia()">✕</button>
+    <div class="m-title">Nueva Familia</div>
+    <div class="m-sub">Crear un grupo familiar</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Nombre de la Familia *</label>
+        <input class="finput" id="fam-nombre" placeholder="Ej: Familia García">
+      </div>
+      <div class="fg full">
+        <label class="flbl">Miembros (selecciona)</label>
+        <div id="fam-miembros-list" style="max-height:200px;overflow-y:auto;border:1.5px solid var(--border);border-radius:9px;padding:8px;"></div>
+      </div>
+    </div>
+    <div class="mbtns">
+      <button class="btn-s" onclick="cerrarAddFamilia()">Cancelar</button>
+      <button class="btn-p" onclick="guardarFamilia()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR EVENTO -->
+<div class="overlay" id="ov-evento">
+  <div class="modal" style="max-width:460px;">
+    <button class="mx" onclick="cerrarAddEvento()">✕</button>
+    <div class="m-title">Agregar Evento</div>
+    <div class="m-sub">Culto especial o evento en el calendario</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Nombre del Evento *</label>
+        <input class="finput" id="ev-nombre" placeholder="Ej: Aniversario de la Iglesia">
+      </div>
+      <div class="fg">
+        <label class="flbl">Fecha *</label>
+        <input class="finput" id="ev-fecha" type="date">
+      </div>
+      <div class="fg">
+        <label class="flbl">Hora</label>
+        <input class="finput" id="ev-hora" type="time" value="19:00">
+      </div>
+      <div class="fg">
+        <label class="flbl">Tipo</label>
+        <select class="finput" id="ev-tipo">
+          <option value="culto">📅 Culto Regular</option>
+          <option value="especial">⭐ Evento Especial</option>
+          <option value="aniversario">🎉 Aniversario</option>
+          <option value="retiro">🏕️ Retiro</option>
+          <option value="ayuno">🙏 Día de Ayuno</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <label class="flbl">Descripción (opcional)</label>
+        <input class="finput" id="ev-desc" placeholder="Detalles del evento...">
+      </div>
+    </div>
+    <div class="mbtns">
+      <button class="btn-s" onclick="cerrarAddEvento()">Cancelar</button>
+      <button class="btn-p" onclick="guardarEvento()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR -->
+<div class="overlay" id="ov-add">
+  <div class="modal">
+    <button class="mx" onclick="cerrarAdd()">✕</button>
+    <div class="m-title">Agregar Hermano/a</div>
+    <div class="m-sub">Registrar nuevo miembro</div>
+    <div class="fgrid">
+      <div class="fg full">
+        <label class="flbl">Nombre Completo *</label>
+        <input class="finput" id="fn" placeholder="Ej: María García">
+      </div>
+      <div class="fg">
+        <label class="flbl">Código ID (vacío = auto)</label>
+        <input class="finput" id="fc" placeholder="Auto" maxlength="4">
+      </div>
+      <div class="fg">
+        <label class="flbl">Rol</label>
+        <select class="finput" id="frol">
+          <optgroup label="── General ──">
+            <option value="Miembro">👤 Miembro</option>
+            <option value="Visitante">🌟 Visitante</option>
+            <option value="Pastor">⛪ Pastor</option>
+            <option value="Co-Pastor">⛪ Co-Pastor</option>
+            <option value="Secretario General">📋 Secretario General</option>
+            <option value="Tesorero General">💰 Tesorero General</option>
+            <option value="Diácono">🙏 Diácono</option>
+          </optgroup>
+          <optgroup label="── Directiva Dayca (Martes) ──">
+            <option value="Pres. Dayca">👑 Presidenta</option>
+            <option value="Vice. Dayca">🌸 Vicepresidenta</option>
+            <option value="Sec. Dayca">📋 Secretaria</option>
+            <option value="Tes. Dayca">💰 Tesorera</option>
+            <option value="1er Vocal Dayca">🎤 1er Vocal</option>
+            <option value="2do Vocal Dayca">🎤 2do Vocal</option>
+          </optgroup>
+          <optgroup label="── Directiva Juvenil (Sábado) ──">
+            <option value="Pres. Juvenil">👑 Presidenta</option>
+            <option value="Vice. Juvenil">🌸 Vicepresidenta</option>
+            <option value="Sec. Juvenil">📋 Secretaria</option>
+            <option value="Tes. Juvenil">💰 Tesorera</option>
+            <option value="1er Vocal Juv.">🎤 1er Vocal</option>
+            <option value="2do Vocal Juv.">🎤 2do Vocal</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">🎂 Fecha de Cumpleaños</label>
+        <input class="finput" id="fcumple" type="date">
+      </div>
+      <div class="fg full">
+        <label class="flbl">URL de Foto (opcional)</label>
+        <input class="finput" id="ff" type="url" placeholder="https://...">
+      </div>
+    </div>
+    <div class="mbtns">
+      <button class="btn-s" onclick="cerrarAdd()">Cancelar</button>
+      <button class="btn-p" onclick="agregarMiembro()">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST STACK (múltiples toasts apilados) -->
+<div class="toast-stack" id="toast-stack"></div>
+
+<!-- DIALOG DE CONFIRMACIÓN PREMIUM -->
+<div class="dialog-overlay" id="dlg-overlay">
+  <div class="dialog" id="dlg-box">
+    <span class="dialog-icon" id="dlg-icon">⚠️</span>
+    <div class="dialog-title" id="dlg-title">¿Estás seguro?</div>
+    <div class="dialog-msg"   id="dlg-msg"></div>
+    <div class="dialog-btns">
+      <button class="dialog-btn cancel"  id="dlg-cancel">Cancelar</button>
+      <button class="dialog-btn confirm-danger" id="dlg-confirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script src="admin.js"></script>
+</body>
+</html>
