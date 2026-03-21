@@ -1088,6 +1088,54 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:repeati
 
 
 <script>
+
+// ══ ALERTAS — definidas primero para garantizar disponibilidad ══
+const TOAST_META={ok:{ico:'✅',dur:3500},err:{ico:'❌',dur:5000},warn:{ico:'⚠️',dur:4000},info:{ico:'ℹ️',dur:3500}};
+
+window.toast=function(mensaje,tipo,subtitulo){
+  tipo=tipo||'ok'; subtitulo=subtitulo||'';
+  var stack=document.getElementById('toast-stack');
+  if(!stack)return;
+  var meta=TOAST_META[tipo]||TOAST_META.ok;
+  var item=document.createElement('div');
+  item.className='toast-item '+tipo;
+  item.style.setProperty('--dur',meta.dur+'ms');
+  item.innerHTML='<span class="toast-ico">'+meta.ico+'</span><div class="toast-body"><div class="toast-title">'+mensaje+'</div>'+(subtitulo?'<div class="toast-sub">'+subtitulo+'</div>':'')+'</div><button class="toast-close">✕</button>';
+  stack.appendChild(item);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){item.classList.add('show');});});
+  var timer=setTimeout(function(){item.classList.add('hide');setTimeout(function(){if(item.parentNode)item.remove();},350);},meta.dur);
+  item.querySelector('.toast-close').addEventListener('click',function(){clearTimeout(timer);item.classList.add('hide');setTimeout(function(){if(item.parentNode)item.remove();},350);});
+};
+
+window.confirmar=function(opts){
+  var icono=opts.icono||'⚠️', titulo=opts.titulo||'¿Estás seguro?';
+  var mensaje=opts.mensaje||'', txtOk=opts.txtOk||'Confirmar';
+  var danger=opts.danger!==false, onOk=opts.onOk;
+  var ov=document.getElementById('dlg-overlay');
+  var box=document.getElementById('dlg-box');
+  if(!ov||!box){
+    if(window.confirm(titulo+'\n'+mensaje)){if(onOk)onOk();}
+    return;
+  }
+  document.getElementById('dlg-icon').textContent=icono;
+  document.getElementById('dlg-icon').className='dialog-icon'+(danger?' danger':'');
+  document.getElementById('dlg-title').textContent=titulo;
+  document.getElementById('dlg-msg').textContent=mensaje;
+  box.className='dialog '+(danger?'danger':'safe');
+  ov.classList.add('open');
+  var oldOk=document.getElementById('dlg-confirm');
+  var oldCnc=document.getElementById('dlg-cancel');
+  var newOk=oldOk.cloneNode(true);
+  var newCnc=oldCnc.cloneNode(true);
+  oldOk.parentNode.replaceChild(newOk,oldOk);
+  oldCnc.parentNode.replaceChild(newCnc,oldCnc);
+  newOk.textContent=txtOk;
+  newOk.className='dialog-btn '+(danger?'confirm-danger':'confirm-ok');
+  newOk.addEventListener('click',function(){ov.classList.remove('open');if(onOk)onOk();});
+  newCnc.addEventListener('click',function(){ov.classList.remove('open');});
+  ov.onclick=function(e){if(e.target===ov)ov.classList.remove('open');};
+};
+
 const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -1118,86 +1166,7 @@ function hoy(){return new Date().toISOString().split('T')[0];}
 function ini(n){return n.trim().split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
 // ══ SISTEMA DE ALERTAS PREMIUM ═══════════════════════════════
 
-// ── TOAST (apilable, con barra progreso, subtítulo) ───────────
-const TOAST_META = {
-  ok:   { ico:'✅', dur: 3500 },
-  err:  { ico:'❌', dur: 5000 },
-  warn: { ico:'⚠️', dur: 4000 },
-  info: { ico:'ℹ️', dur: 3500 },
-};
-
-function toast(mensaje, tipo='ok', subtitulo=''){
-  const stack = document.getElementById('toast-stack');
-  if(!stack) return;
-
-  const meta = TOAST_META[tipo] || TOAST_META.ok;
-  const item = document.createElement('div');
-  item.className = `toast-item ${tipo}`;
-  item.style.setProperty('--dur', meta.dur+'ms');
-  item.innerHTML = `
-    <span class="toast-ico">${meta.ico}</span>
-    <div class="toast-body">
-      <div class="toast-title">${mensaje}</div>
-      ${subtitulo ? `<div class="toast-sub">${subtitulo}</div>` : ''}
-    </div>
-    <button class="toast-close" onclick="this.closest('.toast-item').remove()">✕</button>
-  `;
-
-  stack.appendChild(item);
-  // Trigger animación de entrada
-  requestAnimationFrame(()=>requestAnimationFrame(()=>item.classList.add('show')));
-
-  // Auto-remove
-  const timer = setTimeout(()=>{
-    item.classList.add('hide');
-    setTimeout(()=>item.remove(), 350);
-  }, meta.dur);
-
-  item.querySelector('.toast-close').addEventListener('click', ()=>{
-    clearTimeout(timer);
-    item.classList.add('hide');
-    setTimeout(()=>item.remove(), 350);
-  });
-}
-
-// Atajos con subtítulos automáticos
-const toastOk   = (m, s='') => toast(m,'ok',s);
-const toastErr  = (m, s='') => toast(m,'err', s||'Intenta de nuevo');
-const toastWarn = (m, s='') => toast(m,'warn',s);
-const toastInfo = (m, s='') => toast(m,'info',s);
-
-// ── DIALOG DE CONFIRMACIÓN ────────────────────────────────────
-function confirmar({icono='⚠️', titulo='¿Estás seguro?', mensaje='', txtOk='Confirmar', danger=true, onOk}){
-  const ov  = document.getElementById('dlg-overlay');
-  const box = document.getElementById('dlg-box');
-
-  document.getElementById('dlg-icon').textContent  = icono;
-  document.getElementById('dlg-icon').className    = 'dialog-icon' + (danger?' danger':'');
-  document.getElementById('dlg-title').textContent = titulo;
-  document.getElementById('dlg-msg').textContent   = mensaje;
-
-  // Tipo de dialog
-  box.className = 'dialog ' + (danger?'danger':'safe');
-
-  ov.classList.add('open');
-
-  // Limpiar handlers clonando botones
-  const oldOk  = document.getElementById('dlg-confirm');
-  const oldCnc = document.getElementById('dlg-cancel');
-  const newOk  = oldOk.cloneNode(true);
-  const newCnc = oldCnc.cloneNode(true);
-  oldOk.parentNode.replaceChild(newOk, oldOk);
-  oldCnc.parentNode.replaceChild(newCnc, oldCnc);
-
-  newOk.textContent = txtOk;
-  newOk.className   = `dialog-btn ${danger?'confirm-danger':'confirm-ok'}`;
-  newOk.addEventListener('click',  ()=>{ ov.classList.remove('open'); if(onOk) onOk(); });
-  newCnc.addEventListener('click', ()=>  ov.classList.remove('open'));
-
-  // Click fuera cierra
-  const handler = e=>{ if(e.target===ov){ ov.classList.remove('open'); ov.removeEventListener('click',handler); }};
-  ov.addEventListener('click', handler);
-}
+// ── ALERTAS definidas al inicio del script ──
 function rbadge(rol){if(!rol)return'';const c=RCLS[rol]||'miembro',i=RICO[rol]||'👤';return`<span class="rbadge ${c}">${i} ${rol}</span>`;}
 function fotoEl(m,cls='mf'){const i=ini(m.nombre);const img=m.foto_url?`<img src="${m.foto_url}" alt="${m.nombre}" onerror="this.parentElement.innerHTML='${i}'">`:`${i}`;return`<div class="${cls}">${img}</div>`;}
 function esCumpleHoy(m){if(!m.cumpleanos)return false;const n=new Date();const[,mes,dia]=m.cumpleanos.split('-');return parseInt(mes)===n.getMonth()+1&&parseInt(dia)===n.getDate();}
