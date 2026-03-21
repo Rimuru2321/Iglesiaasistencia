@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Kiosco · Iglesia Luz y Vida IV</title>
+
+<!-- Fuentes -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Estilos -->
+<link rel="stylesheet" href="kiosco.css">
+</head>
+
+</head>
+<body>
+
+<!-- BACKGROUNDS -->
+<div class="church-bg"></div>
+<div class="church-overlay"></div>
+<div class="bg-grid"></div>
+<div class="cbox" id="cbox"></div>
+
+<!-- ══ INTRO ANIMATION ══ -->
+<div class="intro-screen" id="intro">
+  <div class="intro-logo"><img src="logo.png" alt="Logo"></div>
+  <div class="intro-title">Iglesia Luz y Vida IV</div>
+  <div class="intro-sub">Asamblea de Dios · Sistema de Asistencia</div>
+  <div class="intro-bar"><div class="intro-bar-fill" id="intro-fill"></div></div>
+</div>
+
+<!-- ══ WELCOME SCREEN ══ -->
+<div class="welcome-screen" id="wscreen">
+  <div class="welcome-bg"></div>
+  <div class="w-photo"    id="w-photo"></div>
+  <div class="w-role"     id="w-role"></div>
+  <div class="w-greeting">¡Bienvenido/a,</div>
+  <div class="w-name"     id="w-name">—</div>
+  <div class="w-msg"      id="w-msg">Tu asistencia ha sido registrada</div>
+  <div class="w-check">✓</div>
+</div>
+
+<div class="wrap">
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo"><img src="logo.png" alt="Logo"></div>
+    <div>
+      <div class="brand-name">Iglesia Luz y Vida IV</div>
+      <div class="brand-sub">Asamblea de Dios</div>
+    </div>
+  </div>
+  <div class="topbar-clock">
+    <div class="clk-time" id="clk-time">--:--:--</div>
+    <div class="clk-date"  id="clk-date"></div>
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn" id="tbtn" onclick="toggleTheme()" title="Modo claro/oscuro">🌙</button>
+    <a href="admin.html" class="btn-admin">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+      </svg>Admin
+    </a>
+  </div>
+</header>
+
+<!-- CULTO STRIP -->
+<div class="culto-strip" id="cstrip"><span class="pdot"></span><span id="ctxt">Cargando...</span></div>
+
+<!-- RECORDATORIO BANNER -->
+<div class="reminder-banner" id="reminder">
+  <div class="reminder-left">
+    <div class="reminder-icon">🔔</div>
+    <div class="reminder-text">
+      <strong id="reminder-title">Culto esta noche</strong>
+      <span   id="reminder-sub">Recuerda asistir</span>
+    </div>
+  </div>
+  <button class="reminder-close" onclick="document.getElementById('reminder').classList.remove('show')">✕</button>
+</div>
+
+<!-- ANUNCIOS BAR -->
+<div class="anuncios-bar" id="anuncios-bar" style="display:none;">
+  <div class="anuncios-track" id="anuncios-track"></div>
+</div>
+
+<!-- ROLE BAR -->
+<div class="role-bar">
+  <button class="role-chip on"        onclick="setRole('all',this)">Todos</button>
+  <button class="role-chip pastor"    onclick="setRole('Pastor',this)">⛪ Pastor</button>
+  <button class="role-chip diacono"   onclick="setRole('Diácono',this)">🙏 Diácono</button>
+  <button class="role-chip miembro"   onclick="setRole('Miembro',this)">👤 Miembro</button>
+  <button class="role-chip visitante" onclick="setRole('Visitante',this)">🌟 Visitante</button>
+  <button class="role-chip" style="border-color:rgba(0,105,92,.4);"   onclick="setRoleGroup('dayca',this)">📖 Dayca</button>
+  <button class="role-chip" style="border-color:rgba(230,81,0,.4);"   onclick="setRoleGroup('juvenil',this)">🎯 Juvenil</button>
+</div>
+
+<!-- OFFLINE -->
+<div class="offline-bar" id="obar">⚠ Sin conexión · Los datos pueden no estar actualizados</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-deco">
+    <div class="deco-line"></div><div class="deco-diamond"></div><div class="deco-line r"></div>
+  </div>
+  <h1 class="hero-title"><em>¡Bienvenido/a!</em></h1>
+  <p class="hero-sub">Busca tu nombre o ingresa tu ID para registrar tu asistencia</p>
+</section>
+
+<!-- SEARCH -->
+<div class="search-zone">
+  <div class="search-shell">
+    <div class="siw">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input id="buscar" type="text" placeholder="Escribe tu nombre aquí..." autocomplete="off" oninput="filtrar()">
+    </div>
+    <button class="btn-id" onclick="abrirId()">🔢 ID</button>
+    <button class="btn-id" style="background:linear-gradient(135deg,#4A1A6A,#7B2D9E);" onclick="abrirSelfie()">📷 Selfie</button>
+    <button class="btn-id" style="background:linear-gradient(135deg,#1A4A3A,#1A6647);" onclick="abrirOracion()">🙏 Oración</button>
+  </div>
+</div>
+
+<!-- GRID -->
+<div class="grid" id="grid">
+  <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+  <div class="skel"></div><div class="skel"></div>
+</div>
+</div><!-- wrap -->
+
+<!-- MODAL CONFIRMAR -->
+<div class="overlay" id="ov1">
+  <div class="modal">
+    <button class="mx" onclick="cerrarConf()">✕</button>
+    <div class="m-avatar" id="m-av"></div>
+    <div class="m-nombre" id="m-nb"></div>
+    <div class="m-codigo" id="m-cd"></div>
+    <div class="m-rw"     id="m-rw"></div>
+    <div class="m-culto"><strong id="m-cn">—</strong><span id="m-ch"></span></div>
+    <div id="m-act"></div>
+  </div>
+</div>
+
+<!-- MODAL UPLOAD FOTO -->
+<div class="overlay" id="ov-upload">
+  <div class="modal" style="max-width:400px;">
+    <button class="mx" onclick="cerrarUpload()">✕</button>
+    <div class="m-nombre" style="margin-bottom:4px;">Actualizar Foto</div>
+    <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;position:relative;z-index:1;margin-bottom:20px;">Selecciona una foto desde tu dispositivo</p>
+    <div class="upload-area" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept="image/*" onchange="previewPhoto(event)">
+      <div class="upload-preview" id="upload-preview">📷</div>
+      <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;">Toca aquí para elegir foto</p>
+    </div>
+    <div class="upload-status" id="upload-status"></div>
+    <div class="upload-progress" id="upload-progress">
+      <div class="upload-progress-fill" id="upload-fill"></div>
+    </div>
+    <div class="m-btns" style="margin-top:20px;">
+      <button class="btn-can" onclick="cerrarUpload()">Cancelar</button>
+      <button class="btn-conf" id="btn-upload" onclick="subirFoto()">📤 Subir Foto</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ID -->
+<div class="overlay" id="ov2">
+  <div class="modal" style="max-width:380px;">
+    <button class="mx" onclick="cerrarId()">✕</button>
+    <div class="m-nombre" style="margin-bottom:6px;">Ingresar ID</div>
+    <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;position:relative;z-index:1;">Escribe tu número de identificación</p>
+    <div class="id-row">
+      <input class="id-field" id="idf" type="text" placeholder="0001" maxlength="4"
+        oninput="this.value=this.value.replace(/\D/g,'')"
+        onkeydown="if(event.key==='Enter')buscarId()">
+      <button class="btn-bus" onclick="buscarId()">Buscar</button>
+    </div>
+    <div class="id-err" id="ierr">ID no encontrado.</div>
+    <button class="btn-can" style="width:100%;margin-top:16px;position:relative;z-index:1;" onclick="cerrarId()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL SELFIE -->
+<div class="overlay" id="ov-selfie">
+  <div class="modal" style="max-width:420px;">
+    <button class="mx" onclick="cerrarSelfie()">✕</button>
+    <div class="m-nombre" style="margin-bottom:4px;">📷 Búsqueda por Selfie</div>
+    <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;position:relative;z-index:1;margin-bottom:18px;">Tómate una selfie para encontrarte</p>
+    <video id="selfie-video" autoplay playsinline style="width:100%;border-radius:14px;border:1.5px solid var(--border-hi);display:block;position:relative;z-index:1;background:#000;max-height:260px;object-fit:cover;"></video>
+    <canvas id="selfie-canvas" style="display:none;"></canvas>
+    <div id="selfie-results" style="margin-top:16px;display:none;position:relative;z-index:1;">
+      <p style="font-size:11px;color:var(--cream-s);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">¿Eres tú?</p>
+      <div id="selfie-suggestions" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+    <div class="m-btns" style="margin-top:18px;">
+      <button class="btn-can" onclick="cerrarSelfie()">Cancelar</button>
+      <button class="btn-conf" id="btn-snap" onclick="tomarFoto()">📸 Tomar Foto</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODAL ORACIÓN -->
+<div class="overlay" id="ov-oracion">
+  <div class="modal" style="max-width:420px;">
+    <button class="mx" onclick="cerrarOracion()">✕</button>
+    <div style="font-size:36px;text-align:center;margin-bottom:16px;position:relative;z-index:1;">🙏</div>
+    <div class="m-nombre" style="margin-bottom:4px;">Petición de Oración</div>
+    <p style="color:var(--cream-s);font-size:13px;letter-spacing:1px;position:relative;z-index:1;margin-bottom:20px;">Tu petición llegará al altar de la iglesia</p>
+    <div class="prayer-form">
+      <input class="id-field" id="prayer-nombre" type="text" placeholder="Tu nombre (opcional)" style="font-size:15px;letter-spacing:1px;margin-bottom:12px;width:100%;border-radius:10px;padding:13px 16px;background:var(--ink);border:1.5px solid var(--border-hi);color:var(--cream);outline:none;font-family:'Outfit',sans-serif;">
+      <textarea id="prayer-text" rows="4" placeholder="Escribe tu petición de oración aquí... Todo lo que escribas es confidencial y llegará al pastor."></textarea>
+    </div>
+    <div class="m-btns" style="margin-top:18px;">
+      <button class="btn-can" onclick="cerrarOracion()">Cancelar</button>
+      <button class="btn-conf" onclick="enviarOracion()">🙏 Enviar Petición</button>
+    </div>
+  </div>
+</div>
+
+<!-- SALVAPANTALLAS -->
+<div class="screensaver" id="screensaver">
+  <div class="ss-particles" id="ss-particles"></div>
+  <div class="ss-clock" id="ss-clock">00:00</div>
+  <div class="ss-logo"><img src="logo.png" alt="Logo"></div>
+  <div class="ss-text">Toca para registrar asistencia</div>
+</div>
+
+<!-- JavaScript (module para Firebase) -->
+<script type="module" src="kiosco.js"></script>
+</body>
+</html>
