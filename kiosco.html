@@ -181,17 +181,15 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
 
 /* ROLE BADGES */
 .rbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
-.rbadge.pastor      {background:rgba(139,26,42,.25);  color:#F07080;border:1px solid rgba(139,26,42,.5);}
+.rbadge.pastor,.rbadge.copastor{background:rgba(139,26,42,.25);color:#F07080;border:1px solid rgba(139,26,42,.5);}
+.rbadge.secgen,.rbadge.tesgen  {background:rgba(200,169,110,.2);color:var(--gold-b);border:1px solid rgba(200,169,110,.4);}
 .rbadge.diacono     {background:rgba(21,101,192,.25);  color:#7EB8FF;border:1px solid rgba(21,101,192,.5);}
 .rbadge.miembro     {background:rgba(26,102,71,.25);   color:#5DC99A;border:1px solid rgba(26,102,71,.5);}
 .rbadge.visitante   {background:rgba(106,27,154,.25);  color:#CE93D8;border:1px solid rgba(106,27,154,.5);}
-.rbadge.ljovenes    {background:rgba(230,81,0,.25);    color:#FFAB40;border:1px solid rgba(230,81,0,.5);}
-.rbadge.lmartes     {background:rgba(0,105,92,.25);    color:#4DB6AC;border:1px solid rgba(0,105,92,.5);}
-.rbadge.presidenta  {background:rgba(183,28,28,.25);   color:#EF9A9A;border:1px solid rgba(183,28,28,.5);}
-.rbadge.vp          {background:rgba(136,14,79,.25);   color:#F48FB1;border:1px solid rgba(136,14,79,.5);}
-.rbadge.secretaria  {background:rgba(13,71,161,.25);   color:#90CAF9;border:1px solid rgba(13,71,161,.5);}
-.rbadge.tesorera    {background:rgba(27,94,32,.25);    color:#A5D6A7;border:1px solid rgba(27,94,32,.5);}
-.rbadge.vocal1,.rbadge.vocal2{background:rgba(49,27,146,.25);color:#B39DDB;border:1px solid rgba(49,27,146,.5);}
+/* Directiva Dayca */
+.rbadge.presd,.rbadge.vpd,.rbadge.secd,.rbadge.tesd,.rbadge.vocal1d,.rbadge.vocal2d{background:rgba(0,105,92,.25);color:#4DB6AC;border:1px solid rgba(0,105,92,.5);}
+/* Directiva Juvenil */
+.rbadge.presj,.rbadge.vpj,.rbadge.secj,.rbadge.tesj,.rbadge.vocal1j,.rbadge.vocal2j{background:rgba(230,81,0,.25);color:#FFAB40;border:1px solid rgba(230,81,0,.5);}
 /* Domingo */
 .rbadge.presd,.rbadge.vpd,.rbadge.secd,.rbadge.tesd,.rbadge.vocal1d,.rbadge.vocal2d{background:rgba(183,28,28,.2);color:#EF9A9A;border:1px solid rgba(183,28,28,.4);}
 /* Martes */
@@ -487,9 +485,8 @@ body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--cream);mi
   <button class="role-chip diacono"   onclick="setRole('Diácono',this)">🙏 Diácono</button>
   <button class="role-chip miembro"   onclick="setRole('Miembro',this)">👤 Miembro</button>
   <button class="role-chip visitante" onclick="setRole('Visitante',this)">🌟 Visitante</button>
-  <button class="role-chip" style="border-color:rgba(183,28,28,.4);" onclick="setRoleGroup('domingo',this)">🕊️ Dir. Domingo</button>
-  <button class="role-chip" style="border-color:rgba(0,105,92,.4);"   onclick="setRoleGroup('martes',this)">📖 Dir. Martes</button>
-  <button class="role-chip" style="border-color:rgba(230,81,0,.4);"   onclick="setRoleGroup('jovenes',this)">🎯 Dir. Jóvenes</button>
+  <button class="role-chip" style="border-color:rgba(0,105,92,.4);"   onclick="setRoleGroup('dayca',this)">📖 Dayca</button>
+  <button class="role-chip" style="border-color:rgba(230,81,0,.4);"   onclick="setRoleGroup('juvenil',this)">🎯 Juvenil</button>
 </div>
 
 <!-- OFFLINE -->
@@ -646,8 +643,8 @@ const CLOUDINARY_PRESET = 'iglesia-luz-vida'; // Upload Preset (Unsigned)
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-const RCLS={Pastor:'pastor',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Pres. Domingo':'presd','Vice. Domingo':'vpd','Sec. Domingo':'secd','Tes. Domingo':'tesd','1er Vocal Dom.':'vocal1d','2do Vocal Dom.':'vocal2d','Pres. Martes':'presm','Vice. Martes':'vpm','Sec. Martes':'secm','Tes. Martes':'tesm','1er Vocal Mar.':'vocal1m','2do Vocal Mar.':'vocal2m','Pres. Jóvenes':'presj','Vice. Jóvenes':'vpj','Sec. Jóvenes':'secj','Tes. Jóvenes':'tesj','1er Vocal Jóv.':'vocal1j','2do Vocal Jóv.':'vocal2j'};
-const RICO={Pastor:'⛪',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Pres. Domingo':'👑','Vice. Domingo':'🌸','Sec. Domingo':'📋','Tes. Domingo':'💰','1er Vocal Dom.':'🎤','2do Vocal Dom.':'🎤','Pres. Martes':'👑','Vice. Martes':'🌸','Sec. Martes':'📋','Tes. Martes':'💰','1er Vocal Mar.':'🎤','2do Vocal Mar.':'🎤','Pres. Jóvenes':'👑','Vice. Jóvenes':'🌸','Sec. Jóvenes':'📋','Tes. Jóvenes':'💰','1er Vocal Jóv.':'🎤','2do Vocal Jóv.':'🎤'};
+const RCLS={Pastor:'pastor','Co-Pastor':'copastor','Secretario General':'secgen','Tesorero General':'tesgen',Diácono:'diacono',Miembro:'miembro',Visitante:'visitante','Pres. Dayca':'presd','Vice. Dayca':'vpd','Sec. Dayca':'secd','Tes. Dayca':'tesd','1er Vocal Dayca':'vocal1d','2do Vocal Dayca':'vocal2d','Pres. Juvenil':'presj','Vice. Juvenil':'vpj','Sec. Juvenil':'secj','Tes. Juvenil':'tesj','1er Vocal Juv.':'vocal1j','2do Vocal Juv.':'vocal2j'};
+const RICO={Pastor:'⛪','Co-Pastor':'⛪','Secretario General':'📋','Tesorero General':'💰',Diácono:'🙏',Miembro:'👤',Visitante:'🌟','Pres. Dayca':'👑','Vice. Dayca':'🌸','Sec. Dayca':'📋','Tes. Dayca':'💰','1er Vocal Dayca':'🎤','2do Vocal Dayca':'🎤','Pres. Juvenil':'👑','Vice. Juvenil':'🌸','Sec. Juvenil':'📋','Tes. Juvenil':'💰','1er Vocal Juv.':'🎤','2do Vocal Juv.':'🎤'};
 const CCOLORS=['#C8A96E','#E4CF96','#F07080','#5DC99A','#7EB8FF','#FFE066','#FF8FA3','#fff'];
 
 let miembros=[],asistidos=new Set(),selId=null,uploadId=null,roleFiltro='all',selectedFile=null;
@@ -764,14 +761,13 @@ function render(){
 window.filtrar=function(){render();};
 window.setRole=function(r,el){roleFiltro=r;document.querySelectorAll('.role-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');render();};
 
-const GRUPO_DOM=['Pres. Domingo','Vice. Domingo','Sec. Domingo','Tes. Domingo','1er Vocal Dom.','2do Vocal Dom.'];
-const GRUPO_MAR=['Pres. Martes','Vice. Martes','Sec. Martes','Tes. Martes','1er Vocal Mar.','2do Vocal Mar.'];
-const GRUPO_JOV=['Pres. Jóvenes','Vice. Jóvenes','Sec. Jóvenes','Tes. Jóvenes','1er Vocal Jóv.','2do Vocal Jóv.'];
+const GRUPO_DAYCA  =['Pres. Dayca','Vice. Dayca','Sec. Dayca','Tes. Dayca','1er Vocal Dayca','2do Vocal Dayca'];
+const GRUPO_JUVENIL=['Pres. Juvenil','Vice. Juvenil','Sec. Juvenil','Tes. Juvenil','1er Vocal Juv.','2do Vocal Juv.'];
 
 window.setRoleGroup=function(grupo,el){
   document.querySelectorAll('.role-chip').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
-  const grupos={domingo:GRUPO_DOM,martes:GRUPO_MAR,jovenes:GRUPO_JOV};
+  const grupos={dayca:GRUPO_DAYCA,juvenil:GRUPO_JUVENIL};
   const lista=grupos[grupo]||[];
   roleFiltro='__group__';
   window._groupFilter=lista;
@@ -1038,13 +1034,13 @@ window.seleccionarSugerencia=function(id){
 function anunciarVoz(nombre, rol){
   if(!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  const RICO_TTS={Pastor:'Pastor',Diácono:'Diácono',Miembro:'',Visitante:'Visitante',
-    'Pres. Domingo':'Presidenta','Vice. Domingo':'Vicepresidenta','Sec. Domingo':'Secretaria',
-    'Tes. Domingo':'Tesorera','1er Vocal Dom.':'Primer Vocal','2do Vocal Dom.':'Segundo Vocal',
-    'Pres. Martes':'Presidenta','Vice. Martes':'Vicepresidenta','Sec. Martes':'Secretaria',
-    'Tes. Martes':'Tesorera','1er Vocal Mar.':'Primer Vocal','2do Vocal Mar.':'Segundo Vocal',
-    'Pres. Jóvenes':'Presidenta','Vice. Jóvenes':'Vicepresidenta','Sec. Jóvenes':'Secretaria',
-    'Tes. Jóvenes':'Tesorera','1er Vocal Jóv.':'Primer Vocal','2do Vocal Jóv.':'Segundo Vocal'};
+  const RICO_TTS={Pastor:'Pastor','Co-Pastor':'Co Pastor','Secretario General':'Secretario General','Tesorero General':'Tesorero General',Diácono:'Diácono',Miembro:'',Visitante:'Visitante',
+    'Pres. Dayca':'Presidenta de la Dayca','Vice. Dayca':'Vicepresidenta de la Dayca',
+    'Sec. Dayca':'Secretaria de la Dayca','Tes. Dayca':'Tesorera de la Dayca',
+    '1er Vocal Dayca':'Primer Vocal','2do Vocal Dayca':'Segundo Vocal',
+    'Pres. Juvenil':'Presidenta Juvenil','Vice. Juvenil':'Vicepresidenta Juvenil',
+    'Sec. Juvenil':'Secretaria Juvenil','Tes. Juvenil':'Tesorera Juvenil',
+    '1er Vocal Juv.':'Primer Vocal','2do Vocal Juv.':'Segundo Vocal'};
   const rolText=RICO_TTS[rol]||'';
   const texto=rolText?`Bienvenido ${rolText} ${nombre}`:`Bienvenido ${nombre}`;
   const utter=new SpeechSynthesisUtterance(texto);
