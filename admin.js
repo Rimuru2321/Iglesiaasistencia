@@ -24,21 +24,26 @@ window.confirmar=function(opts){
   var icono=opts.icono||'⚠️', titulo=opts.titulo||'¿Estás seguro?';
   var mensaje=opts.mensaje||'', txtOk=opts.txtOk||'Confirmar';
   var danger=opts.danger!==false, onOk=opts.onOk;
-  var ov=document.getElementById('dlg-overlay');
-  var box=document.getElementById('dlg-box');
+
+  var ov  = document.getElementById('dlg-overlay');
+  var box = document.getElementById('dlg-box');
+
+  // Si el dialog no está en el DOM todavía, reintentar en 100ms
   if(!ov||!box){
-    if(window.confirm(titulo+'\n'+mensaje)){if(onOk)onOk();}
+    setTimeout(function(){ window.confirmar(opts); }, 100);
     return;
   }
+
   document.getElementById('dlg-icon').textContent=icono;
   document.getElementById('dlg-icon').className='dialog-icon'+(danger?' danger':'');
   document.getElementById('dlg-title').textContent=titulo;
   document.getElementById('dlg-msg').textContent=mensaje;
   box.className='dialog '+(danger?'danger':'safe');
   ov.classList.add('open');
-  var oldOk=document.getElementById('dlg-confirm');
+
+  var oldOk =document.getElementById('dlg-confirm');
   var oldCnc=document.getElementById('dlg-cancel');
-  var newOk=oldOk.cloneNode(true);
+  var newOk =oldOk.cloneNode(true);
   var newCnc=oldCnc.cloneNode(true);
   oldOk.parentNode.replaceChild(newOk,oldOk);
   oldCnc.parentNode.replaceChild(newCnc,oldCnc);
@@ -50,7 +55,7 @@ window.confirmar=function(opts){
 };
 
 const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
-firebase.initializeApp(firebaseConfig);
+try{ firebase.initializeApp(firebaseConfig); }catch(e){ /* ya inicializado */ }
 const db = firebase.firestore();
 
 const DIAS=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
