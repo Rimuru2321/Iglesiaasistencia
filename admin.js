@@ -49,9 +49,6 @@ window.confirmar=function(opts){
   ov.onclick=function(e){if(e.target===ov)ov.classList.remove('open');};
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-
-
 const firebaseConfig={apiKey:"AIzaSyA-XTJPcNGJN1cHKANF7ShwIW68vQ4V_OQ",authDomain:"iglesia-luz-vida.firebaseapp.com",projectId:"iglesia-luz-vida",storageBucket:"iglesia-luz-vida.firebasestorage.app",messagingSenderId:"2442440076",appId:"1:2442440076:web:6ec7c5643d3af4fd57faa9"};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -69,7 +66,7 @@ let chartLine=null,chartRoles=null;
 // ── TEMA ──────────────────────────────────────────────────────
 const savedTheme=localStorage.getItem('lviv-theme')||'dark';
 document.documentElement.setAttribute('data-theme',savedTheme);
-document.getElementById('tbtn').textContent=savedTheme==='dark'?'🌙':'🌞';
+// tbtn se actualiza en init() cuando el DOM esté listo
 window.toggleTheme=function(){
   const html=document.documentElement;const isDark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',isDark?'light':'dark');
@@ -99,7 +96,7 @@ function tick(){
   if(h){if(mins>=h.mi&&mins<=h.mf){cb.className='cbar z on';ct.textContent=`${h.n} en curso · ${h.i} – ${h.f}`;}else if(mins<h.mi){cb.className='cbar z';ct.textContent=`Hoy · ${h.n} · ${h.i} – ${h.f}`;}else{cb.className='cbar z';ct.textContent='✅ Culto finalizado';}}
   else{cb.className='cbar z';ct.textContent='Sin culto hoy · Próximo: Mar o Sáb 7:00 PM';}
 }
-setInterval(tick,1000);tick();
+// tick() se inicia en init()
 
 // ── AUTH ──────────────────────────────────────────────────────
 window.login=function(){
@@ -1039,6 +1036,23 @@ function ajustarBrillo(hex,amount){
 
 
 
-document.getElementById('ov-familia').addEventListener('click',function(e){if(e.target===this)cerrarAddFamilia();});
+// ── INIT — se ejecuta cuando el DOM está 100% listo ──────────
+function init(){
+  // Tema
+  var tbtn=document.getElementById('tbtn');
+  if(tbtn) tbtn.textContent=(localStorage.getItem('lviv-theme')||'dark')==='dark'?'🌙':'🌞';
+  // Reloj
+  setInterval(tick,1000); tick();
+  // Cerrar overlays al click fuera
+  ['ov-add','ov-evento','ov-diezmo','ov-anuncio','ov-foto','ov-votacion','ov-mision','ov-acta','ov-familia'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+  });
+}
 
-});
+// Ejecutar init cuando el DOM esté listo
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+}else{
+  init();
+}
